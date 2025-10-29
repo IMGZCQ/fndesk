@@ -77,6 +77,7 @@
      - /usr/trim/www:/fnw
      - ./deskdata:/deskdata
     restart: always</code></pre>
+    跑码完成访问9990端口即可
   </div>
 </div>
 
