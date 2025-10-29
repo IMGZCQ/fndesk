@@ -29,6 +29,9 @@
 
 <ul style="list-style-type: none; padding-left: 0;">
   <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
+    有兴趣的灵魂请加入Q群组1039270739参与讨论
+  </li>
+  <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
     修改后若不生效请清空浏览器缓存或使用无痕模式浏览效果
   </li>
   <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
@@ -36,9 +39,6 @@
   </li>
   <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
     若忘记登录密码请删除deskdata/pw.json文件重置密码
-  </li>
-  <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
-    有兴趣的灵魂请加入Q群组1039270739参与讨论
   </li>
 </ul>
 
