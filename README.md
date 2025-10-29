@@ -67,8 +67,7 @@
   <h4 style="margin-top: 0;">新建Docker compose粘贴以下代码：</h4>
   
   <div style="background-color: #1e293b; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto;">
-    <pre><code>
-services:
+    <pre><code>services:
   fndesk:
     container_name: fndesk
     image: imgzcq/fndesk:latest
