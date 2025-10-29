@@ -84,10 +84,15 @@
 ## <span style="color:#7209b7">效果展示</span>
 
 **文件夹自由拖放，自动缩放，双击最大化**
+
 <img src="https://github.com/user-attachments/assets/e6b4f731-51f2-412c-b5e7-a2e253ad3032" alt="fn-icon界面展示4" style="width: 480px; height: auto;">
+
 **识别内外网连接，3个自定义连接，支持多层文件夹**
+
 <img src="https://github.com/user-attachments/assets/b4d8395f-1f2e-493c-a214-ccafdbcdbdc1" alt="fn-icon界面展示4" style="width: 480px; height: auto;">
+
 **管理工具界面**
+
 <img width="979" height="1337" alt="PixPin_2025-10-29_19-47-18" src="https://github.com/user-attachments/assets/58554e7e-3cbb-4165-80d1-9cf3f4c2490e" />
 <img width="979" height="1028" alt="PixPin_2025-10-29_19-48-18" src="https://github.com/user-attachments/assets/b0b2ba93-6e28-4ff8-8a80-937b01083759" />
 <img width="979" height="842" alt="PixPin_2025-10-29_19-48-01" src="https://github.com/user-attachments/assets/bcf10e62-a8c3-4244-bb1e-34cecd40d11b" />
