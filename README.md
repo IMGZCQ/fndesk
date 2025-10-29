@@ -9,7 +9,10 @@
 
 <ul style="list-style-type: none; padding-left: 0;">
   <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
-    ✨ 自由新建图标，文件夹，链接识别内外网
+    ✨ 实现图标，文件夹自由，彻底告别收藏夹
+  </li>
+  <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
+    🌈智能识别内外网环境，更多自定义链接
   </li>
   <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
     🌐 飞牛桌面内文件夹自由拖动调整大小
@@ -18,7 +21,7 @@
     🖼️ 自动获取目标连接图标or自定义
   </li>
   <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
-    ⚙️ 带有右键菜单，拓展更多功能
+    ⚙️ 多层文件夹，右键菜单，拓展更多功能
   </li>
 </ul>
 
@@ -65,7 +68,16 @@
   
   <div style="background-color: #1e293b; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto;">
     <pre><code>
-      
+services:
+  fndesk:
+    container_name: fndesk
+    image: imgzcq/fndesk:latest
+    ports:
+     - 9990:9990
+    volumes:
+     - /usr/trim/www:/fnw
+     - ./deskdata:/deskdata
+    restart: always
     </code></pre>
   </div>
 </div>
