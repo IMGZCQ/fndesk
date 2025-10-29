@@ -76,8 +76,7 @@
     volumes:
      - /usr/trim/www:/fnw
      - ./deskdata:/deskdata
-    restart: always
-    </code></pre>
+    restart: always</code></pre>
   </div>
 </div>
 
