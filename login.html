@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>飞牛桌面管理工具 - 登录</title>
+    <link href="fonts/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #0a192f;
+            --secondary-color: #112240;
+            --accent-color: #64ffda;
+            --text-primary: #e6f1ff;
+            --text-secondary: #8892b0;
+            --border-color: #233554;
+            --highlight-color: #4cc9f0;
+            --error-color: #f87171;
+            --success-color: #4ade80;
+            --card-bg: rgba(17, 34, 64, 0.8);
+            --input-bg: rgba(10, 25, 47, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: var(--primary-color);
+            background-image: 
+                linear-gradient(to bottom, rgba(10, 25, 47, 0.9), rgba(10, 25, 47, 0.95)),
+                linear-gradient(to right, rgba(100, 255, 218, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(100, 255, 218, 0.05) 1px, transparent 1px);
+            background-size: cover, 30px 30px, 30px 30px;
+            background-position: center, center, center;
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 优化背景效果 */
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(100, 255, 218, 0.05) 0%, rgba(30, 41, 59, 0) 70%);
+            pointer-events: none;
+        }
+
+        .login-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 
+                0 4px 20px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(100, 255, 218, 0.1);
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+        }
+
+        .login-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 8px 30px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(100, 255, 218, 0.2),
+                0 0 30px rgba(100, 255, 218, 0.1);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-title {
+            font-size: 2rem;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
+        }
+
+        .login-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.2);
+            background-color: rgba(10, 25, 47, 0.9);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: linear-gradient(135deg, var(--accent-color), var(--highlight-color));
+            border: none;
+            border-radius: 4px;
+            color: var(--primary-color);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, var(--highlight-color), var(--accent-color));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(100, 255, 218, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            background-color: rgba(248, 113, 113, 0.1);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            color: var(--error-color);
+            padding: 0.75rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .success-message {
+            background-color: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            color: var(--success-color);
+            padding: 0.75rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(10, 25, 47, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .system-info {
+            margin-top: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: var(--accent-color);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .login-container {
+                margin: 1rem;
+                padding: 2rem;
+                width: calc(100% - 2rem);
+            }
+
+            .login-title {
+                font-size: 1.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 1.5rem;
+            }
+
+            .login-title {
+                font-size: 1.5rem;
+            }
+
+            .form-input,
+            .btn {
+                padding: 0.65rem 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1 class="login-title">飞牛桌面管理</h1>
+            <p id="login-subtitle" class="login-subtitle">请输入密码登录</p>
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+        <div id="success-message" class="success-message"></div>
+
+        <form id="login-form" class="login-form">
+            <div class="form-group">
+                <label for="password" class="form-label">密码</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    class="form-input" 
+                    placeholder="请输入密码"
+                >
+                <div class="password-toggle">
+                    <i class="fa fa-eye-slash"></i>
+                </div>
+            </div>
+            <button type="button" id="login-btn" class="btn">
+                <span id="btn-text">登录</span>
+                <div id="loading-spinner" class="loading-spinner"></div>
+            </button>
+        </form>
+
+        <form id="initialize-form" class="initialize-form" style="display: none;">
+            <div class="form-group">
+                <label for="new-password" class="form-label">新密码</label>
+                <input 
+                    type="password" 
+                    id="new-password" 
+                    class="form-input" 
+                    placeholder="请设置密码（6-20位）"
+                >
+            </div>
+            <div class="form-group">
+                <label for="confirm-password" class="form-label">确认密码</label>
+                <input 
+                    type="password" 
+                    id="confirm-password" 
+                    class="form-input" 
+                    placeholder="请再次输入密码"
+                >
+            </div>
+            <button type="button" id="initialize-btn" class="btn">
+                <span id="initialize-btn-text">初始化密码</span>
+                <div id="initialize-loading-spinner" class="loading-spinner"></div>
+            </button>
+        </form>
+    </div>
+
+    <div class="system-info">
+        by 米恋泥 @小宠瞭望塔
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化登录表单元素
+            const loginBtn = document.getElementById('login-btn');
+            const passwordInput = document.getElementById('password');
+            const btnText = document.getElementById('btn-text');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('success-message');
+            
+            // 初始化密码表单元素
+            const initializeForm = document.getElementById('initialize-form');
+            const loginForm = document.getElementById('login-form');
+            const loginSubtitle = document.getElementById('login-subtitle');
+            const newPasswordInput = document.getElementById('new-password');
+            const confirmPasswordInput = document.getElementById('confirm-password');
+            const initializeBtn = document.getElementById('initialize-btn');
+            const initializeBtnText = document.getElementById('initialize-btn-text');
+            const initializeLoadingSpinner = document.getElementById('initialize-loading-spinner');
+            
+            // 检查是否已登录
+            if (localStorage.getItem('isLoggedIn') === 'true') {
+                window.location.href = 'index.html';
+            }
+            
+            // 页面加载时检查密码文件状态
+            checkPasswordFileStatus();
+            
+            // 登录按钮点击事件
+            loginBtn.addEventListener('click', login);
+            
+            // 初始化密码按钮点击事件
+            initializeBtn.addEventListener('click', initializePassword);
+            
+            // 回车键登录
+            passwordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    login();
+                }
+            });
+            
+            // 初始化密码表单回车键事件
+            newPasswordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    initializePassword();
+                }
+            });
+            
+            confirmPasswordInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    initializePassword();
+                }
+            });
+            
+            // 密码显示/隐藏切换
+            const passwordToggle = document.querySelector('.password-toggle');
+            if (passwordToggle) {
+                passwordToggle.addEventListener('click', function() {
+                    const icon = this.querySelector('i');
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    } else {
+                        passwordInput.type = 'password';
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    }
+                });
+            }
+            
+            // 检查密码文件状态
+            function checkPasswordFileStatus() {
+                fetch('/api/check-password-file', {
+                    method: 'GET'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.hasPasswordFile) {
+                        // 没有密码文件，显示初始化密码界面
+                        showInitializeForm();
+                    } else {
+                        // 有密码文件，显示登录界面
+                        showLoginForm();
+                    }
+                })
+                .catch(error => {
+                    console.error('检查密码文件状态错误:', error);
+                    // 出错时默认显示登录界面
+                    showLoginForm();
+                });
+            }
+            
+            // 初始化密码
+            function initializePassword() {
+                const newPassword = newPasswordInput.value.trim();
+                const confirmPassword = confirmPasswordInput.value.trim();
+                
+                // 验证密码
+                if (!newPassword) {
+                    showError('请设置密码');
+                    return;
+                }
+                
+                if (newPassword.length < 6 || newPassword.length > 20) {
+                    showError('密码长度应为6-20位');
+                    return;
+                }
+                
+                if (newPassword !== confirmPassword) {
+                    showError('两次输入的密码不一致');
+                    return;
+                }
+                
+                // 显示加载状态
+                initializeBtnText.textContent = '';
+                initializeLoadingSpinner.style.display = 'block';
+                initializeBtn.disabled = true;
+                hideError();
+                hideSuccess();
+                
+                // 发送初始化密码请求
+                fetch('/api/initialize-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password: newPassword })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // 恢复按钮状态
+                    initializeBtnText.textContent = '初始化密码';
+                    initializeLoadingSpinner.style.display = 'none';
+                    initializeBtn.disabled = false;
+                    
+                    if (data.success) {
+                        showSuccess('密码初始化成功，请登录');
+                        // 延迟显示登录界面
+                        setTimeout(() => {
+                            showLoginForm();
+                        }, 1500);
+                    } else {
+                        showError(data.message || '密码初始化失败，请重试');
+                    }
+                })
+                .catch(error => {
+                    // 恢复按钮状态
+                    initializeBtnText.textContent = '初始化密码';
+                    initializeLoadingSpinner.style.display = 'none';
+                    initializeBtn.disabled = false;
+                    
+                    console.error('初始化密码请求错误:', error);
+                    showError('网络错误，请重试');
+                });
+            }
+            
+            // 登录函数
+            function login() {
+                const password = passwordInput.value.trim();
+                
+                if (!password) {
+                    showError('请输入密码');
+                    return;
+                }
+                
+                // 显示加载状态
+                btnText.textContent = '';
+                loadingSpinner.style.display = 'block';
+                loginBtn.disabled = true;
+                hideError();
+                
+                // 发送登录请求
+                fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ password: password })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // 恢复按钮状态
+                    btnText.textContent = '登录';
+                    loadingSpinner.style.display = 'none';
+                    loginBtn.disabled = false;
+                    
+                    if (data.success) {
+                        // 登录成功，设置登录状态
+                        localStorage.setItem('isLoggedIn', 'true');
+                        // 存储认证token（将在API请求中使用）
+                        localStorage.setItem('authToken', 'authenticated');
+                        // 跳转到主页面
+                        window.location.href = 'index.html';
+                    } else {
+                        showError(data.message || '登录失败，请重试');
+                    }
+                })
+                .catch(error => {
+                    // 恢复按钮状态
+                    btnText.textContent = '登录';
+                    loadingSpinner.style.display = 'none';
+                    loginBtn.disabled = false;
+                    
+                    console.error('登录请求错误:', error);
+                    showError('网络错误，请重试');
+                });
+            }
+            
+            // 显示登录表单
+            function showLoginForm() {
+                loginForm.style.display = 'block';
+                initializeForm.style.display = 'none';
+                loginSubtitle.textContent = '请输入密码登录';
+                passwordInput.focus();
+            }
+            
+            // 显示初始化密码表单
+            function showInitializeForm() {
+                loginForm.style.display = 'none';
+                initializeForm.style.display = 'block';
+                loginSubtitle.textContent = '请初始化管理员密码';
+                newPasswordInput.focus();
+            }
+            
+            // 显示错误信息
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+                hideSuccess();
+            }
+            
+            // 隐藏错误信息
+            function hideError() {
+                errorMessage.style.display = 'none';
+            }
+            
+            // 显示成功信息
+            function showSuccess(message) {
+                successMessage.textContent = message;
+                successMessage.style.display = 'block';
+                hideError();
+            }
+            
+            // 隐藏成功信息
+            function hideSuccess() {
+                successMessage.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

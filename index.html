@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>飞牛桌面管理工具</title>
+        <link href="fonts/font-awesome.min.css" rel="stylesheet">
+        <style>
+            /* 最高优先级的按钮样式 */
+            .edit-btn {
+                background: linear-gradient(to right, rgb(37, 99, 235), rgb(30, 64, 175)) !important;
+                color: white !important;
+                border: 1px solid rgb(96, 165, 250) !important;
+                padding: 0.25rem 0.75rem !important;
+                border-radius: 0.375rem !important;
+                font-weight: 600 !important;
+                font-size: 0.875rem !important;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+                transition: all 300ms !important;
+            }
+            
+            .delete-btn {
+                background: linear-gradient(to right, rgb(220, 38, 38), rgb(153, 27, 27)) !important;
+                color: white !important;
+                border: 1px solid rgb(248, 113, 113) !important;
+                padding: 0.25rem 0.75rem !important;
+                border-radius: 0.375rem !important;
+                font-weight: 600 !important;
+                font-size: 0.875rem !important;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+                transition: all 300ms !important;
+                margin-left: 0.5rem !important;
+            }
+            
+            #closeModal, #closeAnnouncementBtn {
+                background: linear-gradient(to right, rgb(59, 130, 246), rgb(239, 68, 68)) !important;
+                color: white !important;
+                width: 2.5rem !important;
+                height: 2.5rem !important;
+                border-radius: 50% !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                font-size: 1.125rem !important;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+                transition: all 300ms !important;
+                border: none !important;
+            }
+        </style>
+    <style>
+        /* 深色科技风格颜色变量 */
+        :root {
+            --primary: #00a8ff;
+            --secondary: #00d2d3;
+            --accent: #5f27cd;
+            --success: #10ac84;
+            --danger: #ee5a24;
+            --warning: #feca57;
+            --info: #3498db;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --card-hover: #273449;
+            --border-color: #334155;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --glow-primary: 0 0 10px rgba(0, 168, 255, 0.5);
+            --glow-secondary: 0 0 15px rgba(0, 210, 211, 0.3);
+        }
+        
+        /* 基础样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            height: 100%;
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Rajdhani', 'Segoe UI', 'Roboto', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 1) 90%),
+                linear-gradient(to right, rgba(0, 168, 255, 0.03), transparent, rgba(0, 210, 211, 0.03));
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* 通知提示样式 */
+        .notification {
+            max-width: 350px;
+            min-width: 280px;
+            backdrop-filter: blur(8px);
+            cursor: pointer;
+        }
+        
+        .notification.success {
+            background-color: rgba(16, 172, 132, 0.9);
+            border-left: 4px solid var(--success);
+        }
+        
+        .notification.success #notificationIcon {
+            color: var(--text-primary);
+        }
+        
+        .notification.error {
+            background-color: rgba(238, 90, 36, 0.9);
+            border-left: 4px solid var(--danger);
+        }
+        
+        .notification.error #notificationIcon {
+            color: var(--text-primary);
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translate(0);
+        }
+        
+        /* 优化背景效果 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(100, 255, 218, 0.05) 0%, rgba(30, 41, 59, 0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        /* 主容器 */
+        .container {
+            width: 100%;
+            max-width: 1250px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        /* 全局优化样式 */
+        :root {
+            --shadow-color: rgba(0, 0, 0, 0.2);
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-hover: rgba(0, 0, 0, 0.3);
+        }
+        
+        /* 导航栏样式 */
+        .navbar {
+            background: linear-gradient(90deg, var(--card-bg), var(--dark-bg));
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px var(--shadow-light);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar:hover {
+            box-shadow: 0 6px 20px var(--shadow-color);
+        }
+        
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-shadow: var(--glow-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .navbar-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        /* 按钮样式 */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(4px);
+        }
+        
+        /* 编辑和删除按钮特定样式 */
+        .edit-btn, .delete-btn {
+            /* 确保按钮行为正常 */
+            cursor: pointer;
+            position: relative;
+            border: none;
+            background: transparent;
+        }
+        
+        /* 关闭按钮特定样式 */
+        #closeModal, #closeAnnouncementBtn {
+            /* 确保按钮行为正常 */
+            cursor: pointer;
+            position: relative;
+            border: none;
+            background: transparent;
+        }
+        
+        /* 只对具有btn类的按钮应用伪元素 */
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        /* 确保我们的特定按钮不被其他规则影响 */
+        button:not(.btn) {
+            position: relative !important;
+            z-index: 2 !important;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 168, 255, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 168, 255, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(30, 41, 59, 0.8);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--card-hover);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: var(--glow-primary);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #ff6b35);
+            color: white;
+            box-shadow: 0 4px 15px rgba(238, 90, 36, 0.3);
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(238, 90, 36, 0.4);
+        }
+        
+        /* 科技黄按钮 - 用于公告说明 */
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #ffd166);
+            color: #1e293b;
+            box-shadow: 0 4px 15px rgba(254, 202, 87, 0.3);
+        }
+        
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(254, 202, 87, 0.4);
+        }
+        
+        /* 科技蓝按钮 - 用于立即生效 */
+        .btn-info {
+            background: linear-gradient(135deg, var(--info), #2980b9);
+            color: white;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+        
+        /* 科技绿按钮 - 用于添加记录 */
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #0e8966);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 172, 132, 0.3);
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 172, 132, 0.4);
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+        
+        .btn-lg {
+            padding: 0.875rem 2rem;
+            font-size: 1rem;
+        }
+        
+        /* 卡片样式 */
+        .card {
+            background: var(--card-bg);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 6px 20px var(--shadow-light);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px var(--shadow-hover), var(--glow-primary);
+            border-color: var(--primary);
+        }
+        
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), var(--glow-primary);
+            border-color: var(--primary);
+        }
+        
+        .card:hover::after {
+            opacity: 1;
+        }
+        
+        .card-content {
+            padding: 1.5rem;
+        }
+        
+        /* 筛选区域 */
+        .filter-section {
+            background: var(--card-bg);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 6px 20px var(--shadow-light);
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .filter-section:hover {
+            box-shadow: 0 8px 25px var(--shadow-color);
+        }
+        
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .filter-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        
+        /* 输入框样式 */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        /* 网格布局 */
+        .grid {
+            display: grid;
+        }
+        
+        .grid-cols-1 {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+        
+        .grid-cols-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+        
+        .grid-cols-3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        
+        .gap-6 {
+            gap: 1.5rem;
+        }
+        
+        .mb-6 {
+            margin-bottom: 1.5rem;
+        }
+        
+        /* 响应式布局 */
+        @media (min-width: 768px) {
+            .md\:grid-cols-2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            
+            .md\:grid-cols-3 {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+        
+        .input-group label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        input, select {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: var(--glow-primary);
+            background: rgba(15, 23, 42, 0.7);
+        }
+        
+        input::placeholder {
+            color: var(--text-secondary);
+        }
+        
+        /* 表格样式 */
+        .table-container {
+            background: var(--card-bg);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            box-shadow: 0 6px 20px var(--shadow-light);
+            margin-bottom: 2rem;
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .table-container:hover {
+            box-shadow: 0 8px 25px var(--shadow-color);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+        
+        th {
+            background: linear-gradient(90deg, rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.5));
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.2s ease;
+        }
+        
+        tr:hover td {
+            background: rgba(30, 41, 59, 0.5);
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        /* 分页样式 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1.5rem;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .pagination-btn {
+            min-width: 36px;
+            height: 36px;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+            background: rgba(15, 23, 42, 0.5);
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .pagination-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: var(--card-hover);
+            color: var(--primary);
+            box-shadow: var(--glow-primary);
+        }
+        
+        .pagination-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-color: var(--primary);
+            color: white;
+            box-shadow: var(--glow-primary);
+        }
+        
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* 模态框样式 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal {
+            background: var(--card-bg);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), var(--glow-secondary);
+            max-width: 720px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlideIn 0.3s ease-out;
+            position: relative;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(90deg, var(--card-bg), var(--dark-bg));
+            border-radius: 0.75rem 0.75rem 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-shadow: var(--glow-primary);
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        
+        /* 通知样式 */
+        .notification {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            color: white;
+            z-index: 2000;
+            animation: slideInRight 0.5s ease-out;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+        }
+        
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .notification-success {
+            background: linear-gradient(90deg, var(--success), #10ac84);
+            box-shadow: 0 10px 30px rgba(16, 172, 132, 0.3);
+        }
+        
+        .notification-error {
+            background: linear-gradient(90deg, var(--danger), #ff6b35);
+            box-shadow: 0 10px 30px rgba(238, 90, 36, 0.3);
+        }
+        
+        /* 标签样式 */
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            background: rgba(0, 168, 255, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(0, 168, 255, 0.3);
+        }
+        
+        /* 加载动画 */
+        .loader {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(0, 168, 255, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+            margin: 2rem auto;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .navbar-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .navbar-actions {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-footer {
+                flex-direction: column-reverse;
+            }
+            
+            .modal {
+                width: 95%;
+                margin: 1rem;
+            }
+            
+            .modal-footer {
+                flex-direction: column;
+            }
+            
+            .table-container {
+                overflow-x: auto;
+            }
+            
+            table {
+                min-width: 600px;
+            }
+        }
+        
+        /* 工具类 */
+        .flex {
+            display: flex;
+        }
+        
+        .items-center {
+            align-items: center;
+        }
+        
+        .justify-between {
+            justify-content: space-between;
+        }
+        
+        .justify-center {
+            justify-content: center;
+        }
+        
+        .gap-2 {
+            gap: 0.5rem;
+        }
+        
+        .gap-4 {
+            gap: 1rem;
+        }
+        
+        .gap-6 {
+            gap: 1.5rem;
+        }
+        
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+        
+        .mb-6 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .mt-4 {
+            margin-top: 1rem;
+        }
+        
+        .mt-6 {
+            margin-top: 1.5rem;
+        }
+        
+        .p-4 {
+            padding: 1rem;
+        }
+        
+        .p-6 {
+            padding: 1.5rem;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .text-right {
+            text-align: right;
+        }
+        
+        .w-full {
+            width: 100%;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .cursor-pointer {
+            cursor: pointer;
+        }
+        
+        .text-sm {
+            font-size: 0.875rem;
+        }
+        
+        .text-lg {
+            font-size: 1.125rem;
+        }
+        
+        .font-medium {
+            font-weight: 500;
+        }
+        
+        .font-semibold {
+            font-weight: 600;
+        }
+        
+        .text-primary {
+            color: var(--primary);
+        }
+        
+        .text-secondary {
+            color: var(--text-secondary);
+        }
+        
+        /* 特效 */
+        .glow-text {
+            text-shadow: var(--glow-primary);
+        }
+        
+        .glow-border {
+            box-shadow: var(--glow-primary);
+        }
+        
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+        
+        /* 加载指示器 */
+        .loading-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .loading-indicator::after {
+            content: '';
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0, 168, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 0.8s linear infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen font-sans text-text-primary">
+    <!-- 顶部导航栏 -->
+    <header class="navbar">
+        <div class="container navbar-content">
+            <h1 class="navbar-title">
+                <i class="fa fa-desktop"></i>
+                飞牛桌面管理工具 v0.3
+            </h1>
+            <div class="navbar-actions">
+                <button id="announcementBtn" class="btn btn-warning mr-2">
+                    <i class="fa fa-bullhorn"></i>
+                    公告说明
+                </button>
+                <button id="applyBtn" class="btn btn-info mr-2">
+                    <i class="fa fa-check-circle"></i>
+                    立即生效
+                </button>
+                <button id="addBtn" class="btn btn-success mr-2">
+                    <i class="fa fa-plus"></i>
+                    添加记录
+                </button>
+                <button id="logoutBtn" class="btn btn-danger">
+                    <i class="fa fa-sign-out"></i>
+                    退出登录
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区域 -->
+    <main class="container py-6">
+        <!-- 筛选区域 -->
+        <div class="filter-section mb-6 bg-card p-4 rounded-lg shadow-sm">
+            <div class="filter-grid flex flex-wrap items-center gap-6">
+                <!-- 类型筛选 -->
+                <div class="filter-item flex items-center">
+                    <label for="filterType" class="mr-2 text-text-secondary whitespace-nowrap font-medium">类型</label>
+                    <select id="filterType" class="py-2 px-3 border border-border rounded bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
+                        <option value="">全部类型</option>
+                        <!-- 类型选项将动态生成 -->
+                    </select>
+                </div>
+                
+                <!-- 归属筛选 -->
+                <div class="filter-item flex items-center">
+                    <label for="filterOwner" class="mr-2 text-text-secondary whitespace-nowrap font-medium">归属</label>
+                    <select id="filterOwner" class="py-2 px-3 border border-border rounded bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
+                        <option value="">全部归属</option>
+                        <!-- 归属选项将动态生成 -->
+                    </select>
+                </div>
+                
+                <!-- 关键词搜索 - 占据剩余空间 -->
+                <div class="filter-item flex-grow flex items-center min-w-[200px]">
+                    <label for="filterKeyword" class="mr-2 text-text-secondary whitespace-nowrap font-medium">关键词搜索</label>
+                    <div class="relative w-full">
+                        <input 
+                            type="text" 
+                            id="filterKeyword" 
+                            placeholder="搜索标题..." 
+                            class="w-full py-2 px-3 border border-border rounded bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                        >
+                    </div>
+                </div>
+                
+                <!-- 操作按钮组 -->
+                <div class="filter-actions flex items-center gap-6 ml-auto">
+                    <button 
+                        id="filterBtn" 
+                        class="btn btn-primary py-2 px-4 rounded transition-all hover:shadow-lg flex items-center justify-center"
+                    >
+                        <i class="fa fa-filter mr-1"></i>
+                        筛选
+                    </button>
+                    <button 
+                        id="resetFilterBtn" 
+                        class="btn btn-secondary py-2 px-4 rounded transition-all hover:shadow-lg flex items-center justify-center"
+                    >
+                        <i class="fa fa-refresh mr-1"></i>
+                        重置
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据表格 -->
+        <div class="table-container">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr>
+                            <th id="sortable-order" class="cursor-pointer hover:bg-card-hover">优先级 <i class="fa fa-sort ml-1"></i></th>
+                            <th>ID</th>
+                            <th>类型</th>
+                            <th>标题</th>
+                            <th>URL</th>
+                            <th>图片</th>
+                            <th>归属</th>
+                            <th class="text-center">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTableBody">
+                        <!-- 数据将通过JavaScript动态加载 -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- 分页 -->
+            <div class="pagination flex items-center justify-between py-4 px-2">
+                <div class="text-sm text-text-secondary">
+                    显示 <span id="startItem">0</span> 到 <span id="endItem">0</span> 条，共 <span id="totalItems">0</span> 条
+                </div>
+                <div class="flex gap-4">
+                    <button id="prevPage" class="pagination-btn px-4 py-2 border rounded transition-all hover:bg-card-hover disabled:opacity-50" disabled>
+                        上一页
+                    </button>
+                    <button id="nextPage" class="pagination-btn px-4 py-2 border rounded transition-all hover:bg-card-hover disabled:opacity-50" disabled>
+                        下一页
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 添加/编辑模态框 -->
+    <div id="editModal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalTitle" class="modal-title">添加记录</h2>
+                <button id="closeModal">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <input type="hidden" id="recordId">
+                    
+                    <!-- 第一行：序号、类型、归属 -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div class="input-group">
+                            <label for="edit序号">序号 *</label>
+                            <input type="number" id="edit序号" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="edit类型">类型 *</label>
+                            <select id="edit类型" required>
+                                <option value="0">图标</option>
+                                <option value="1">文件夹</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="edit归属">归属 *</label>
+                            <select id="edit归属" required>
+                                <!-- 归属选项将动态生成 -->
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- 第二行：标题、内外网连接 -->
+                    <div class="mb-6">
+                        <div class="input-group mb-6">
+                            <label for="edit标题">标题 *</label>
+                            <input type="text" id="edit标题" required>
+                        </div>
+                        <div id="mainUrlContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="input-group">
+                                <label for="edit外网跳转URL">外网跳转URL</label>
+                                <input type="text" id="edit外网跳转URL" placeholder="https://">
+                            </div>
+                            <div class="input-group">
+                                <label for="edit内网跳转URL">内网跳转URL</label>
+                                <input type="text" id="edit内网跳转URL" placeholder="http://">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 第三行：3个后备URL -->
+                    <div id="backupUrlsContainer" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div class="input-group">
+                            <label for="edit备用URL1">备用URL1</label>
+                            <input type="text" id="edit备用URL1">
+                        </div>
+                        <div class="input-group">
+                            <label for="edit备用URL2">备用URL2</label>
+                            <input type="text" id="edit备用URL2">
+                        </div>
+                        <div class="input-group">
+                            <label for="edit备用URL3">备用URL3</label>
+                            <input type="text" id="edit备用URL3">
+                        </div>
+                    </div>
+                    
+                    <!-- 第四行：两个图片URL -->
+                    <div id="imageUrlsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="input-group">
+                            <label for="edit网络图片URL">网络图片URL</label>
+                            <input type="text" id="edit网络图片URL">
+                        </div>
+                        <div class="input-group">
+                            <label for="edit本地图片URL">本地图片URL</label>
+                            <input type="text" id="edit本地图片URL">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelEditBtn" class="btn btn-secondary">
+                    取消
+                </button>
+                <button id="saveBtn" class="btn btn-primary">
+                    保存
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 删除确认模态框 -->
+    <div id="deleteModal" class="modal-overlay hidden">
+        <div class="modal max-w-md">
+            <div class="modal-header">
+                <h2 class="modal-title">确认删除</h2>
+            </div>
+            <div class="modal-body">
+                <p class="text-text-primary">确定要删除这条记录吗？此操作不可撤销。</p>
+                <p id="deleteTitle" class="mt-2 font-medium text-danger"></p>
+                <input type="hidden" id="deleteId">
+            </div>
+            <div class="modal-footer">
+                <button id="cancelDeleteBtn" class="btn btn-secondary">
+                    取消
+                </button>
+                <button id="confirmDeleteBtn" class="btn btn-danger">
+                    删除
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 应用配置确认模态框 -->
+    <div id="applyConfigModal" class="modal-overlay hidden">
+        <div class="modal max-w-md">
+            <div class="modal-header">
+                <h2 class="modal-title">确认应用配置</h2>
+            </div>
+            <div class="modal-body">
+                <p class="text-text-primary">确定要立即应用当前配置吗？</p>
+                <p class="text-text-secondary text-sm mt-2">此操作将重新生成桌面配置文件，可能需要重新加载桌面才能生效。</p>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelApplyBtn" class="btn btn-secondary">
+                    取消
+                </button>
+                <button id="confirmApplyBtn" class="btn btn-primary">
+                    确认应用
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 退出登录确认模态框 -->
+    <div id="logoutModal" class="modal-overlay hidden">
+        <div class="modal max-w-md">
+            <div class="modal-header">
+                <h2 class="modal-title">确认退出登录</h2>
+            </div>
+            <div class="modal-body">
+                <p class="text-text-primary">确定要退出当前登录吗？</p>
+                <p class="text-text-secondary text-sm mt-2">退出后需要重新登录才能管理桌面配置。</p>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelLogoutBtn" class="btn btn-secondary">
+                    取消
+                </button>
+                <button id="confirmLogoutBtn" class="btn btn-secondary">
+                    确认退出
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 公告说明模态框 -->
+    <div id="announcementModal" class="modal-overlay hidden">
+        <div class="modal max-w-2xl">
+            <div class="modal-header">
+                <h2 class="modal-title">公告说明</h2>
+                <button id="closeAnnouncementBtn">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="announcementContent">
+                    <h3 class="text-lg font-semibold mb-4 text-primary">欢迎使用飞牛桌面管理系统</h3>
+                    <p class="mb-4">本系统用于集中管理企业内部桌面快捷方式和应用程序，支持自定义排序、分类和快速访问。</p>
+                    
+                    <div class="mb-4">
+                        <h4 class="font-medium mb-2">系统功能特点：</h4>
+                        <ul class="list-disc pl-6 space-y-1">
+                            <li>支持图标和文件夹两种类型的快捷方式管理</li>
+                            <li>可设置项目的归属关系，实现层级分类</li>
+                            <li>提供内外网URL配置和多个备用链接</li>
+                            <li>支持网络图片和本地图片设置</li>
+                            <li>灵活的筛选和排序功能</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h4 class="font-medium mb-2">使用说明：</h4>
+                        <ul class="list-disc pl-6 space-y-1">
+                            <li>点击"添加记录"创建新的快捷方式或文件夹</li>
+                            <li>点击记录旁的"编辑"按钮修改现有记录</li>
+                            <li>设置完成后，点击"立即生效"应用更改</li>
+                            <li>可通过筛选功能快速查找特定类型或归属的项目</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h4 class="font-medium mb-2">注意事项：</h4>
+                        <ul class="list-disc pl-6 space-y-1">
+                            <li>请确保URL格式正确，特别是内网地址</li>
+                            <li>序号越小，在桌面上的显示优先级越高</li>
+                            <li>文件夹类型的项目可以包含其他项目</li>
+                            <li>定期备份配置，以防数据丢失</li>
+                        </ul>
+                    </div>
+                    
+                    <p class="text-text-secondary text-sm">最后更新时间：2023年12月</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="closeAnnouncementFooterBtn" class="btn btn-primary">
+                    我知道了
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="index.js"></script>
+    
+    <!-- 页脚 -->
+    <footer class="bg-card py-6 border-t">
+        <div class="container text-center text-text-secondary">
+            <p class="mb-1">飞牛桌面管理工具 by 米恋泥</p>
+            <p>组织机构 小宠瞭望塔</p>
+        </div>
+    </footer>
+</body>
+</html>
