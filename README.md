@@ -59,10 +59,10 @@
 
 ## <span style="color:#7209b7">效果展示</span>
 
-文件夹自由拖放，自动缩放，双击最大化
+### 文件夹自由拖放，自动缩放，双击最大化
 <img src="https://github.com/user-attachments/assets/e6b4f731-51f2-412c-b5e7-a2e253ad3032" alt="fn-icon界面展示4" style="width: 480px; height: auto;">
 
-### 识别内外网连接，3个自定义连接，支持多层文件夹
+#### 识别内外网连接，3个自定义连接，支持多层文件夹
 
 
 
