@@ -22,20 +22,20 @@
   </li>
 </ul>
 
-## <span style="color:#4ecdc4">主要功能</span>
+## <span style="color:#4ecdc4">注意说明</span>
 
 <ul style="list-style-type: none; padding-left: 0;">
   <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
-    ✨ 自由新建图标，文件夹，链接识别内外网
+    修改后若不生效请清空浏览器缓存或使用无痕模式浏览效果
   </li>
   <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
-    🌐 飞牛桌面内文件夹自由拖动调整大小
+    所有数据都在compose文件所在目录的【deskdata】文件夹内，可移植或备份
   </li>
   <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
-    🖼️ 自动获取目标连接图标or自定义
+    若忘记登录密码请删除deskdata/pw.json文件重置密码
   </li>
   <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
-    ⚙️ 带有右键菜单，拓展更多功能
+    有兴趣的灵魂请加入Q群组1039270739参与讨论
   </li>
 </ul>
 
