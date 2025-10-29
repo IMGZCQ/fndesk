@@ -22,24 +22,37 @@
   </li>
 </ul>
 
-## <span style="color:#06d6a0">更新日志</span>
+## <span style="color:#4ecdc4">主要功能</span>
 
+<ul style="list-style-type: none; padding-left: 0;">
+  <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
+    ✨ 自由新建图标，文件夹，链接识别内外网
+  </li>
+  <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
+    🌐 飞牛桌面内文件夹自由拖动调整大小
+  </li>
+  <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
+    🖼️ 自动获取目标连接图标or自定义
+  </li>
+  <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
+    ⚙️ 带有右键菜单，拓展更多功能
+  </li>
+</ul>
+
+## <span style="color:#06d6a0">更新日志</span>
 <div style="background-color: #f0fff4; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
   <h4 style="color: #16a34a; margin-top: 0;">2025.10.29 v0.53</h4>
   <ul>
     <li>✅ 添加旧版数据合并功能</li>
   </ul>
-
   <h4 style="color: #16a34a;">2025.10.28 v0.52</h4>
   <ul>
     <li>✅ 公开发布版本！</li>
   </ul>
-
   <h4 style="color: #16a34a;">2025.10.26 v0.30</h4>
   <ul>
     <li>✅ 增加登录验证页</li>
   </ul>
-
   <h4 style="color: #16a34a;">2025.10.25 之前版本</h4>
   <ul>
     <li>✅ 对图标/文件夹的基本操作</li>
