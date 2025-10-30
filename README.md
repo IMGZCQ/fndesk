@@ -93,6 +93,7 @@
 
 **管理工具界面**
 
+<img width="1270" height="992" alt="ScreenShot_2025-10-30_111530_261" src="https://github.com/user-attachments/assets/f84ebfa8-e060-468c-9749-8feac117302b" />
 <img width="979" height="1337" alt="PixPin_2025-10-29_19-47-18" src="https://github.com/user-attachments/assets/58554e7e-3cbb-4165-80d1-9cf3f4c2490e" />
 <img width="979" height="1028" alt="PixPin_2025-10-29_19-48-18" src="https://github.com/user-attachments/assets/b0b2ba93-6e28-4ff8-8a80-937b01083759" />
 <img width="979" height="842" alt="PixPin_2025-10-29_19-48-01" src="https://github.com/user-attachments/assets/bcf10e62-a8c3-4244-bb1e-34cecd40d11b" />
