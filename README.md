@@ -47,6 +47,7 @@
   <h4 style="color: #16a34a; margin-top: 0;">2025.10.30 v0.55</h4>
   <ul>
     <li>✅ 优化右键菜单，空连接项将不显示</li>
+    <li>✅ 其他细节和注释调整</li>
   </ul>
     <h4 style="color: #16a34a; margin-top: 0;">2025.10.29 v0.53</h4>
   <ul>
