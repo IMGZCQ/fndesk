@@ -44,6 +44,11 @@
 
 ## <span style="color:#06d6a0">更新日志</span>
 <div style="background-color: #f0fff4; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+  <h4 style="color: #16a34a; margin-top: 0;">2025.10.33 v0.56</h4>
+  <ul>
+    <li>⚠️ 重点！适配飞牛0.9.35版</li>
+    <li>⚠️ 启动代码有变动，请重新复制compose代码！</li>
+  </ul>
   <h4 style="color: #16a34a; margin-top: 0;">2025.10.30 v0.55</h4>
   <ul>
     <li>✅ 优化右键菜单，空连接项将不显示</li>
@@ -80,6 +85,7 @@
      - 9990:9990
     volumes:
      - /usr/trim/www:/fnw
+     - /usr/trim/share/.restore:/res
      - ./deskdata:/deskdata
     restart: always</code></pre>
     跑码完成访问9990端口即可
