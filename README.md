@@ -44,7 +44,14 @@
 
 ## <span style="color:#06d6a0">更新日志</span>
 <div style="background-color: #f0fff4; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-  <h4 style="color: #16a34a; margin-top: 0;">2025.11.01 v0.57</h4>
+  <h4 style="color: #16a34a; margin-top: 0;">2025.11.02 v0.60</h4>
+  <ul>
+    <li>✅ 增加图片上传功能</li>
+    <li>✅ 调整网络环境识别逻辑</li>
+    <li>✅ 为飞牛个性化配置页面</li>
+  </ul>  <h4 style="color: #16a34a; margin-top: 0;">2025.10.31 v0.56</h4>
+  <ul>
+    <h4 style="color: #16a34a; margin-top: 0;">2025.11.01 v0.57</h4>
   <ul>
     <li>✅ 优化图标图片获取逻辑</li>
   </ul>  <h4 style="color: #16a34a; margin-top: 0;">2025.10.31 v0.56</h4>
@@ -109,6 +116,7 @@
 
 <img width="1270" height="992" alt="ScreenShot_2025-10-30_111530_261" src="https://github.com/user-attachments/assets/f84ebfa8-e060-468c-9749-8feac117302b" />
 <img width="979" height="1337" alt="PixPin_2025-10-29_19-47-18" src="https://github.com/user-attachments/assets/58554e7e-3cbb-4165-80d1-9cf3f4c2490e" />
+<img width="1216" height="1107" alt="PixPin_2025-11-02_04-02-36" src="https://github.com/user-attachments/assets/a8bfc35f-f4e2-43ee-9726-799a03bef471" />
 <img width="979" height="1028" alt="PixPin_2025-10-29_19-48-18" src="https://github.com/user-attachments/assets/b0b2ba93-6e28-4ff8-8a80-937b01083759" />
 <img width="979" height="842" alt="PixPin_2025-10-29_19-48-01" src="https://github.com/user-attachments/assets/bcf10e62-a8c3-4244-bb1e-34cecd40d11b" />
 
