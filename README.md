@@ -44,7 +44,10 @@
 
 ## <span style="color:#06d6a0">更新日志</span>
 <div style="background-color: #f0fff4; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-  <h4 style="color: #16a34a; margin-top: 0;">2025.10.31 v0.56</h4>
+  <h4 style="color: #16a34a; margin-top: 0;">2025.11.01 v0.57</h4>
+  <ul>
+    <li>✅ 优化图标图片获取逻辑</li>
+  </ul>  <h4 style="color: #16a34a; margin-top: 0;">2025.10.31 v0.56</h4>
   <ul>
     <li>⚠️ 重点！适配飞牛0.9.35版</li>
     <li>⚠️ 启动代码有变动，请重新复制compose代码！</li>
