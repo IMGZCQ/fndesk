@@ -81,16 +81,16 @@
   
   <div style="background-color: #1e293b; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto;">
     <pre><code>services:
-  fndesk:
-    container_name: fndesk
-    image: imgzcq/fndesk:latest
+  fndesk:                    #Compose项目名称
+    container_name: fndesk        #docker容器名称
+    image: imgzcq/fndesk:latest    #镜像名称
     ports:
-     - 9990:9990
+     - 9990:9990              #冒号左边修改自定义端口
     volumes:
-     - /usr/trim/www:/fnw
-     - /usr/trim/share/.restore:/res
-     - ./deskdata:/deskdata
-    restart: always</code></pre>
+     - /usr/trim/www:/fnw        #不能改！
+     - /usr/trim/share/.restore:/res #不能改！
+     - ./deskdata:/deskdata       #冒号左边的可以改但不建议     
+    restart: always             #容器自动启动应用配置  </code></pre>
     跑码完成访问9990端口即可
   </div>
 </div>
