@@ -44,7 +44,13 @@
 
 ## <span style="color:#06d6a0">更新日志</span>
 <div style="background-color: #f0fff4; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-  <h4 style="color: #16a34a; margin-top: 0;">2025.11.02 v0.60</h4>
+  <h4 style="color: #16a34a; margin-top: 0;">2025.11.02 v0.61</h4>
+  <ul>
+    <li>✅ 调整排序逻辑：序号越大越靠前</li>
+    <li>✅ 陆续开放个性能化功能</li>
+    <li>✅ 修复新增ID，上传图片等，提示通知等小bug</li>
+  </ul>  
+    <h4 style="color: #16a34a; margin-top: 0;">2025.11.02 v0.60</h4>
   <ul>
     <li>✅ 增加图片上传功能</li>
     <li>✅ 调整网络环境识别逻辑</li>
