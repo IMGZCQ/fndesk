@@ -21,7 +21,7 @@
     🖼️ 文件夹和图标图片完全自由设置
   </li>
   <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
-    👑 更多个性化设置背景，LOGO，标题等
+    👑 更多个性化设置：背景，LOGO，标题等
   </li>
   <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
     ⚙️ 多层文件夹，右键菜单，拓展更多功能
