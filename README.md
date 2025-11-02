@@ -9,7 +9,7 @@
 
 <ul style="list-style-type: none; padding-left: 0;">
   <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
-    ✨ 实现图标，文件夹自由，彻底告别收藏夹
+    ✨ 实现图标，文件夹自由，彻底取代收藏夹
   </li>
   <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
     🌈智能识别内外网环境，更多自定义链接
@@ -18,7 +18,10 @@
     🌐 飞牛桌面内文件夹自由拖动调整大小
   </li>
   <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
-    🖼️ 自动获取目标连接图标or自定义
+    🖼️ 文件夹和图标图片完全自由设置
+  </li>
+  <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
+    👑 更多个性化设置背景，LOGO，标题等
   </li>
   <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
     ⚙️ 多层文件夹，右键菜单，拓展更多功能
