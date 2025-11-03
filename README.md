@@ -47,6 +47,10 @@
 
 ## <span style="color:#06d6a0">更新日志</span>
 <div style="background-color: #f0fff4; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+  <h4 style="color: #16a34a; margin-top: 0;">2025.11.04 v0.64</h4>
+  <ul>
+    <li>✅ 在线个性主题库，多款主题配置随意换！</li>
+  </ul>  
   <h4 style="color: #16a34a; margin-top: 0;">2025.11.03 v0.63</h4>
   <ul>
     <li>✅ 调整个性化功能仅为非FN Connect连接时生效</li>
@@ -133,6 +137,7 @@
 **管理工具界面**
 
 <img width="1270" height="992" alt="ScreenShot_2025-10-30_111530_261" src="https://github.com/user-attachments/assets/f84ebfa8-e060-468c-9749-8feac117302b" />
+<img width="1266" height="1314" alt="ScreenShot_2025-11-04_014427_982" src="https://github.com/user-attachments/assets/f3918d13-ca7d-4c33-a0e9-d12fd5b8b412" />
 <img width="979" height="1337" alt="PixPin_2025-10-29_19-47-18" src="https://github.com/user-attachments/assets/58554e7e-3cbb-4165-80d1-9cf3f4c2490e" />
 <img width="1216" height="1107" alt="PixPin_2025-11-02_04-02-36" src="https://github.com/user-attachments/assets/a8bfc35f-f4e2-43ee-9726-799a03bef471" />
 <img width="979" height="1028" alt="PixPin_2025-10-29_19-48-18" src="https://github.com/user-attachments/assets/b0b2ba93-6e28-4ff8-8a80-937b01083759" />
