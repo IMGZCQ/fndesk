@@ -47,7 +47,11 @@
 
 ## <span style="color:#06d6a0">更新日志</span>
 <div style="background-color: #f0fff4; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-  <h4 style="color: #16a34a; margin-top: 0;">2025.11.03 v0.62</h4>
+  <h4 style="color: #16a34a; margin-top: 0;">2025.11.03 v0.63</h4>
+  <ul>
+    <li>✅ 调整个性化功能仅为非FN Connect连接时生效</li>
+  </ul>  
+        <h4 style="color: #16a34a; margin-top: 0;">2025.11.03 v0.62</h4>
   <ul>
     <li>✅ 个性化定制功能释放,可调范围：</li>
     <li>标题,登录背景,登录LOGO,设备LOGO,网页favicon,登录框透明度</li>
