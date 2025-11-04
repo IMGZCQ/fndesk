@@ -47,6 +47,11 @@
 
 ## <span style="color:#06d6a0">更新日志</span>
 <div style="background-color: #f0fff4; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+  <h4 style="color: #16a34a; margin-top: 0;">2025.11.04 v0.65</h4>
+  <ul>
+    <li>✅ 支持一键还原所有默认设置</li>
+    <li>✅ 个性化设置增加默认值按钮</li>
+  </ul>  
   <h4 style="color: #16a34a; margin-top: 0;">2025.11.04 v0.64</h4>
   <ul>
     <li>🎨 在线个性主题库！多款主题配置随意换</li>
