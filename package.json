@@ -1,0 +1,12 @@
+{
+  "name": "米恋泥飞牛桌面管理",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.16",
+    "formidable": "^3.5.4"
+  }
+}

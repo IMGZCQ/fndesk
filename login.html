@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>飞牛桌面管理工具 - 登录</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href="fonts/font-awesome.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
     <style>
         :root {
             --primary-color: #0a192f;
@@ -363,9 +363,16 @@
             // 初始化密码按钮点击事件
             initializeBtn.addEventListener('click', initializePassword);
             
+            // 阻止表单默认提交行为
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                login();
+            });
+            
             // 回车键登录
             passwordInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
+                    e.preventDefault(); // 阻止默认行为
                     login();
                 }
             });
@@ -509,7 +516,16 @@
                     },
                     body: JSON.stringify({ password: password })
                 })
-                .then(response => response.json())
+                .then(response => {
+                    // 检查响应状态码
+                    if (!response.ok) {
+                        // 对于非2xx响应（如401密码错误），仍然尝试解析JSON
+                        return response.json().then(errData => {
+                            throw errData;
+                        });
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     // 恢复按钮状态
                     btnText.textContent = '登录';
@@ -517,10 +533,12 @@
                     loginBtn.disabled = false;
                     
                     if (data.success) {
-                        // 登录成功，设置登录状态
+                        // 登录成功，设置登录状态和时间戳
                         localStorage.setItem('isLoggedIn', 'true');
                         // 存储认证token（将在API请求中使用）
                         localStorage.setItem('authToken', 'authenticated');
+                        // 记录登录时间戳，用于计算30分钟过期时间
+                        localStorage.setItem('loginTimestamp', new Date().getTime().toString());
                         // 跳转到主页面
                         window.location.href = 'index.html';
                     } else {
@@ -533,8 +551,13 @@
                     loadingSpinner.style.display = 'none';
                     loginBtn.disabled = false;
                     
-                    console.error('登录请求错误:', error);
-                    showError('网络错误，请重试');
+                    // 处理密码错误或其他API错误
+                    if (error.message) {
+                        showError(error.message);
+                    } else {
+                        console.error('登录请求错误:', error);
+                        showError('网络错误，请重试');
+                    }
                 });
             }
             

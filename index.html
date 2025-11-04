@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>飞牛桌面管理工具</title>
+        <link rel="icon" href="favicon.ico" type="image/x-icon">
         <link href="fonts/font-awesome.min.css" rel="stylesheet">
         <style>
             /* 最高优先级的按钮样式 */
@@ -57,8 +58,8 @@
             --danger: #ee5a24;
             --warning: #feca57;
             --info: #3498db;
-            --dark-bg: #0f172a;
-            --card-bg: #1e293b;
+            --dark-bg: #152446d3;
+            --card-bg: #263a55b7;
             --card-hover: #273449;
             --border-color: #334155;
             --text-primary: #e2e8f0;
@@ -533,8 +534,8 @@
         }
         
         .pagination-btn {
-            min-width: 36px;
-            height: 36px;
+            min-width: 68px;
+            height: 42px;
             border-radius: 0.5rem;
             border: 1px solid var(--border-color);
             background: rgba(15, 23, 42, 0.5);
@@ -572,7 +573,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.5);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -585,7 +586,8 @@
             border-radius: 0.75rem;
             border: 1px solid var(--border-color);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), var(--glow-secondary);
-            max-width: 720px;
+            max-width: 680px;
+            min-width: 360px;
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
@@ -888,25 +890,49 @@
         <div class="container navbar-content">
             <h1 class="navbar-title">
                 <i class="fa fa-desktop"></i>
-                飞牛桌面管理工具 v0.3
+                飞牛桌面管理工具 v0.65.1
             </h1>
             <div class="navbar-actions">
                 <button id="announcementBtn" class="btn btn-warning mr-2">
                     <i class="fa fa-bullhorn"></i>
                     公告说明
                 </button>
-                <button id="applyBtn" class="btn btn-info mr-2">
+                <button id="applyBtn" class="btn btn-success mr-2">
                     <i class="fa fa-check-circle"></i>
                     立即生效
                 </button>
-                <button id="addBtn" class="btn btn-success mr-2">
+                <button id="addBtn" class="btn btn-info mr-2">
                     <i class="fa fa-plus"></i>
                     添加记录
                 </button>
-                <button id="logoutBtn" class="btn btn-danger">
-                    <i class="fa fa-sign-out"></i>
-                    退出登录
-                </button>
+                <div class="dropdown" style="position: relative; display: inline-block;">
+                    <button id="moreActionsBtn" class="btn btn-danger mr-2 dropdown-toggle">
+                        <i class="fa fa-ellipsis-h"></i>
+                        更多操作
+                    </button>
+                    <div id="dropdownMenu" class="dropdown-menu" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 0.125rem; background-color: white; border: 1px solid rgba(0, 0, 0, 0.15); border-radius: 0.375rem; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175); min-width: 10rem; padding: 0.5rem 0; z-index: 1000;">
+                        <a class="dropdown-item" href="fnstyle.html" id="menuCustomize" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #212529; text-align: inherit; text-decoration: none; white-space: nowrap; background-color: transparent; border: 0; transition: all 0.15s ease-in-out;">
+                            <i class="fa fa-paint-brush mr-2"></i>
+                            个性定制
+                        </a>
+                        <a class="dropdown-item" href="#" id="menuMergeData" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #212529; text-align: inherit; text-decoration: none; white-space: nowrap; background-color: transparent; border: 0; transition: all 0.15s ease-in-out;">
+                            <i class="fa fa-code-fork mr-2"></i>
+                            合并数据
+                        </a>
+                        <a class="dropdown-item" href="#" id="menuResetDesktop" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #212529; text-align: inherit; text-decoration: none; white-space: nowrap; background-color: transparent; border: 0; transition: all 0.15s ease-in-out;">
+                            <i class="fa fa-refresh mr-2"></i>
+                            还原桌面
+                        </a>
+                         <a class="dropdown-item" href="#" id="menuUpdateDesktop" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #212529; text-align: inherit; text-decoration: none; white-space: nowrap; background-color: transparent; border: 0; transition: all 0.15s ease-in-out;">
+                            <i class="fa fa-download mr-2"></i>
+                            在线升级
+                        </a>
+                        <a class="dropdown-item" href="#" id="menuLogout" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #212529; text-align: inherit; text-decoration: none; white-space: nowrap; background-color: transparent; border: 0; transition: all 0.15s ease-in-out;">
+                            <i class="fa fa-sign-out mr-2"></i>
+                            退出登录
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
@@ -974,11 +1000,11 @@
                     <thead>
                         <tr>
                             <th id="sortable-order" class="cursor-pointer hover:bg-card-hover">优先级 <i class="fa fa-sort ml-1"></i></th>
-                            <th>ID</th>
-                            <th>类型</th>
+                            <th class="hidden">ID</th>
                             <th>标题</th>
                             <th>URL</th>
-                            <th>图片</th>
+                            <th>网络 ◀图▶ 本地</th>
+                            <th>类型</th>
                             <th>归属</th>
                             <th class="text-center">操作</th>
                         </tr>
@@ -1018,75 +1044,214 @@
                 <form id="editForm">
                     <input type="hidden" id="recordId">
                     
-                    <!-- 第一行：序号、类型、归属 -->
+                    <!-- 第一行：句号，类型，归属 -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         <div class="input-group">
-                            <label for="edit序号">序号 *</label>
+                            <label for="edit序号">序号（越大图标越靠前）</label>
                             <input type="number" id="edit序号" required>
                         </div>
                         <div class="input-group">
-                            <label for="edit类型">类型 *</label>
+                            <label for="edit类型">类型（图标/文件夹）</label>
                             <select id="edit类型" required>
                                 <option value="0">图标</option>
                                 <option value="1">文件夹</option>
                             </select>
                         </div>
                         <div class="input-group">
-                            <label for="edit归属">归属 *</label>
+                            <label for="edit归属">归属（桌面/其他文件夹）</label>
                             <select id="edit归属" required>
                                 <!-- 归属选项将动态生成 -->
                             </select>
                         </div>
                     </div>
                     
-                    <!-- 第二行：标题、内外网连接 -->
-                    <div class="mb-6">
-                        <div class="input-group mb-6">
-                            <label for="edit标题">标题 *</label>
-                            <input type="text" id="edit标题" required>
+                    <script>
+                    // 添加类型选择事件监听器，控制URL字段的显示/隐藏
+                    function toggleUrlFieldsByType() {
+                        const typeSelect = document.getElementById('edit类型');
+                        if (!typeSelect) return;
+                        
+                        const isFolder = typeSelect.value === '1';
+                        const publicUrlField = document.getElementById('publicUrlField');
+                        const urlFieldsRow1 = document.getElementById('urlFieldsRow1');
+                        const urlFieldsRow2 = document.getElementById('urlFieldsRow2');
+                        const titleInput = document.getElementById('edit标题');
+                        
+                        // 当类型为文件夹时隐藏URL相关字段，确保显示时使用正确的display值
+                        if (publicUrlField) {
+                            // 移除内联样式恢复默认显示
+                            if (isFolder) {
+                                publicUrlField.style.display = 'none';
+                            } else {
+                                publicUrlField.style.display = '';
+                            }
+                        }
+                        if (urlFieldsRow1) urlFieldsRow1.style.display = isFolder ? 'none' : 'grid';
+                        if (urlFieldsRow2) urlFieldsRow2.style.display = isFolder ? 'none' : 'grid';
+                        
+                        // 获取当前记录ID，判断是否为新增记录
+                        const recordId = document.getElementById('recordId').value;
+                        // 如果是新增记录（没有recordId），每次切换类型都更新标题
+                        if (titleInput && !recordId) {
+                            titleInput.value = isFolder ? '新建文件夹' : '一个新图标';
+                        }
+                    }
+                    
+                    // 添加窗口加载完成后的初始化
+                    window.addEventListener('DOMContentLoaded', function() {
+                        // 定义全局变量存储URL和IP地址
+                        window.waiwangURL = '';
+                        window.neiwangURL = '';
+                        
+                        // 获取当前浏览器访问地址的协议和主机名部分（不包含端口号）
+                        window.waiwangURL = window.location.protocol + '//' + window.location.hostname;
+                        console.log('当前浏览器协议和主机名（外网）:', window.waiwangURL);
+                        
+                        // 获取内网IP地址的方法（使用WebRTC获取当前使用的网卡IPv4地址）
+                        function getLocalIP() {
+                            return new Promise((resolve, reject) => {
+                                try {
+                                    const peerConnection = new RTCPeerConnection({ iceServers: [] });
+                                    const noop = () => {};
+                                    
+                                    peerConnection.createDataChannel('');
+                                    
+                                    // 监听ICE候选事件
+                                    peerConnection.onicecandidate = event => {
+                                        if (event.candidate) {
+                                            // 从候选地址中提取IP
+                                            const ipRegex = /ip=([0-9\.]+)/;
+                                            const candidateStr = event.candidate.candidate;
+                                            const match = candidateStr.match(ipRegex);
+                                            
+                                            if (match && match[1]) {
+                                                const ip = match[1];
+                                                // 检查是否为内网IP
+                                                if (/^(10\.|172\.(1[6-9]|2[0-9]|3[01])\.|192\.168\.)/.test(ip)) {
+                                                    peerConnection.close();
+                                                    resolve(ip);
+                                                }
+                                            }
+                                        }
+                                    };
+                                    
+                                    // 创建offer以触发ICE收集
+                                    peerConnection.createOffer({
+                                        offerToReceiveAudio: false,
+                                        offerToReceiveVideo: false
+                                    })
+                                    .then(offer => peerConnection.setLocalDescription(offer))
+                                    .catch(reject);
+                                    
+                                    // 设置超时
+                                    setTimeout(() => {
+                                        peerConnection.close();
+                                        reject(new Error('获取IP地址超时'));
+                                    }, 3000);
+                                } catch (error) {
+                                    reject(error);
+                                }
+                            });
+                        }
+                        
+                        // 调用方法获取内网IP并更新全局变量
+                        getLocalIP().then(ip => {
+                            window.neiwangURL = ip;
+                            console.log('当前浏览器协议和主机名（内网）:', window.neiwangURL);
+                        }).catch(error => {
+                            console.error('获取内网IP地址失败:', error);
+                            window.neiwangURL = '127.0.0.1'; // 默认本地地址
+                        });
+                        
+                        // 添加类型切换事件，实时更新标题默认值
+                        // 添加类型切换事件，实时更新标题默认值
+                        const typeSelect = document.getElementById('edit类型');
+                        if (typeSelect) {
+                            // 只保留一个事件监听器
+                            typeSelect.addEventListener('change', toggleUrlFieldsByType);
+                        }
+                        
+                        // 查找打开编辑窗口的函数并修改，确保在打开时调用toggleUrlFieldsByType
+                        const originalOpenEditModal = window.openEditModal;
+                        if (originalOpenEditModal) {
+                            window.openEditModal = function(record) {
+                                // 调用原始函数
+                                originalOpenEditModal(record);
+                                
+                                const typeSelect = document.getElementById('edit类型');
+                                
+                                // 立即根据记录类型更新下拉框的值
+                                if (record && typeSelect && record.type !== undefined) {
+                                    typeSelect.value = record.type;
+                                }
+                                
+                                // 延迟执行以确保DOM已完全更新
+                                setTimeout(toggleUrlFieldsByType, 100);
+                            };
+                        }
+                    });
+                    </script>
+                    
+                    <!-- 第二行：标题、公网地址 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="input-group">
+                            <label for="edit标题">* 标题（必须填写！）</label>
+                            <input type="text" id="edit标题" value="一个新图标" required>
                         </div>
-                        <div id="mainUrlContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="input-group">
-                                <label for="edit外网跳转URL">外网跳转URL</label>
-                                <input type="text" id="edit外网跳转URL" placeholder="https://">
-                            </div>
-                            <div class="input-group">
-                                <label for="edit内网跳转URL">内网跳转URL</label>
-                                <input type="text" id="edit内网跳转URL" placeholder="http://">
-                            </div>
+                        <div id="publicUrlField" class="input-group">
+                            <label for="edit外网跳转URL">公网地址：（完整的URL地址）</label>
+                            <input type="text" id="edit外网跳转URL" placeholder="http:// or https://" value="" onfocus="if(this.value=='') this.value=window.waiwangURL; this.select();">
                         </div>
                     </div>
                     
-                    <!-- 第三行：3个后备URL -->
-                    <div id="backupUrlsContainer" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <!-- 第三行：内网地址、备用URL1 -->
+                    <div id="urlFieldsRow1" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div class="input-group">
-                            <label for="edit备用URL1">备用URL1</label>
-                            <input type="text" id="edit备用URL1">
+                            <label for="edit内网跳转URL">内网地址：（识别到内网将跳转到此地址）</label>
+                            <input type="text" id="edit内网跳转URL" placeholder="识别到内网将跳转到此地址" value="" onfocus="if(this.value=='') this.value='http://' + window.neiwangURL; this.select();">
                         </div>
                         <div class="input-group">
+                            <label for="edit备用URL1">备用URL1</label>
+                            <input type="text" id="edit备用URL1" placeholder="http:// or https://">
+                        </div>
+                    </div>
+                    
+                    <!-- 第四行：备用URL2、备用URL3 -->
+                    <div id="urlFieldsRow2" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div class="input-group">
                             <label for="edit备用URL2">备用URL2</label>
-                            <input type="text" id="edit备用URL2">
+                            <input type="text" id="edit备用URL2" placeholder="http:// or https://">
                         </div>
                         <div class="input-group">
                             <label for="edit备用URL3">备用URL3</label>
-                            <input type="text" id="edit备用URL3">
+                            <input type="text" id="edit备用URL3" placeholder="http:// or https://">
                         </div>
                     </div>
                     
-                    <!-- 第四行：两个图片URL -->
-                    <div id="imageUrlsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <!-- 第五行：网络图片URL、本地图片URL -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div class="input-group">
-                            <label for="edit网络图片URL">网络图片URL</label>
-                            <input type="text" id="edit网络图片URL">
+                            <label for="edit网络图片URL">网络图片URL（若不填则尝试从URL中获取）</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="edit网络图片URL" placeholder="不填则尝试从URL中获取" class="flex-1">
+                                <button id="autoFetchBtn" type="button" class="btn btn-primary whitespace-nowrap">获取</button>
+                            </div>
                         </div>
                         <div class="input-group">
-                            <label for="edit本地图片URL">本地图片URL</label>
-                            <input type="text" id="edit本地图片URL">
+                            <label for="edit本地图片URL">本地图片（自动，若手动填请用英文）</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="edit本地图片URL" placeholder="不需要填写，除非手动放置图片文件" class="flex-1">
+                                <button id="uploadLocalImgBtn" type="button" class="btn btn-primary whitespace-nowrap">上传</button>
+                                <input type="file" id="localImgFileInput" accept="image/*" style="display: none;">
+                            </div>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
+                <a href="otn.html" class="text-secondary mr-auto" style="margin-right: auto; padding-top: 10px;">
+                    <small>合拼旧版数据</small>
+                </a>
                 <button id="cancelEditBtn" class="btn btn-secondary">
                     取消
                 </button>
@@ -1126,8 +1291,8 @@
                 <h2 class="modal-title">确认应用配置</h2>
             </div>
             <div class="modal-body">
-                <p class="text-text-primary">确定要立即应用当前配置吗？</p>
-                <p class="text-text-secondary text-sm mt-2">此操作将重新生成桌面配置文件，可能需要重新加载桌面才能生效。</p>
+                <p class="text-text-primary">确定要立即应用当前配置吗？（飞牛也是牛，请不要频繁点击此按钮）</p>
+                <p class="text-text-secondary text-sm mt-2">应用后若没效果请清空浏览器缓存/浏览器按F12在网络里禁用缓存/使用无痕模式浏览</p>
             </div>
             <div class="modal-footer">
                 <button id="cancelApplyBtn" class="btn btn-secondary">
@@ -1135,6 +1300,28 @@
                 </button>
                 <button id="confirmApplyBtn" class="btn btn-primary">
                     确认应用
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 还原桌面确认模态框 -->
+    <div id="resetDesktopModal" class="modal-overlay hidden">
+        <div class="modal max-w-md">
+            <div class="modal-header">
+                <h2 class="modal-title">确认还原桌面</h2>
+            </div>
+            <div class="modal-body">
+                <p class="text-text-primary">确定要还原桌面吗？这将彻底还原成使用本工具之前都得状态。</p>
+                <p class="text-text-secondary text-sm mt-2">⚠操作后请到Docker Compose把fndesk项目清理！（不用删除，清理就可以，随时构建数据都在）</p>
+                <p class="text-text-secondary text-sm mt-2">⚠还原后若未生效请重启一次系统。</p>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelResetBtn" class="btn btn-secondary">
+                    取消
+                </button>
+                <button id="confirmResetBtn" class="btn btn-primary">
+                    确认还原
                 </button>
             </div>
         </div>
@@ -1172,41 +1359,20 @@
             </div>
             <div class="modal-body">
                 <div id="announcementContent">
-                    <h3 class="text-lg font-semibold mb-4 text-primary">欢迎使用飞牛桌面管理系统</h3>
-                    <p class="mb-4">本系统用于集中管理企业内部桌面快捷方式和应用程序，支持自定义排序、分类和快速访问。</p>
-                    
-                    <div class="mb-4">
-                        <h4 class="font-medium mb-2">系统功能特点：</h4>
-                        <ul class="list-disc pl-6 space-y-1">
-                            <li>支持图标和文件夹两种类型的快捷方式管理</li>
-                            <li>可设置项目的归属关系，实现层级分类</li>
-                            <li>提供内外网URL配置和多个备用链接</li>
-                            <li>支持网络图片和本地图片设置</li>
-                            <li>灵活的筛选和排序功能</li>
-                        </ul>
+                    <!-- 加载状态 -->
+                    <div id="announcementLoading" class="text-center py-10">
+                        <i class="fa fa-circle-o-notch fa-spin fa-3x text-primary mb-3"></i>
+                        <p>加载公告中...</p>
                     </div>
-                    
-                    <div class="mb-4">
-                        <h4 class="font-medium mb-2">使用说明：</h4>
-                        <ul class="list-disc pl-6 space-y-1">
-                            <li>点击"添加记录"创建新的快捷方式或文件夹</li>
-                            <li>点击记录旁的"编辑"按钮修改现有记录</li>
-                            <li>设置完成后，点击"立即生效"应用更改</li>
-                            <li>可通过筛选功能快速查找特定类型或归属的项目</li>
-                        </ul>
+                    <!-- 错误状态 -->
+                    <div id="announcementError" class="hidden text-center py-10">
+                        <i class="fa fa-exclamation-circle fa-3x text-danger mb-3"></i>
+                        <p>加载公告失败，请稍后重试</p>
                     </div>
-                    
-                    <div class="mb-4">
-                        <h4 class="font-medium mb-2">注意事项：</h4>
-                        <ul class="list-disc pl-6 space-y-1">
-                            <li>请确保URL格式正确，特别是内网地址</li>
-                            <li>序号越小，在桌面上的显示优先级越高</li>
-                            <li>文件夹类型的项目可以包含其他项目</li>
-                            <li>定期备份配置，以防数据丢失</li>
-                        </ul>
+                    <!-- 公告内容容器 -->
+                    <div id="announcementText" class="hidden">
+                        <!-- 内容将动态加载 -->
                     </div>
-                    
-                    <p class="text-text-secondary text-sm">最后更新时间：2023年12月</p>
                 </div>
             </div>
             <div class="modal-footer">
@@ -1217,6 +1383,112 @@
         </div>
     </div>
 
+    <script>
+    // 获取公告内容函数
+    async function fetchAnnouncementContent() {
+        const loadingEl = document.getElementById('announcementLoading');
+        const errorEl = document.getElementById('announcementError');
+        const contentEl = document.getElementById('announcementText');
+        
+        // 显示加载状态
+        loadingEl.classList.remove('hidden');
+        errorEl.classList.add('hidden');
+        contentEl.classList.add('hidden');
+        
+        try {
+                // 从指定URL获取公告内容，添加CORS和缓存控制选项
+                //const response = await fetch('https:// 通过本地代理API获取公告内容，避免CORS问题
+                const remoteUrl = 'https://sh.on79.cfd/fndesk.html';
+                const proxyUrl = `/api/announcement?url=${encodeURIComponent(remoteUrl)}`;
+                
+                const response = await fetch(proxyUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8'
+                    },
+                    cache: 'no-cache'
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP错误! 状态码: ${response.status} - ${response.statusText}`);
+                }
+                
+                const content = await response.text();
+                contentEl.innerHTML = content;
+                loadingEl.classList.add('hidden');
+                contentEl.classList.remove('hidden');
+                errorEl.classList.add('hidden');
+            } catch (error) {
+                console.error('获取公告内容失败:', error.message);
+                // 显示错误状态和详细信息
+                loadingEl.classList.add('hidden');
+                errorEl.classList.remove('hidden');
+                
+                // 添加错误信息到错误元素
+                let errorMsg = `加载失败: ${error.message}`;
+                if (error.message.includes('CORS')) {
+                    errorMsg += ' (可能是跨域访问限制)';
+                } else if (error.message.includes('NetworkError') || error.message.includes('网络')) {
+                    errorMsg += ' (可能是网络连接问题)';
+                }
+                errorEl.innerHTML = `
+                    <i class="fa fa-exclamation-circle fa-3x text-danger mb-3"></i>
+                    <p>${errorMsg}</p>
+                `;
+                
+                // 显示默认公告内容作为备选方案
+                contentEl.innerHTML = `
+                <br/>
+                    <h3>无法加载最新公告</h3>
+                    <h3>  默认公告：</h3>
+                    <ul>
+                        <li>大家好👋，我是米恋泥，</li>
+                        <li>欢迎使用，有问题请找我，Q群1039270739</li>
+                        <li>飞牛论坛（搜：飞牛桌面管理工具）</li>
+                        <li>GitHub：IMGZCQ/fndesk</li>
+                        <li>酷安：米恋泥</li>
+                    </ul>
+                `;
+                contentEl.classList.remove('hidden');
+            }
+    }
+    
+    // 修改公告按钮点击事件，在打开模态框时加载内容
+    document.addEventListener('DOMContentLoaded', function() {
+        const announcementBtn = document.getElementById('announcementBtn');
+        if (announcementBtn) {
+            // 保存原始点击事件
+            const originalClickHandler = announcementBtn.onclick || announcementBtn.getAttribute('onclick');
+            
+            // 移除原始事件处理器
+            announcementBtn.onclick = null;
+            announcementBtn.removeAttribute('onclick');
+            
+            // 添加新的点击事件处理器
+            announcementBtn.addEventListener('click', function() {
+                // 调用原始逻辑
+                if (typeof originalClickHandler === 'function') {
+                    originalClickHandler.call(this);
+                } else {
+                    // 如果原始是字符串，则直接执行
+                    if (typeof originalClickHandler === 'string') {
+                        eval(originalClickHandler);
+                    } else {
+                        // 默认行为：显示模态框
+                        const announcementModal = document.getElementById('announcementModal');
+                        if (announcementModal) {
+                            announcementModal.classList.remove('hidden');
+                        }
+                    }
+                }
+                
+                // 加载公告内容
+                fetchAnnouncementContent();
+            });
+        }
+    });
+    </script>
+
 
 
     <script src="index.js"></script>
@@ -1224,8 +1496,8 @@
     <!-- 页脚 -->
     <footer class="bg-card py-6 border-t">
         <div class="container text-center text-text-secondary">
-            <p class="mb-1">飞牛桌面管理工具 by 米恋泥</p>
-            <p>组织机构 小宠瞭望塔</p>
+            <p class="mb-1" style="font-size: 10px;">飞牛桌面管理工具 by 米恋泥</p>
+            <p style="font-size: 10px;">组织机构 @小宠瞭望塔</p>
         </div>
     </footer>
 </body>

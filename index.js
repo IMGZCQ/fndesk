@@ -6,6 +6,159 @@ let pageSize = 10;
 let editingId = null;
 let loginStatusChecked = false;
 
+// 页面加载时检查并显示公告（每天首次打开显示一次）
+function checkAndShowAnnouncement() {
+    const today = new Date().toDateString(); // 获取今天的日期字符串（格式：Wed Oct 11 2023）
+    const lastShownDate = localStorage.getItem('lastAnnouncementDate');
+    
+    // 如果今天还没有显示过公告
+    if (lastShownDate !== today) {
+        // 显示公告
+        setTimeout(() => {
+            const announcementModal = document.getElementById('announcementModal');
+            if (announcementModal) {
+                announcementModal.classList.remove('hidden');
+                // 加载公告内容
+                if (typeof fetchAnnouncementContent === 'function') {
+                    fetchAnnouncementContent();
+                }
+            }
+        }, 500); // 延迟显示，让页面加载完成
+        
+        // 记录今天的日期
+        localStorage.setItem('lastAnnouncementDate', today);
+    }
+}
+
+// 炫酷科技感通知函数 - 半透明霓虹效果，动态动画
+function showNotification(message, type = 'success', persistent = false) {
+    // 创建通知容器
+    const notification = document.createElement('div');
+    notification.className = 'tech-notification';
+    
+    // 根据类型设置颜色和图标
+    const config = {
+        success: {
+            bgColor: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(2, 132, 199, 0.2))',
+            borderColor: '#06b6d4',
+            glowColor: '0 0 15px rgba(6, 182, 212, 0.7)',
+            icon: '✓'
+        },
+        error: {
+            bgColor: 'linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(202, 38, 38, 0.2))',
+            borderColor: '#ef4444',
+            glowColor: '0 0 15px rgba(239, 68, 68, 0.7)',
+            icon: '✗'
+        },
+        info: {
+            bgColor: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.2))',
+            borderColor: '#3b82f6',
+            glowColor: '0 0 15px rgba(59, 130, 246, 0.7)',
+            icon: 'ℹ'
+        }
+    };
+    
+    const currentConfig = config[type] || config.success;
+    
+    // 设置样式
+    Object.assign(notification.style, {
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%) scale(0.9)',
+        padding: '18px 26px',
+        borderRadius: '12px',
+        background: currentConfig.bgColor,
+        color: 'white',
+        fontSize: '16px',
+        fontWeight: '600',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        boxShadow: `0 10px 30px rgba(0, 0, 0, 0.2), ${currentConfig.glowColor}`,
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        border: `2px solid ${currentConfig.borderColor}`,
+        zIndex: '9999',
+        opacity: '0',
+        transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        minWidth: '280px',
+        textAlign: 'center'
+    });
+    
+    // 创建图标容器
+    const iconContainer = document.createElement('div');
+    Object.assign(iconContainer.style, {
+        width: '40px',
+        height: '40px',
+        borderRadius: '50%',
+        background: `radial-gradient(circle, ${currentConfig.borderColor}22, transparent 70%)`,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '20px',
+        fontWeight: 'bold',
+        border: `2px solid ${currentConfig.borderColor}88`,
+        flexShrink: '0'
+    });
+    iconContainer.textContent = currentConfig.icon;
+    
+    // 创建文本容器
+    const textContainer = document.createElement('div');
+    textContainer.textContent = message;
+    Object.assign(textContainer.style, {
+        flexGrow: '1',
+        lineHeight: '1.4'
+    });
+    
+    // 组装通知
+    notification.appendChild(iconContainer);
+    notification.appendChild(textContainer);
+    
+    // 添加到页面
+    document.body.appendChild(notification);
+    
+    // 创建脉动动画效果
+    const pulseAnimation = document.createElement('style');
+    pulseAnimation.textContent = `
+        @keyframes techPulse {
+            0% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), ${currentConfig.glowColor}; }
+            50% { box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25), ${currentConfig.glowColor}, 0 0 25px ${currentConfig.borderColor}66; }
+            100% { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), ${currentConfig.glowColor}; }
+        }
+    `;
+    document.head.appendChild(pulseAnimation);
+    
+    // 显示通知
+    setTimeout(() => {
+        notification.style.opacity = '1';
+        notification.style.transform = 'translate(-50%, -50%) scale(1)';
+        notification.style.animation = 'techPulse 2s infinite ease-in-out';
+    }, 10);
+    
+    // 只有非持久通知才会自动消失
+    if (!persistent) {
+        // 1.8秒后开始淡出（更炫酷的消失动画）
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            notification.style.transform = 'translate(-50%, -50%) scale(0.85) translateY(-10px)';
+            notification.style.animation = 'none';
+            
+            // 动画结束后移除元素
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    document.body.removeChild(notification);
+                }
+                document.head.removeChild(pulseAnimation);
+            }, 500);
+        }, 2000);
+    }
+    
+    // 返回通知对象，允许外部控制其移除
+    return notification;
+}
+
 // 修改全局fetch函数，为所有API请求添加认证头
 const originalFetch = window.fetch;
 window.fetch = function(url, options = {}) {
@@ -38,13 +191,24 @@ window.fetch = function(url, options = {}) {
     });
 };
 
-// 检查登录状态 - 暂时禁用重定向
+// 检查登录状态 - 添加30分钟过期机制
 function checkLoginStatus() {
-    // 为了调试，暂时注释掉重定向逻辑
-     if (localStorage.getItem('isLoggedIn') !== 'true') {
-         window.location.href = 'login.html';
-         return false;
-     }
+    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const loginTimestamp = localStorage.getItem('loginTimestamp');
+    const currentTime = new Date().getTime();
+    const thirtyMinutes = 30 * 60 * 1000; // 30分钟，单位毫秒
+    
+    // 检查是否已登录且未过期
+    if (!isLoggedIn || !loginTimestamp || (currentTime - parseInt(loginTimestamp)) > thirtyMinutes) {
+        // 登录已过期或未登录，清除登录信息并重定向到登录页
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('loginTimestamp');
+        window.location.href = 'login.html';
+        return false;
+    }
+    
+    // 登录有效，更新登录状态
     localStorage.setItem('isLoggedIn', 'true');
     localStorage.setItem('authToken', 'authenticated');
     return true;
@@ -119,14 +283,15 @@ async function init() {
             pageSize = savedPageSize === 'all' ? Infinity : parseInt(savedPageSize);
         }
         
-        await loadData();
-        applyFilters();
+        // 先设置事件监听器，确保按钮功能总是可用
         setupEventListeners();
         
         // 初始化每页显示条数选择器
         initPageSizeSelector();
         
-
+        // 然后加载数据
+        await loadData();
+        applyFilters();
     }
 
 // 初始化每页显示条数选择器
@@ -186,18 +351,25 @@ function handlePageSizeChange() {
 // 加载数据
 async function loadData() {
     try {
-        // 尝试从API加载数据
+        // 尝试从API加载数据，添加禁用缓存的设置
         const response = await fetch('/api/data', {
             headers: {
-                'x-auth-token': 'authenticated'
-            }
+                'x-auth-token': 'authenticated',
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+            },
+            cache: 'no-store'
         });
         if (response.ok) {
             const apiData = await response.json();
-            if (Array.isArray(apiData) && apiData.length > 0) {
+            // 即使数据为空也接受，以支持删除最后一条记录的情况
+            if (Array.isArray(apiData)) {
                 data = apiData;
-                // 确保数据按序号排序
-                data.sort((a, b) => parseInt(a.序号) - parseInt(b.序号));
+                // 确保数据按序号排序（如果有数据）
+                if (data.length > 0) {
+                    data.sort((a, b) => parseInt(a.序号) - parseInt(b.序号));
+                }
                 
                 // 生成下拉选项
                 generateDropdownOptions();
@@ -205,14 +377,24 @@ async function loadData() {
             }
         }
         
-        // 如果API失败或没有数据，尝试直接从文件加载（用于静态环境）
-        const staticResponse = await fetch('deskdata/data.json');
+        // 如果API失败或没有返回数组，尝试直接从文件加载（用于静态环境）
+        const staticResponse = await fetch('deskdata/data.json', {
+            headers: {
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+            },
+            cache: 'no-store'
+        });
         if (staticResponse.ok) {
             const staticData = await staticResponse.json();
-            if (Array.isArray(staticData) && staticData.length > 0) {
+            // 即使数据为空也接受
+            if (Array.isArray(staticData)) {
                 data = staticData;
-                // 确保数据按序号排序
-                data.sort((a, b) => parseInt(a.序号) - parseInt(b.序号));
+                // 确保数据按序号排序（如果有数据）
+                if (data.length > 0) {
+                    data.sort((a, b) => parseInt(a.序号) - parseInt(b.序号));
+                }
                 
                 // 生成下拉选项
                 generateDropdownOptions();
@@ -226,10 +408,12 @@ async function loadData() {
         if (localData) {
             try {
                 const parsedLocalData = JSON.parse(localData);
-                if (Array.isArray(parsedLocalData) && parsedLocalData.length > 0) {
+                if (Array.isArray(parsedLocalData)) {
                     data = parsedLocalData;
-                    // 确保数据按序号排序
-                    data.sort((a, b) => parseInt(a.序号) - parseInt(b.序号));
+                    // 确保数据按序号排序（如果有数据）
+                    if (data.length > 0) {
+                        data.sort((a, b) => parseInt(a.序号) - parseInt(b.序号));
+                    }
                     
                     // 生成下拉选项
                     generateDropdownOptions();
@@ -241,7 +425,10 @@ async function loadData() {
             }
         }
         
-        showNotification('所有数据加载方式都失败了', 'error');
+        // 如果所有加载方式都失败，初始化空数据
+        data = [];
+        generateDropdownOptions();
+        showNotification('无数据，初始化为空数组', 'info');
     } catch (error) {
         console.error('加载数据失败:', error);
         showNotification('加载数据失败: ' + error.message, 'error');
@@ -251,18 +438,27 @@ async function loadData() {
             const localData = localStorage.getItem('deskData');
             if (localData) {
                 const parsedLocalData = JSON.parse(localData);
-                if (Array.isArray(parsedLocalData) && parsedLocalData.length > 0) {
+                if (Array.isArray(parsedLocalData)) {
                     data = parsedLocalData;
-                    // 确保数据按序号排序
-                    data.sort((a, b) => parseInt(a.序号) - parseInt(b.序号));
+                    // 确保数据按序号排序（如果有数据）
+                    if (data.length > 0) {
+                        data.sort((a, b) => parseInt(a.序号) - parseInt(b.序号));
+                    }
                     
                     // 生成下拉选项
                     generateDropdownOptions();
                     showNotification('从本地缓存加载数据成功', 'info');
                 }
+            } else {
+                // 如果localStorage也没有数据，初始化为空数组
+                data = [];
+                generateDropdownOptions();
             }
         } catch (localError) {
             console.error('本地缓存加载也失败:', localError);
+            // 即使解析失败，也要确保data是数组
+            data = [];
+            generateDropdownOptions();
         }
     }
 }
@@ -313,12 +509,14 @@ function resetFilters() {
     applyFilters();
 }
 
-// 排序方向（默认升序）
-let sortDirection = 'asc';
+// 排序方向（从localStorage读取，如果没有则默认为升序）
+let sortDirection = localStorage.getItem('sortDirection') || 'asc';
 
 // 切换排序方向
 function toggleSort() {
     sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+    // 保存排序方向到localStorage
+    localStorage.setItem('sortDirection', sortDirection);
     applyFilters();
 }
 
@@ -353,47 +551,80 @@ function renderTable() {
         const row = document.createElement('tr');
         row.className = 'border-b border-gray-200 hover:bg-gray-50 transition-all-300';
         
+
+        
         // 构建URL显示（带悬浮框功能）
         let urlCount = 0;
-        let tooltipContent = '<div class="p-2 whitespace-nowrap">';
         
         // 收集所有URL
-        const urls = [
-            { label: '外网跳转', url: item.外网跳转URL, type: 'primary' },
-            { label: '内网跳转', url: item.内网跳转URL, type: 'success' },
-            { label: '备用URL1', url: item.备用URL1, type: 'info' },
-            { label: '备用URL2', url: item.备用URL2, type: 'warning' },
-            { label: '备用URL3', url: item.备用URL3, type: 'danger' }
-        ];
+        const urlKeys = ['外网跳转URL', '内网跳转URL', '备用URL1', '备用URL2', '备用URL3'];
+        const urlLabels = ['外网跳转URL', '内网跳转URL', '备用URL1', '备用URL2', '备用URL3'];
+        let validUrls = [];
         
-        // 生成悬浮框内容 - 确保每个URL在单独一行显示且不换行
-        urls.forEach(({ label, url, type }) => {
-            tooltipContent += `<div class="mb-1 last:mb-0">
-                <span class="text-sm font-medium mr-1">${label}:</span>
-                <a href="${url}" target="_blank" class="text-${type} hover:underline text-sm" ${url ? '' : 'style="color: #ccc;"'}>
-                    ${url || '无'}
-                </a>
-            </div>`;
-            if (url) urlCount++;
-        });
+        // 收集有效的URL并计算数量
+        for (let i = 0; i < urlKeys.length; i++) {
+            if (item[urlKeys[i]] && item[urlKeys[i]].trim()) {
+                validUrls.push({ label: urlLabels[i], url: item[urlKeys[i]] });
+            }
+        }
         
-        tooltipContent += '</div>';
+        urlCount = validUrls.length;
         
-        // 构建主URL显示
+        // 生成悬浮框内容 - 只在悬浮框中显示URL详细信息
+        let tooltipContent = '';
+        if (validUrls.length > 0) {
+            validUrls.forEach(({ label, url }) => {
+                tooltipContent += `<div style="margin-bottom: 6px; white-space: nowrap;">
+                    <span style="color: #3B82F6; font-weight: 600; margin-right: 8px;">${label}:</span>
+                    <a href="${url}" target="_blank" style="color: #FFFFFF; text-decoration: none; white-space: nowrap;" 
+                       onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">
+                        ${url}
+                    </a>
+                </div>`;
+            });
+        }
+        
+        // 构建主URL显示 - 单元格内只显示链接数量
         let urlDisplay = '';
-        const mainUrl = urls.find(u => u.url);
-        if (mainUrl) {
-            // 使用第一个有效的URL作为主显示
-            urlDisplay = `<div class="relative group" data-row-index="${paginatedData.findIndex(row => row.id === item.id)}">
-                <a href="${mainUrl.url}" target="_blank" class="text-${mainUrl.type} hover:underline">
-                    ${mainUrl.label === '外网跳转' ? '外网' : mainUrl.label === '内网跳转' ? '内网' : '链接'}
-                </a>
-                ${urlCount > 1 ? ` <span class="text-xs text-gray-500">(${urlCount}个链接)</span>` : ''}
-                <!-- 悬浮框 - 自适应位置，根据行位置决定显示在上还是下 -->
-                <div class="absolute hidden group-hover:block bg-white border border-gray-200 rounded shadow-lg p-2 z-10 min-w-[280px] max-w-none whitespace-nowrap left-0">
-                    ${tooltipContent}
-                </div>
-            </div>`;
+        
+        // 根据类型设置不同的显示
+        if (item.类型 === 0 || item.类型 === '0') { // 文件类型
+            if (urlCount > 0) {
+                // 单元格内只显示链接数量，URL详情通过悬浮框显示
+                urlDisplay = `
+                <div style="position: relative; display: inline-block;">
+                    <!-- 触发元素 - 只显示链接数量 -->
+                    <span style="color: #3B82F6; cursor: pointer; font-weight: 500;">${urlCount}个链接</span>
+                    
+                    <!-- 悬浮框 - 调整margin-top为0，确保鼠标可以平滑移动到浮窗 -->
+                    <div style="position: absolute; left: 0; top: 100%; margin-top: 0; 
+                                z-index: 9999; background: #161630b0; border: 1px solid #303644; 
+                                border-radius: 6px; padding: 12px; min-width: 100px; max-width: 720px; 
+                                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); opacity: 0.95; 
+                                backdrop-filter: blur(8px); white-space: nowrap; 
+                                visibility: hidden; opacity: 0; transition: visibility 0s, opacity 0.2s ease-in-out;">
+                        ${tooltipContent}
+                    </div>
+                    
+                    <style>
+                        /* 确保父容器悬浮时浮窗保持可见，解决鼠标移动问题 */
+                        div[style*="position: relative; display: inline-block;"]:hover > div {
+                            visibility: visible !important;
+                            opacity: 0.95 !important;
+                        }
+                        /* 增加父容器的最小宽度，确保鼠标移动路径 */
+                        div[style*="position: relative; display: inline-block;"] {
+                            min-width: 60px;
+                        }
+                    </style>
+                </div>`;
+            } else {
+                // 没有链接时显示"无链接"
+                urlDisplay = '<span class="text-gray-400">无链接</span>';
+            }
+        } else if (item.类型 === 1 || item.类型 === '1') { // 文件夹类型
+            // 文件夹类型留空
+            urlDisplay = '';
         }
         
         // 构建图片显示（并排显示，不换行，顺序为网络图片再到本地图片）
@@ -401,14 +632,16 @@ function renderTable() {
         
         // 网络图片占位（无论是否有图片都显示）
         if (item.网络图片URL) {
-            imageDisplay += `<img src="${item.网络图片URL}" alt="网络图片" style="height: 48px; width: 48px; object-fit: cover;" class="rounded" title="网络图片">`;
+            imageDisplay += `<img src="${item.网络图片URL}" alt="网络图片" style="height: 48px; width: 48px; object-fit: cover;" class="rounded" title="网络图片"><span style="margin-right: 6px;"></span>`;
         } else {
-            imageDisplay += '<div style="height: 48px; width: 48px;" class="bg-gray-100 rounded flex items-center justify-center text-gray-400"><i class="fa fa-image"></i></div>';
+            imageDisplay += '<div style="height: 48px; width: 48px;" class="bg-gray-100 rounded flex items-center justify-center text-gray-400"><i class="fa fa-image"></i></div><span style="margin-right: 6px;"></span>';
         }
         
         // 本地图片占位（无论是否有图片都显示）
         if (item.本地图片URL) {
-            imageDisplay += `<img src="${item.本地图片URL}" alt="本地图片" style="height: 48px; width: 48px; object-fit: cover;" class="rounded" title="本地图片">`;
+            // 对本地图片URL进行编码，确保中文和特殊字符能正确显示
+            const encodedLocalImageUrl = encodeURI(item.本地图片URL);
+            imageDisplay += `<img src="${encodedLocalImageUrl}" alt="本地图片" style="height: 48px; width: 48px; object-fit: cover;" class="rounded" title="本地图片">`;
         } else {
             imageDisplay += '<div style="height: 48px; width: 48px;" class="bg-gray-100 rounded flex items-center justify-center text-gray-400"><i class="fa fa-file-image-o"></i></div>';
         }
@@ -427,16 +660,16 @@ function renderTable() {
         
         row.innerHTML = `
             <td class="px-4 py-3 whitespace-nowrap">${item.序号}</td>
-            <td class="px-4 py-3 whitespace-nowrap">${item.id}</td>
+            <td class="px-4 py-3 whitespace-nowrap hidden">${item.id}</td>
+            <td class="px-4 py-3 font-medium">${item.标题}</td>
+            <td class="px-4 py-3 whitespace-nowrap">${urlDisplay}</td>
+            <td class="px-4 py-3 whitespace-nowrap">${imageDisplay}</td>
             <td class="px-4 py-3 whitespace-nowrap">
                 <span class="px-2 py-1 text-xs rounded-full ${getTypeColorClass(item.类型)} inline-flex items-center">
                     ${item.类型 === 0 || item.类型 === '0' ? '<i class="fa fa-star-o mr-1"></i>' : '<i class="fa fa-folder mr-1"></i>'}
                     ${typeText}
                 </span>
             </td>
-            <td class="px-4 py-3 font-medium">${item.标题}</td>
-            <td class="px-4 py-3 whitespace-nowrap">${urlDisplay}</td>
-            <td class="px-4 py-3 whitespace-nowrap">${imageDisplay}</td>
             <td class="px-4 py-3 whitespace-nowrap">${ownerDisplay}</td>
             <td class="px-4 py-3 whitespace-nowrap text-center">
                 <button class="edit-btn" data-id="${item.id}">
@@ -585,20 +818,23 @@ function updatePagination() {
 
 // 控制URL输入框的显示/隐藏
 function toggleUrlFields(show) {
-    const mainUrlContainer = document.getElementById('mainUrlContainer');
-    const backupUrlsContainer = document.getElementById('backupUrlsContainer');
+    const publicUrlField = document.getElementById('publicUrlField');
+    const urlFieldsRow1 = document.getElementById('urlFieldsRow1');
+    const urlFieldsRow2 = document.getElementById('urlFieldsRow2');
     const imageUrlsContainer = document.getElementById('imageUrlsContainer');
     
-    // 只控制内外网跳转URL和备用URL的显示/隐藏，图片URL始终可见
-    if (mainUrlContainer && backupUrlsContainer) {
+    // 当类型为文件夹时隐藏URL相关字段，确保显示时使用正确的display值
+    if (publicUrlField) {
         if (show) {
-            mainUrlContainer.classList.remove('hidden');
-            backupUrlsContainer.classList.remove('hidden');
+            publicUrlField.style.display = '';
         } else {
-            mainUrlContainer.classList.add('hidden');
-            backupUrlsContainer.classList.add('hidden');
+            publicUrlField.style.display = 'none';
         }
     }
+    
+    if (urlFieldsRow1) urlFieldsRow1.style.display = show ? 'grid' : 'none';
+    if (urlFieldsRow2) urlFieldsRow2.style.display = show ? 'grid' : 'none';
+    
     // 确保图片URL容器始终可见
     if (imageUrlsContainer) {
         imageUrlsContainer.classList.remove('hidden');
@@ -624,9 +860,9 @@ function openAddModal() {
     editingId = null;
     document.getElementById('recordId').value = '';
     document.getElementById('editForm').reset();
-    // 设置默认序号为当前最大序号+1，但用户可以自由修改
+    // 设置默认序号为当前最大序号+100，但用户可以自由修改
     const maxOrder = data.length > 0 ? Math.max(...data.map(item => parseInt(item.序号))) : 0;
-    document.getElementById('edit序号').value = maxOrder + 1;
+    document.getElementById('edit序号').value = maxOrder + 100;
     // 确保添加时类型字段可用
     document.getElementById('edit类型').disabled = false;
     
@@ -694,6 +930,200 @@ function confirmDelete(id) {
         document.getElementById('deleteTitle').textContent = `"${record.标题}"`;
         deleteModal.classList.remove('hidden');
     }
+}
+
+// 自动获取图片并填充URL
+async function autoFetchImage() {
+    // 检查登录状态
+    if (!checkLoginStatus()) {
+        return;
+    }
+    
+    try {
+        const title = document.getElementById('edit标题').value;
+        
+        // 验证标题为必填项
+        if (!title.trim()) {
+            showNotification('请先输入标题', 'info');
+            document.getElementById('edit标题').focus();
+            return;
+        }
+        
+        // 收集所有可用的URL（用于尝试下载favicon）
+        const urls = [];
+        const externalUrl = document.getElementById('edit外网跳转URL').value;
+        const internalUrl = document.getElementById('edit内网跳转URL').value;
+        const backup1 = document.getElementById('edit备用URL1').value;
+        const backup2 = document.getElementById('edit备用URL2').value;
+        const backup3 = document.getElementById('edit备用URL3').value;
+        const networkImageUrl = document.getElementById('edit网络图片URL').value;
+        const type = parseInt(document.getElementById('edit类型').value);
+        
+        if (externalUrl) urls.push(externalUrl);
+        if (internalUrl) urls.push(internalUrl);
+        if (backup1) urls.push(backup1);
+        if (backup2) urls.push(backup2);
+        if (backup3) urls.push(backup3);
+        
+        // 显示下载中通知 - 设置为持久通知，直到有结果才消失
+        const loadingNotification = showNotification('正在下载图片，请稍候...', 'info', true);
+        
+        // 设置30秒超时
+        const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('下载超时')), 30000);
+        });
+        
+        // 确定记录ID - 使用真实的记录ID或预生成最终ID
+        let recordId;
+        if (editingId) {
+            // 编辑模式下使用现有ID
+            recordId = parseInt(editingId);
+        } else {
+            // 新增模式下预生成与saveRecord一致的ID
+            const maxId = data.length > 0 ? Math.max(...data.map(item => item.id)) : 0;
+            recordId = maxId + 1;
+        }
+        
+        // 调用图片下载API，优先使用已有的网络图片URL
+        const fetchPromise = fetch('/api/download-image', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth-token': 'authenticated'
+            },
+            body: JSON.stringify({
+                id: recordId,
+                title: title,
+                imageUrl: networkImageUrl,
+                urls: urls,
+                type: type,
+                // 添加特殊标记，指示这是自动获取图片操作
+                isAutoFetch: true,
+                setPermissions: true,
+                // 确保覆盖现有文件
+                overwrite: true
+            })
+        }).then(async response => {
+            // 检查是否未授权
+            if (response.status === 401) {
+                localStorage.removeItem('isLoggedIn');
+                window.location.href = 'login.html';
+                throw new Error('未授权');
+            }
+            
+            const result = await response.json();
+            return result;
+        });
+        
+        // 等待API调用完成或超时
+        const result = await Promise.race([fetchPromise, timeoutPromise]);
+        
+        if (result.success && result.filePath) {
+            // 移除加载通知
+            if (loadingNotification && loadingNotification.parentNode) {
+                document.body.removeChild(loadingNotification);
+                const styleElements = document.head.querySelectorAll('style');
+                styleElements[styleElements.length - 1].remove(); // 移除相关样式
+            }
+            
+            // 成功获取图片，填充本地图片URL
+            document.getElementById('edit本地图片URL').value = result.filePath;
+            
+            // 如果有原始网络地址，填充网络图片URL
+            if (result.imageUrl) {
+                document.getElementById('edit网络图片URL').value = result.imageUrl;
+            }
+            
+            showNotification('图片获取成功！', 'success');
+        } else {
+            // 如果下载失败，根据类型设置默认图片
+            if (type === 1) { // 文件夹类型
+                const defaultFolderImageUrl = 'https://help-static.fnnas.com/images/文件管理.png';
+                document.getElementById('edit网络图片URL').value = defaultFolderImageUrl;
+                document.getElementById('edit本地图片URL').value = '/deskdata/img/f.png';
+                
+                // 尝试下载默认文件夹图片
+                try {
+                    await fetch('/api/download-image', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-auth-token': 'authenticated'
+                        },
+                        body: JSON.stringify({
+                            id: 'f', // 使用固定ID 'f' 表示文件夹默认图标
+                            title: '默认文件夹图标',
+                            imageUrl: defaultFolderImageUrl,
+                            urls: [],
+                            type: type,
+                            forceFilename: 'f.png', // 强制使用指定文件名
+                            setPermissions: true
+                        })
+                    });
+                    showNotification('使用默认文件夹图标', 'info');
+                } catch (err) {
+                    console.error('下载默认文件夹图标失败:', err);
+                    showNotification('使用默认文件夹图标（但下载失败）', 'warning');
+                }
+            } else { // 其他类型（图标）
+                const defaultIconUrl = 'https://help-static.fnnas.com/images/Margin-1.png';
+                document.getElementById('edit网络图片URL').value = defaultIconUrl;
+                document.getElementById('edit本地图片URL').value = '/deskdata/img/i.png';
+                
+                // 尝试下载默认图标
+                try {
+                    await fetch('/api/download-image', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-auth-token': 'authenticated'
+                        },
+                        body: JSON.stringify({
+                            id: 'i', // 使用固定ID 'i' 表示默认图标
+                            title: '默认图标',
+                            imageUrl: defaultIconUrl,
+                            urls: [],
+                            type: type,
+                            forceFilename: 'i.png', // 强制使用指定文件名
+                            setPermissions: true
+                        })
+                    });
+                    showNotification('使用默认图标', 'info');
+                } catch (err) {
+                    console.error('下载默认图标失败:', err);
+                    showNotification('使用默认图标（但下载失败）', 'warning');
+                }
+            }
+        }
+    } catch (error) {
+        // 移除加载通知
+        if (loadingNotification && loadingNotification.parentNode) {
+            document.body.removeChild(loadingNotification);
+            const styleElements = document.head.querySelectorAll('style');
+            styleElements[styleElements.length - 1].remove(); // 移除相关样式
+        }
+        
+        // 发生错误时，尝试使用默认图片
+        const type = parseInt(document.getElementById('edit类型').value);
+        
+        if (error.message === '下载超时') {
+            showNotification('下载图片超时，使用默认图标', 'warning');
+        } else {
+            console.error('自动获取图片失败:', error);
+            showNotification('获取图片失败，使用默认图标', 'error');
+        }
+        
+        // 设置默认图片
+        if (type === 1) { // 文件夹类型
+            document.getElementById('edit网络图片URL').value = 'https://help-static.fnnas.com/images/文件管理.png';
+            document.getElementById('edit本地图片URL').value = '/deskdata/img/f.png';
+        } else { // 其他类型（图标）
+            document.getElementById('edit网络图片URL').value = 'https://help-static.fnnas.com/images/Margin-1.png';
+            document.getElementById('edit本地图片URL').value = '/deskdata/img/i.png';
+        }
+    }
+    
+    // 注意：此函数只执行图片下载，不提交表单！
 }
 
 // 下载图片并设置本地图片路径
@@ -767,7 +1197,8 @@ async function saveRecord() {
         
         // 验证标题为必填项
         if (!title.trim()) {
-            alert('标题为必填项，请输入标题');
+            showNotification('标题为必填项，请输入标题', 'info');
+
             
             // 聚焦到标题输入框
             document.getElementById('edit标题').focus();
@@ -788,38 +1219,19 @@ async function saveRecord() {
             recordId = maxId + 1;
         }
         
-        // 检查是否需要下载图片
-        let localImagePath = null;
-        if (!editingId) {
-            // 新增记录，总是下载图片
-            localImagePath = await downloadAndSetLocalImage(recordId, title, networkImageUrl, type);
-        } else {
-            // 编辑记录的情况
-            const editIdNum = parseInt(editingId);
-            const originalRecord = data.find(item => item.id === editIdNum);
-            const currentLocalImageUrl = document.getElementById('edit本地图片URL').value;
-            
-            // 只有在以下情况下才执行下载：
-            // 1. 网络图片URL发生变动
-            // 2. 本地图片URL发生变动
-            // 3. 本地图片URL为空且原始记录中也没有本地图片URL
-            // 如果两个URL都没有变化，则跳过下载
-            if (originalRecord && 
-                (originalRecord.网络图片URL !== networkImageUrl || 
-                 originalRecord.本地图片URL !== currentLocalImageUrl || 
-                 (!originalRecord.本地图片URL && !currentLocalImageUrl))) {
-                // 满足任一条件，执行下载
-                console.log('网络图片URL或本地图片URL发生变化，执行图片下载');
-                localImagePath = await downloadAndSetLocalImage(recordId, title, networkImageUrl, type);
-            } else {
-                console.log('网络图片URL和本地图片URL均未变化，跳过图片下载');
-                // 使用现有的本地图片URL
-                localImagePath = currentLocalImageUrl;
-            }
+        // 直接使用表单中的本地图片URL
+        let localImagePath = document.getElementById('edit本地图片URL').value;
+        
+        // 如果网络图片URL和本地图片URL都为空，执行自动获取图片
+        if ((!networkImageUrl || networkImageUrl.trim() === '') && (!localImagePath || localImagePath.trim() === '')) {
+            showNotification('网络图片URL和本地图片URL都为空，正在尝试自动获取图片...', 'info');
+            await autoFetchImage();
+            // 获取更新后的本地图片URL
+            localImagePath = document.getElementById('edit本地图片URL').value;
         }
         
-        // 如果下载失败，设置默认图片路径
-        if (!localImagePath) {
+        // 如果本地图片URL仍然为空，设置默认图片路径
+        if (!localImagePath || localImagePath.trim() === '') {
             // 根据类型选择对应的默认图片
             const defaultImagePath = type === 0 ? '/deskdata/img/i.png' : '/deskdata/img/f.png';
             localImagePath = defaultImagePath;
@@ -858,25 +1270,29 @@ async function saveRecord() {
             if (index !== -1) {
                 data[index] = { ...data[index], ...formData };
             }
-            alert('记录更新成功！');
+            showNotification('记录更新成功！', 'success');
         } else {
             // 添加新记录
             data.push({ id: recordId, ...formData });
-            alert('记录添加成功！');
+            showNotification('记录添加成功！', 'success');
         }
         
         // 保存到文件
         await saveDataToFile();
         
-        // 重新加载数据
-        await loadData();
+        // 移除localStorage中的缓存，避免重复添加问题
+        localStorage.removeItem('deskData');
+        
+        // 排序数据并更新UI，而不是重新加载数据
+        data.sort((a, b) => parseInt(a.序号) - parseInt(b.序号));
+        generateDropdownOptions();
         applyFilters();
         
         // 关闭模态框
         editModal.classList.add('hidden');
         
     } catch (error) {
-        alert('保存失败: ' + error.message);
+        showNotification('保存失败: ' + error.message, 'error');
         console.error('保存失败:', error);
     }
 }
@@ -892,18 +1308,32 @@ async function deleteRecord() {
         data = data.filter(item => item.id !== id);
         
         // 保存到文件
-        await saveDataToFile();
+        const saveResult = await saveDataToFile();
         
-        // 重新加载数据
-        await loadData();
-        applyFilters();
+        // 移除localStorage中的缓存，避免空数据时的加载问题
+        if (data.length === 0) {
+            localStorage.removeItem('deskData');
+        }
         
         // 关闭模态框
         deleteModal.classList.add('hidden');
         
-        alert('记录删除成功！');
+        // 对于空数据特殊处理，不重新加载而是直接清空UI
+        if (data.length === 0) {
+            filteredData = [];
+            renderTable();
+            updatePagination();
+            generateDropdownOptions();
+        } else {
+            // 非空数据时重新排序并更新UI
+            data.sort((a, b) => parseInt(a.序号) - parseInt(b.序号));
+            generateDropdownOptions();
+            applyFilters();
+        }
+        
+        showNotification('记录删除成功！', 'success');
     } catch (error) {
-        alert('删除失败: ' + error.message);
+        showNotification('删除失败: ' + error.message, 'error');
         console.error('删除失败:', error);
     }
 }
@@ -951,14 +1381,107 @@ async function saveDataToFile() {
 
 // 设置事件监听器
 function setupEventListeners() {
+    // 调用公告显示检查函数
+    checkAndShowAnnouncement();
     // 添加按钮事件
     addBtn.addEventListener('click', openAddModal);
     
-    // 退出登录按钮事件
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', logout);
-    }
+    // 更多操作下拉菜单
+const moreActionsBtn = document.getElementById('moreActionsBtn');
+const dropdownMenu = document.getElementById('dropdownMenu');
+const menuLogout = document.getElementById('menuLogout');
+const menuMergeData = document.getElementById('menuMergeData');
+const menuCustomize = document.getElementById('menuCustomize');
+const menuResetDesktop = document.getElementById('menuResetDesktop');
+
+// 显示/隐藏下拉菜单
+if (moreActionsBtn && dropdownMenu) {
+    moreActionsBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // 阻止事件冒泡
+        dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+    });
+    
+    // 点击页面其他地方关闭下拉菜单
+    document.addEventListener('click', () => {
+        if (dropdownMenu.style.display === 'block') {
+            dropdownMenu.style.display = 'none';
+        }
+    });
+    
+    // 点击下拉菜单内部不关闭菜单
+    dropdownMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+}
+
+// 退出登录菜单项
+if (menuLogout) {
+    menuLogout.addEventListener('click', logout);
+}
+
+// 合并数据菜单项
+if (menuMergeData) {
+    menuMergeData.addEventListener('click', () => {
+        window.location.href = 'otn.html';
+        dropdownMenu.style.display = 'none';
+    });
+}
+
+// 还原桌面菜单项
+if (menuResetDesktop) {
+    menuResetDesktop.addEventListener('click', async () => {
+        // 显示确认模态框
+        document.getElementById('resetDesktopModal').classList.remove('hidden');
+        dropdownMenu.style.display = 'none';
+    });
+    
+    // 取消还原桌面
+    document.getElementById('cancelResetBtn').addEventListener('click', () => {
+        document.getElementById('resetDesktopModal').classList.add('hidden');
+    });
+    
+    // 确认还原桌面
+    document.getElementById('confirmResetBtn').addEventListener('click', async () => {
+        try {
+            // 关闭模态框
+            document.getElementById('resetDesktopModal').classList.add('hidden');
+            
+            // 检测res/www.bak是否存在
+            const checkResponse = await fetch('/api/check-file', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ filePath: 'res/www.bak' })
+            });
+            
+            const checkResult = await checkResponse.json();
+            
+            if (!checkResult.exists) {
+                showNotification('系统源文件不存在！', 'error');
+            } else {
+                // 执行还原操作
+                const resetResponse = await fetch('/api/reset-desktop', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const resetResult = await resetResponse.json();
+                
+                if (resetResult.success) {
+                    showNotification('系统还原成功，请重启系统。', 'success');
+                } else {
+                    showNotification('还原失败：' + (resetResult.error || '未知错误'), 'error');
+                }
+            }
+        } catch (error) {
+            console.error('还原桌面时出错:', error);
+            showNotification('还原过程中发生错误，请检查系统权限。', 'error');
+        }
+    });
+}
     
     // 立即生效按钮事件
     const applyBtn = document.getElementById('applyBtn');
@@ -975,8 +1498,8 @@ function setupEventListeners() {
                 // 关闭模态框
                 applyConfigModal.classList.add('hidden');
                 
-                // 调用Node.js API来执行文件操作
-                const response = await fetch('/api/apply-config', {
+                // 向服务器发送退出请求
+                const response = await fetch('/api/exit', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -986,15 +1509,22 @@ function setupEventListeners() {
                 const result = await response.json();
                 
                 if (result.success) {
-                    // 显示成功提示
-                    alert('配置应用成功！');
+                    // 显示退出提示
+                    showNotification('程序将重启使其配置生效...', 'success');
+                    // 延迟几秒后刷新页面或跳转到其他页面
+                    setTimeout(() => {
+                        showNotification('重启完毕,重载页面...', 'success');
+                    }, 3000);
+                                    setTimeout(() => {
+                        window.location.reload();
+                    }, 6000);
                 } else {
                     // 显示错误提示
-                    alert(result.message || '应用配置失败！');
+                    alert(result.message || '退出程序失败！');
                 }
             } catch (error) {
-                console.error('应用配置时出错：', error);
-                alert('应用配置失败：' + error.message);
+                console.error('退出程序时出错：', error);
+                alert('退出程序失败：' + error.message);
             }
         });
     }
@@ -1141,6 +1671,87 @@ function setupEventListeners() {
             applyFilters();
         }
     });
+    
+    // 自动获取按钮事件监听器
+    const autoFetchBtn = document.getElementById('autoFetchBtn');
+    if (autoFetchBtn) {
+        autoFetchBtn.addEventListener('click', autoFetchImage);
+    }
+    
+    // 本地图片上传功能
+    const uploadLocalImgBtn = document.getElementById('uploadLocalImgBtn');
+    const localImgFileInput = document.getElementById('localImgFileInput');
+    const editLocalImgUrlInput = document.getElementById('edit本地图片URL');
+    
+    if (uploadLocalImgBtn && localImgFileInput && editLocalImgUrlInput) {
+        // 点击上传按钮触发文件选择
+        uploadLocalImgBtn.addEventListener('click', () => {
+            localImgFileInput.click();
+        });
+        
+        // 文件选择后处理上传
+        localImgFileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            // 获取当前记录ID（用于文件名）
+            const recordIdInput = document.getElementById('recordId');
+            let recordId = recordIdInput ? recordIdInput.value.trim() : '';
+            
+            // 如果没有ID，自动计算最大ID+1 - 与autoFetchImage和saveRecord函数使用相同的逻辑
+            if (!recordId) {
+                try {
+                    // 直接使用全局的data变量，与系统其他部分保持一致
+                    const maxId = data.length > 0 ? Math.max(...data.map(item => item.id)) : 0;
+                    recordId = String(maxId + 1);
+                    console.log(`自动生成的新记录ID: ${recordId}`);
+                } catch (error) {
+                    console.error('计算ID时出错:', error);
+                    // 出错时使用默认ID
+                    recordId = '1';
+                }
+            }
+            
+            // 创建FormData并添加文件
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('id', recordId);
+            
+            try {
+                // 显示加载状态
+                uploadLocalImgBtn.disabled = true;
+                uploadLocalImgBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> 上传中...';
+                
+                // 上传文件
+                const response = await fetch('/api/upload/localImg', {
+                    method: 'POST',
+                    headers: {
+                        'x-auth-token': localStorage.getItem('authToken') || ''
+                    },
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success && result.filePath) {
+                    // 上传成功，更新输入框
+                    editLocalImgUrlInput.value = result.filePath;
+                    showNotification('图片上传成功', 'success');
+                } else {
+                    throw new Error(result.message || '上传失败');
+                }
+            } catch (error) {
+                console.error('图片上传失败:', error);
+                showNotification(`上传失败: ${error.message}`, 'error');
+            } finally {
+                // 恢复按钮状态
+                uploadLocalImgBtn.disabled = false;
+                uploadLocalImgBtn.innerHTML = '上传图片';
+                // 清空文件输入，允许重复选择同一文件
+                localImgFileInput.value = '';
+            }
+        });
+    }
 }
 
 // 在页面加载完成后初始化
