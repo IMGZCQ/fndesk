@@ -47,6 +47,13 @@
 
 ## <span style="color:#06d6a0">更新日志</span>
 <div style="background-color: #f0fff4; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+  <h4 style="color: #16a34a; margin-top: 0;">2025.11.06 v0.68</h4>
+  <ul>
+    <li>✅ 支持自定义系统图标</li>
+    <li>✅ 支持隐藏桌面任意图标</li>
+    <li>✅ 支持设置主界面默认壁纸</li>
+    <li>✅ 支持隐藏登录框的设备名文字</li>
+    <li>✅ 支持设置图标的正反向排序</li>
   <h4 style="color: #16a34a; margin-top: 0;">2025.11.04 v0.65</h4>
   <ul>
     <li>✅ 支持一键还原所有默认设置</li>
