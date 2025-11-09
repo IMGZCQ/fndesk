@@ -47,7 +47,15 @@
 
 ## <span style="color:#06d6a0">更新日志</span>
 <div style="background-color: #f0fff4; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-  <h4 style="color: #16a34a; margin-top: 0;">2025.11.06 v0.68</h4>
+  <h4 style="color: #16a34a; margin-top: 0;">2025.11.09 v0.71</h4>
+  <ul>
+    <li>✅ 管理页支持拖动排序</li>
+    <li>✅ 桌面文件夹记忆上次打开位置和大小</li>
+    <li>✅ 个性主题页增加预览图</li>
+    <li>✅ 菜单布局及其他样式调整</li>
+    <li>（尝试解决浏览器缓存失败）</li>
+  </ul>
+   <h4 style="color: #16a34a; margin-top: 0;">2025.11.06 v0.68</h4>
   <ul>
     <li>✅ 支持自定义系统图标</li>
     <li>✅ 支持隐藏桌面任意图标</li>
