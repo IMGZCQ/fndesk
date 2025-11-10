@@ -47,6 +47,11 @@
 
 ## <span style="color:#06d6a0">更新日志</span>
 <div style="background-color: #f0fff4; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+  <h4 style="color: #16a34a; margin-top: 0;">2025.11.10 v0.72</h4>
+  <ul>
+    <li>✅ 调整设置图标设置流程</li>
+    <li>✅ 修复不能维持筛选状态</li>
+  </ul>
   <h4 style="color: #16a34a; margin-top: 0;">2025.11.09 v0.71</h4>
   <ul>
     <li>✅ 管理页支持拖动排序</li>
