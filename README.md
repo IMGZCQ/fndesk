@@ -144,6 +144,8 @@
     volumes:
      - /usr/trim/www:/fnw        #不能改！
      - /usr/trim/share/.restore:/res #不能改！
+     - /usr/local/apps/@appcenter/trim.media:/trim.media
+      # ↑ v0.73起开放影视个性化需加入此项
      - ./deskdata:/deskdata       #冒号左边的可以改但不建议     
     restart: always             #容器自动启动应用配置  </code></pre>
     跑码完成访问9990端口即可
