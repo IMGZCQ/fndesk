@@ -167,7 +167,7 @@
 <img src="https://github.com/user-attachments/assets/b4d8395f-1f2e-493c-a214-ccafdbcdbdc1" alt="fn-icon界面展示4" style="width: 480px; height: auto;">
 
 **管理工具界面**
-<img width="1244" height="1305" alt="ScreenShot_2025-11-11_234708_472" src="https://github.com/user-attachments/assets/8948013e-eb3e-4977-95e5-c19d481cfdd8" />
+<img width="1244" height="1305" alt="ScreenShot_2025-11-11_235658_781" src="https://github.com/user-attachments/assets/f7de6973-b93b-4639-8d16-06a1adab980e" />
 <img width="1061" height="1040" alt="11112" src="https://github.com/user-attachments/assets/ae18d97e-33bf-4c50-8527-77237e61bdf5" />
 <img width="1270" height="992" alt="ScreenShot_2025-10-30_111530_261" src="https://github.com/user-attachments/assets/f84ebfa8-e060-468c-9749-8feac117302b" />
 <img width="1051" height="1246" alt="image" src="https://github.com/user-attachments/assets/7ccde508-6035-44a7-8d10-fed973b8ad22" />
