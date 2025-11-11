@@ -167,13 +167,12 @@
 <img src="https://github.com/user-attachments/assets/b4d8395f-1f2e-493c-a214-ccafdbcdbdc1" alt="fn-icon界面展示4" style="width: 480px; height: auto;">
 
 **管理工具界面**
-
+<img width="1244" height="1305" alt="ScreenShot_2025-11-11_234708_472" src="https://github.com/user-attachments/assets/8948013e-eb3e-4977-95e5-c19d481cfdd8" />
+<img width="1061" height="1040" alt="11112" src="https://github.com/user-attachments/assets/ae18d97e-33bf-4c50-8527-77237e61bdf5" />
 <img width="1270" height="992" alt="ScreenShot_2025-10-30_111530_261" src="https://github.com/user-attachments/assets/f84ebfa8-e060-468c-9749-8feac117302b" />
-<img width="1144" height="931" alt="image" src="https://github.com/user-attachments/assets/ee1086a1-5339-46b4-94aa-78c13a88c945" />
 <img width="1051" height="1246" alt="image" src="https://github.com/user-attachments/assets/7ccde508-6035-44a7-8d10-fed973b8ad22" />
-<img width="979" height="1337" alt="PixPin_2025-10-29_19-47-18" src="https://github.com/user-attachments/assets/58554e7e-3cbb-4165-80d1-9cf3f4c2490e" />
-<img width="1216" height="1107" alt="PixPin_2025-11-02_04-02-36" src="https://github.com/user-attachments/assets/a8bfc35f-f4e2-43ee-9726-799a03bef471" />
-<img width="979" height="1028" alt="PixPin_2025-10-29_19-48-18" src="https://github.com/user-attachments/assets/b0b2ba93-6e28-4ff8-8a80-937b01083759" />
+<img width="1037" height="1044" alt="1111" src="https://github.com/user-attachments/assets/5cd746cd-345f-4e56-9975-e4b30ea427ed" />
+<img width="1001" height="1011" alt="11113" src="https://github.com/user-attachments/assets/7aba2b91-81c9-4651-8b7e-1c3b2d5758f2" />
 <img width="979" height="842" alt="PixPin_2025-10-29_19-48-01" src="https://github.com/user-attachments/assets/bcf10e62-a8c3-4244-bb1e-34cecd40d11b" />
 
 
