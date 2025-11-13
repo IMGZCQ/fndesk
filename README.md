@@ -48,11 +48,11 @@
 ## <span style="color:#118ab2">使用方法(2选1)</span>
 
 <div style="background-color: #e6f7ff; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-   <h4 style="margin-top: 0;">1.下载飞牛应用安装包,到应用中心左下角手动安装：</h4>
+   <h4 style="margin-top: 0;">1.新手推荐:下载飞牛应用安装包,到应用中心左下角手动安装：</h4>
   
   [fpk下载链接](https://share.feijipan.com/s/OSYzYtVf "点击我没错了")
   
-  <h4 style="margin-top: 0;">2.在飞牛Docker compose粘贴以下代码：</h4>
+  <h4 style="margin-top: 0;">2.玩家可用:在飞牛Docker compose粘贴以下代码：</h4>
   
   <div style="background-color: #1e293b; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto;">
     <pre><code>services:
