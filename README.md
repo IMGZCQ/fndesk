@@ -61,6 +61,7 @@
     image: imgzcq/fndesk:latest    #镜像名称
     ports:
      - 9990:9990              #冒号左边修改自定义端口
+     - 9991:9991              # HTTPS端口 
     volumes:
      - /usr/trim/www:/fnw        #不能改！
      - /usr/trim/share/.restore:/res #不能改！
@@ -74,6 +75,12 @@
 
 ## <span style="color:#06d6a0">更新日志</span>
 <div style="background-color: #f0fff4; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+  <h4 style="color: #16a34a; margin-top: 0;">2025.11.15 v0.75</h4>
+  <ul>
+    <li>✅ 适配飞牛0.9.37</li>
+    <li>✅ 支持HTTPS访问(证书目录:deskdata/ssl)</li>
+    <li>⚠️ Compose文件需加端口,证书目录:deskdata/ssl</li>    
+  </ul>
   <h4 style="color: #16a34a; margin-top: 0;">2025.11.11 v0.73</h4>
   <ul>
     <li>🎬 影视区个性化开放(需更新Compose代码)</li>
