@@ -79,7 +79,7 @@
   <ul>
     <li>✅ 适配飞牛0.9.37</li>
     <li>✅ 支持HTTPS访问(证书目录:deskdata/ssl)</li>
-    <li>⚠️ Compose文件需加端口,证书目录:deskdata/ssl</li>    
+    <li>⚠️ Compose代码需更新,证书目录:deskdata/ssl</li>    
   </ul>
   <h4 style="color: #16a34a; margin-top: 0;">2025.11.11 v0.73</h4>
   <ul>
