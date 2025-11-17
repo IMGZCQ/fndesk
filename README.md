@@ -75,6 +75,11 @@
 
 ## <span style="color:#06d6a0">更新日志</span>
 <div style="background-color: #f0fff4; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+  <h4 style="color: #16a34a; margin-top: 0;">2025.11.17 v0.76</h4>
+  <ul>
+    <li>✅ 飞牛原生应用FPK发布,不再依赖Docker</li>     
+    <li>✅ 把主题库的登录背景和桌面背景独立分离</li>
+  </ul>
   <h4 style="color: #16a34a; margin-top: 0;">2025.11.15 v0.75</h4>
   <ul>
     <li>✅ 适配飞牛0.9.37</li>
