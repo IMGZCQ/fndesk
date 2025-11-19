@@ -75,6 +75,12 @@
 
 ## <span style="color:#06d6a0">更新日志</span>
 <div style="background-color: #f0fff4; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+  <h4 style="color: #16a34a; margin-top: 0;">2025.11.19 v0.77</h4>
+  <ul>
+    <li>✅ 自定义登录页备案信息,顶级域名放心用</li>     
+    <li>✅ 增设页面內打开窗口方式,右键菜单可选</li>
+    <li>✅ 增设最小化任务栏,桌面窗口操作更灵活</li>
+  </ul>
   <h4 style="color: #16a34a; margin-top: 0;">2025.11.17 v0.76</h4>
   <ul>
     <li>✅ 飞牛原生应用FPK发布,不再依赖Docker</li>     
@@ -185,6 +191,7 @@
 **管理工具界面**
 <img width="1078" height="1065" alt="ScreenShot_2025-11-12_023549_499" src="https://github.com/user-attachments/assets/2f641b3d-401e-4d1c-b6f1-5f3a7e1bd80a" />
 <img width="1061" height="1040" alt="11112" src="https://github.com/user-attachments/assets/ae18d97e-33bf-4c50-8527-77237e61bdf5" />
+![H)E}P%(Q1 )4ZKZ{01E35H6](https://github.com/user-attachments/assets/b13f5dfc-1989-413f-b3c1-3c6ccbfba8e1)
 <img width="1270" height="992" alt="ScreenShot_2025-10-30_111530_261" src="https://github.com/user-attachments/assets/f84ebfa8-e060-468c-9749-8feac117302b" />
 <img width="1051" height="1246" alt="image" src="https://github.com/user-attachments/assets/7ccde508-6035-44a7-8d10-fed973b8ad22" />
 <img width="1037" height="1044" alt="1111" src="https://github.com/user-attachments/assets/5cd746cd-345f-4e56-9975-e4b30ea427ed" />
