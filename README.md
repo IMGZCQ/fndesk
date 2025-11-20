@@ -75,6 +75,11 @@
 
 ## <span style="color:#06d6a0">更新日志</span>
 <div style="background-color: #f0fff4; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+  <h4 style="color: #16a34a; margin-top: 0;">2025.11.20 v0.78</h4>
+  <ul>
+    <li>✅ 集成图标库 + 离线图标包（可选）</li>     
+    <li>✅ 优化右键菜单，打开方式及其他细节</li>
+  </ul>
   <h4 style="color: #16a34a; margin-top: 0;">2025.11.19 v0.77</h4>
   <ul>
     <li>✅ 自定义登录页备案信息,顶级域名放心用</li>     
