@@ -50,7 +50,7 @@
 <div style="background-color: #e6f7ff; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
    <h4 style="margin-top: 0;">1.新手推荐:下载飞牛应用安装包,到应用中心左下角手动安装：</h4>
   
-  [fpk下载链接](https://https://fndesk.imcq.top/?url=dl&at=GitHUb "点击我没错了")
+  [fpk下载链接](https://fndesk.imcq.top/?url=dl&at=GitHUb "点击我没错了")
   
   <h4 style="margin-top: 0;">2.玩家可用:在飞牛Docker compose粘贴以下代码：</h4>
   
