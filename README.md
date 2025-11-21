@@ -77,7 +77,7 @@
 <div style="background-color: #f0fff4; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
   <h4 style="color: #16a34a; margin-top: 0;">2025.11.22 v0.79</h4>
   <ul>
-    <li>✅ 窗口/文件夹兼容飞牛窗口不在遮挡</li>
+    <li>✅ 窗口/文件夹兼容飞牛窗口不再遮挡</li>
     <li>✅ 登录页增加记住密码选项</li>
   </ul>
   <h4 style="color: #16a34a; margin-top: 0;">2025.11.20 v0.78</h4>
