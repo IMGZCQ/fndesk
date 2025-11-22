@@ -75,6 +75,12 @@
 
 ## <span style="color:#06d6a0">更新日志</span>
 <div style="background-color: #f0fff4; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+  <h4 style="color: #16a34a; margin-top: 0;">2025.11.23 v0.80</h4>
+  <ul>
+    <li>✅ 外链分享自定义(PC和移动Web端Logo标题描述链接等)</li>
+    <li>✅ 优化一键还原,还原后不需要重启</li>
+    <li>✅ 优化窗口最大化/调整默认排序</li>
+  </ul>
   <h4 style="color: #16a34a; margin-top: 0;">2025.11.22 v0.79</h4>
   <ul>
     <li>✅ 窗口/文件夹兼容飞牛窗口不再遮挡</li>
