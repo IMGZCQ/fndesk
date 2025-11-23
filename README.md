@@ -6,44 +6,35 @@
 </div>
 
 ## <span style="color:#4ecdc4">主要功能</span>
+* ✨ 实现图标，文件夹自由，彻底取代收藏夹  
+🌈智能识别内外网环境，更多自定义链接  
+🌐 飞牛桌面内文件夹自由拖动调整大小  
+🖼️ 文件夹和图标图片完全自由设置  
+👑 更多个性化设置：背景，LOGO，标题等  
+⚙️ 多层文件夹，右键菜单，拓展更多功能  
 
-<ul style="list-style-type: none; padding-left: 0;">
-  <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
-    ✨ 实现图标，文件夹自由，彻底取代收藏夹
-  </li>
-  <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
-    🌈智能识别内外网环境，更多自定义链接
-  </li>
-  <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
-    🌐 飞牛桌面内文件夹自由拖动调整大小
-  </li>
-  <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
-    🖼️ 文件夹和图标图片完全自由设置
-  </li>
-  <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
-    👑 更多个性化设置：背景，LOGO，标题等
-  </li>
-  <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
-    ⚙️ 多层文件夹，右键菜单，拓展更多功能
-  </li>
-</ul>
+## <span style="color:#4ecdc4">使用说明</span>
+* 🍭 有兴趣的灵魂请加入Q群组1039270739参与讨论  
+  本工具是一个单纯的修改工具,修改配置生效后可以停用甚至卸载本工具,重启也能一直生效
+  
+* 🥕 本工具有Docker版和飞牛应用中心版,选其一安装就可以,请勿同时安装！  
+  (升级更换版本前请先把现有的删除,若因操作不当而导致的各种问题,作者一概负责到底😂)
+  
+* 🍔 大致使用流程：修改操作>保存配置>立即生效(>清理缓存)  
+  (保存和生效是分开, 配置保存后, 就算还原或系统升级,只要重新保存应用即可)
 
-## <span style="color:#4ecdc4">注意说明</span>
+* 🍟 配置文件都在deskdata目录里, 要备份还原移植配置都可以的。  
+  (Docker Compose的配置目录在Compose文件同在的目录下,  
+  飞牛应用中心安装的配置文件在[文件管理]>应用文件>fndesk目录里)
 
-<ul style="list-style-type: none; padding-left: 0;">
-  <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
-    有兴趣的灵魂请加入Q群组1039270739参与讨论
-  </li>
-  <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
-    修改后若不生效请清空浏览器缓存或使用无痕模式浏览效果
-  </li>
-  <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
-    本工具是一个单纯的修改工具,修改配置生效后可以停用甚至卸载本工具,重启也能一直生效
-  </li>
-  <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
-    若忘记登录密码请删除deskdata/pw.json文件重置密码
-  </li>
-</ul>
+* 🥤 不生效? 99%的不生效都是缓存造成的, 清理缓存和强制刷新(Ctrl+F5)不太好使  
+  建议用浏览器的无痕模式, 或者按F12进入开发者模式到 网络 里把 禁用缓存 勾选上
+
+* 🍦 忘记密码?  
+  只需删除deskdata目录里面的pw.json文件即可访问时重新初始化密码
+
+* 🧀 启用HTTPS?
+  把证书放在deskdata/ssl目录(server.crt和server.key) 然后重启程序即可
 
 ## <span style="color:#118ab2">使用方法(2选1)</span>
 
