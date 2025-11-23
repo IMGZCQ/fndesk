@@ -38,7 +38,7 @@
     修改后若不生效请清空浏览器缓存或使用无痕模式浏览效果
   </li>
   <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
-    所有数据都在compose文件所在目录的【deskdata】文件夹内，可移植或备份
+    本工具是一个单纯的修改工具,修改配置生效后可以停用甚至卸载本工具,重启也能一直生效
   </li>
   <li style="background-color: #f7fafc; padding: 10px; margin: 8px 0; border-left: 4px solid #4ecdc4; border-radius: 4px;">
     若忘记登录密码请删除deskdata/pw.json文件重置密码
