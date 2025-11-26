@@ -2,7 +2,7 @@
 
 <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; color: white; margin: 20px 0;">
   <h2 style="margin-top: 0;">实在太强大！</h2>
-  <p style="font-size: 18px; margin-bottom: 0;">让飞牛成为你的导航页，收藏夹，解决Docker应用没有图标，任意链接自动识别内外网</p>
+  <p style="font-size: 18px; margin-bottom: 0;">我的飞牛我做主,多处自定样式主题美化,桌面图标任君摆布,让飞牛成为你的导航页，收藏夹,Docker应用入口</p>
 </div>
 
 ## <span style="color:#4ecdc4">主要功能</span>
