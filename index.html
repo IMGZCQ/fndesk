@@ -71,8 +71,7 @@
         
         /* 基础样式重置 */
         * {
-            margin: 0;
-            padding: 0;
+            margin: 0px;
             box-sizing: border-box;
         }
         
@@ -188,13 +187,14 @@
         
         .navbar-actions {
             display: flex;
-            gap: 1rem;
+            gap: 0rem;
             align-items: center;
         }
         
         /* 按钮样式 */
         .btn {
             padding: 0.75rem 1.5rem;
+            margin: 3px;
             border: none;
             border-radius: 0.5rem;
             font-size: 0.9rem;
@@ -309,7 +309,7 @@
             box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
         }
         
-        /* 科技绿按钮 - 用于添加记录 */
+        /* 科技绿按钮 - 用于添加图标 */
         .btn-success {
             background: linear-gradient(135deg, var(--success), #0e8966);
             color: white;
@@ -377,10 +377,8 @@
         /* 筛选区域 */
         .filter-section {
             background: var(--card-bg);
-            border-radius: 0.75rem;
+            border-radius: 0 0 0.75rem 0.75rem;
             border: 1px solid var(--border-color);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
             box-shadow: 0 6px 20px var(--shadow-light);
             transition: box-shadow 0.3s ease;
         }
@@ -393,7 +391,6 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 1.5rem;
-            margin-bottom: 1.5rem;
         }
         
         .filter-footer {
@@ -443,6 +440,10 @@
             .md\:grid-cols-3 {
                 grid-template-columns: repeat(3, minmax(0, 1fr));
             }
+            
+            .md\:grid-cols-4 {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
         }
         
         .input-group label {
@@ -454,12 +455,13 @@
         }
         
         input, select {
+            min-height: 20px;
             background: rgba(15, 23, 42, 0.5);
             border: 1px solid var(--border-color);
             border-radius: 0.5rem;
-            padding: 0.75rem 1rem;
+            padding: 0.75rem 0.5rem;
             color: var(--text-primary);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             transition: all 0.3s ease;
             backdrop-filter: blur(4px);
         }
@@ -509,7 +511,7 @@
         }
         
         td {
-            padding: 1rem;
+            padding: 0.5rem;
             border-bottom: 1px solid var(--border-color);
             transition: background-color 0.2s ease;
         }
@@ -624,7 +626,7 @@
         }
         
         .modal-body {
-            padding: 1.5rem;
+            padding: 1rem 1rem 0rem;
         }
         
         .modal-footer {
@@ -698,6 +700,91 @@
             to { transform: rotate(360deg); }
         }
         
+        /* 响应式设计 - 920px以下修改导航栏按钮文字 */
+        @media (max-width: 920px) {
+            /* 隐藏按钮内的图标 */
+            #announcementBtn .fa,
+            #applyBtn .fa,
+            #themeBtn .fa,
+            #moreActionsBtn .fa {
+                display: none;
+            }
+            
+            /* 完全重写按钮内容，只显示文字不显示图标 */
+            #announcementBtn {
+                font-size: 0;
+            }
+            
+            #announcementBtn::after {
+                content: '公告';
+                font-size: 0.9rem;
+                display: inline-block;
+            }
+            
+            #applyBtn {
+                font-size: 0;
+            }
+            
+            #applyBtn::after {
+                content: '应用';
+                font-size: 0.9rem;
+                display: inline-block;
+            }
+            
+            #themeBtn {
+                font-size: 0;
+            }
+            
+            #themeBtn::after {
+                content: '主题';
+                font-size: 0.9rem;
+                display: inline-block;
+            }
+            
+            #moreActionsBtn {
+                font-size: 0;
+            }
+            
+            #moreActionsBtn::after {
+                content: '更多';
+                font-size: 0.9rem;
+                display: inline-block;
+            }
+        }
+        
+        /* 响应式设计 - 420px以下只显示图标不显示文字 */
+        @media (max-width: 420px) {
+            /* 显示按钮内的图标 */
+            #announcementBtn .fa,
+            #applyBtn .fa,
+            #themeBtn .fa,
+            #moreActionsBtn .fa {
+                display: inline-block;
+                font-size: 1.1rem;
+            }
+            
+            /* 隐藏文字内容 */
+            #announcementBtn::after,
+            #applyBtn::after,
+            #themeBtn::after,
+            #moreActionsBtn::after {
+                display: none;
+            }
+            
+            /* 调整按钮尺寸以适应小屏幕 */
+            .btn {
+                padding: 0.75rem;
+                min-width: 44px;
+                width: 44px;
+                height: 44px;
+            }
+            
+            /* 确保图标居中显示 */
+            .btn i {
+                margin: 0;
+            }
+        }
+        
         /* 响应式设计 */
         @media (max-width: 768px) {
             .container {
@@ -736,7 +823,7 @@
             }
             
             table {
-                min-width: 600px;
+                min-width: 300px;
             }
         }
         
@@ -768,11 +855,7 @@
         .gap-6 {
             gap: 1.5rem;
         }
-        
-        .mb-4 {
-            margin-bottom: 1rem;
-        }
-        
+                
         .mb-6 {
             margin-bottom: 1.5rem;
         }
@@ -890,7 +973,29 @@
         <div class="container navbar-content">
             <h1 class="navbar-title">
                 <i class="fa fa-desktop"></i>
-                飞牛桌面管理工具 v0.65.1
+                飞牛桌面管理工具 <span id="versionNumber">加载中...</span>
+                <script>
+                    // 直接通过API获取版本号
+                    document.addEventListener('DOMContentLoaded', function() {
+                        try {
+                            fetch('/api/version')
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data && data.version) {
+                                        document.getElementById('versionNumber').textContent = data.version;
+                                    } else {
+                                        document.getElementById('versionNumber').textContent = '未知版本';
+                                    }
+                                })
+                                .catch(err => {
+                                    console.log('无法获取版本信息:', err);
+                                    document.getElementById('versionNumber').textContent = '未知版本';
+                                });
+                        } catch (e) {
+                            document.getElementById('versionNumber').textContent = '未知版本';
+                        }
+                    });
+                </script>
             </h1>
             <div class="navbar-actions">
                 <button id="announcementBtn" class="btn btn-warning mr-2">
@@ -901,37 +1006,315 @@
                     <i class="fa fa-check-circle"></i>
                     立即生效
                 </button>
-                <button id="addBtn" class="btn btn-info mr-2">
-                    <i class="fa fa-plus"></i>
-                    添加记录
-                </button>
+                <a href="fnstyle.html" id="themeBtn" class="btn btn-info mr-2">
+                    <i class="fa fa-paint-brush"></i>
+                    个性定制
+                </a>
+
                 <div class="dropdown" style="position: relative; display: inline-block;">
                     <button id="moreActionsBtn" class="btn btn-danger mr-2 dropdown-toggle">
-                        <i class="fa fa-ellipsis-h"></i>
-                        更多操作
+                        <i class="fa fa-bars"></i>
+                        更多功能
                     </button>
-                    <div id="dropdownMenu" class="dropdown-menu" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 0.125rem; background-color: white; border: 1px solid rgba(0, 0, 0, 0.15); border-radius: 0.375rem; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175); min-width: 10rem; padding: 0.5rem 0; z-index: 1000;">
-                        <a class="dropdown-item" href="fnstyle.html" id="menuCustomize" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #212529; text-align: inherit; text-decoration: none; white-space: nowrap; background-color: transparent; border: 0; transition: all 0.15s ease-in-out;">
-                            <i class="fa fa-paint-brush mr-2"></i>
-                            个性定制
+                    
+                    <div id="dropdownMenu" class="dropdown-menu"
+                        style="display: none; position: absolute; right: 0; top: 100%; margin-top: 0.125rem; background-color: #121921; border: 1px solid #4a9eff; border-radius: 8px; box-shadow: 0 0 15px rgba(74, 158, 255, 0.4); min-width: 9rem; padding: 0.4rem 0.3rem; z-index: 9999; overflow: hidden;">
+                        <!--                         <a class="dropdown-item" href="fnstyle.html" id="menuCustomize" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                                                <i class="fa fa-paint-brush mr-2" style="color: #4a9eff;"></i>
+                                                个性定制
+                                            </a> -->
+                        <a class="dropdown-item" href="index.html" target="_blank" id="menuNewWindow"
+                            style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                            <i class="fa fa-window-maximize mr-2" style="color: #4a9eff;"></i>
+                            打开新窗口
                         </a>
-                        <a class="dropdown-item" href="#" id="menuMergeData" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #212529; text-align: inherit; text-decoration: none; white-space: nowrap; background-color: transparent; border: 0; transition: all 0.15s ease-in-out;">
-                            <i class="fa fa-code-fork mr-2"></i>
-                            合并数据
+                        <a class="dropdown-item" href="HDicon/HDicon.html" id="menuHDicon"
+                            style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                            <i class="fa fa-cubes mr-2" style="color: #4a9eff;"></i>
+                            打开图标库
+                        </a>           
+                        <a class="dropdown-item" href="sysico.html" id="menuSysico"
+                            style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                            <i class="fa fa-cube mr-2" style="color: #4a9eff;"></i>
+                            系统图标
                         </a>
-                        <a class="dropdown-item" href="#" id="menuResetDesktop" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #212529; text-align: inherit; text-decoration: none; white-space: nowrap; background-color: transparent; border: 0; transition: all 0.15s ease-in-out;">
-                            <i class="fa fa-refresh mr-2"></i>
+                        <a class="dropdown-item" href="#" id="menuResetDesktop"
+                            style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                            <i class="fa fa-refresh mr-2" style="color: #4a9eff;"></i>
                             还原桌面
                         </a>
-                         <a class="dropdown-item" href="#" id="menuUpdateDesktop" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #212529; text-align: inherit; text-decoration: none; white-space: nowrap; background-color: transparent; border: 0; transition: all 0.15s ease-in-out;">
-                            <i class="fa fa-download mr-2"></i>
+                        <a class="dropdown-item" href="#" id="menuUpdateDesktop" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                            <i class="fa fa-download mr-2" style="color: #4a9eff;"></i>
                             在线升级
                         </a>
-                        <a class="dropdown-item" href="#" id="menuLogout" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #212529; text-align: inherit; text-decoration: none; white-space: nowrap; background-color: transparent; border: 0; transition: all 0.15s ease-in-out;">
-                            <i class="fa fa-sign-out mr-2"></i>
+                        <a class="dropdown-item" href="#" id="menuLogout" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                            <i class="fa fa-sign-out mr-2" style="color: #4a9eff;"></i>
                             退出登录
                         </a>
                     </div>
+                    <script>
+                        // 菜单动画和科技特效
+                        document.addEventListener('DOMContentLoaded', function() {
+                            console.log('初始化下拉菜单...');
+                            
+                            // 备用测试函数（保留但隐藏日志）
+                            window.__testDropdownMenu = function() {
+                                const menu = document.getElementById('dropdownMenu');
+                                if (menu) {
+                                    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+                                    menu.style.opacity = '1';
+                                    menu.style.transform = 'translateY(0)';
+                                    menu.style.position = 'absolute';
+                                    menu.style.zIndex = '9999';
+                                }
+                            };
+                            const dropdownMenu = document.getElementById('dropdownMenu');
+                            const dropdownToggle = document.getElementById('moreActionsBtn'); // 直接使用id获取按钮
+                            let toggleButton = null; // 用于存储可能的新按钮引用
+                            
+                            console.log('Dropdown elements:', { dropdownMenu, dropdownToggle });
+                            
+                            // 自定义展开/收起动画
+                            function toggleDropdown() {
+                                // 确保下拉菜单元素存在
+                                if (!dropdownMenu) {
+                                    return;
+                                }
+                                
+                                // 获取计算后的显示状态（更可靠）
+                                const computedStyle = window.getComputedStyle(dropdownMenu);
+                                const isVisible = computedStyle.display !== 'none';
+                                
+                                if (isVisible) {
+                                    // 收起动画
+                                    dropdownMenu.style.opacity = '0';
+                                    dropdownMenu.style.transform = 'translateY(-10px)';
+                                    setTimeout(() => {
+                                        dropdownMenu.style.display = 'none';
+                                    }, 300);
+                                } else {
+                                    // 确保所有样式属性正确设置
+                                    dropdownMenu.style.display = 'block';
+                                    dropdownMenu.style.opacity = '0';
+                                    dropdownMenu.style.transform = 'translateY(-10px)';
+                                    dropdownMenu.style.position = 'absolute';
+                                    dropdownMenu.style.zIndex = '9999';
+                                    
+                                    // 强制重绘以确保动画正常工作
+                                    void dropdownMenu.offsetWidth;
+                                    
+                                    setTimeout(() => {
+                                        dropdownMenu.style.opacity = '1';
+                                        dropdownMenu.style.transform = 'translateY(0)';
+                                    }, 10);
+                                }
+                            }
+                            
+                            // 绑定点击事件 - 可靠的实现
+                            if (dropdownToggle) {
+                                // 重置按钮的onclick属性，确保没有冲突
+                                dropdownToggle.onclick = null;
+                                
+                                // 移除所有可能存在的事件监听器
+                                try {
+                                    // 使用克隆元素的方式完全清除事件监听器
+                                    const newToggle = dropdownToggle.cloneNode(true);
+                                    dropdownToggle.parentNode.replaceChild(newToggle, dropdownToggle);
+                                    // 不尝试重新赋值const变量，而是直接使用newToggle
+                                    toggleButton = newToggle;
+                                } catch (err) {
+                                    console.error('Error resetting dropdown toggle:', err);
+                                    // 出错时回退到使用原始按钮
+                                    toggleButton = dropdownToggle;
+                                }
+                                 
+                                // 定义点击处理函数
+                                function handleToggleClick(e) {
+                                    e.preventDefault();
+                                    e.stopPropagation(); // 阻止事件冒泡
+                                    
+                                    // 确保事件完全停止传播，防止document点击事件立即触发
+                                    e.cancelBubble = true;
+                                    if (e.stopImmediatePropagation) {
+                                        e.stopImmediatePropagation();
+                                    }
+                                    
+                                    // 直接处理菜单显示/隐藏，不使用toggleDropdown函数以避免可能的冲突
+                                    if (dropdownMenu) {
+                                        const computedStyle = window.getComputedStyle(dropdownMenu);
+                                        const isVisible = computedStyle.display !== 'none';
+                                        
+                                        if (!isVisible) {
+                                            // 确保所有样式属性正确设置
+                                            dropdownMenu.style.display = 'block';
+                                            dropdownMenu.style.opacity = '0';
+                                            dropdownMenu.style.transform = 'translateY(-10px)';
+                                            dropdownMenu.style.position = 'absolute';
+                                            dropdownMenu.style.zIndex = '9999';
+                                            
+                                            // 强制重绘以确保动画正常工作
+                                            void dropdownMenu.offsetWidth;
+                                            
+                                            setTimeout(() => {
+                                                dropdownMenu.style.opacity = '1';
+                                                dropdownMenu.style.transform = 'translateY(0)';
+                                            }, 10);
+                                        } else {
+                                            // 收起动画
+                                            dropdownMenu.style.opacity = '0';
+                                            dropdownMenu.style.transform = 'translateY(-10px)';
+                                            setTimeout(() => {
+                                                dropdownMenu.style.display = 'none';
+                                            }, 300);
+                                        }
+                                    }
+                                }
+                                 
+                                // 确保toggleButton变量已定义
+                                const actualButton = toggleButton || dropdownToggle;
+                                
+                                // 双重绑定 - 同时使用onclick和addEventListener确保兼容性
+                                actualButton.onclick = handleToggleClick;
+                                actualButton.addEventListener('click', handleToggleClick);
+                                 
+                                // 额外添加触摸事件支持
+                                actualButton.addEventListener('touchstart', function(e) {
+                                    e.preventDefault();
+                                    handleToggleClick(e);
+                                });
+                                 
+                                // 确保按钮样式不会阻止点击
+                                actualButton.style.pointerEvents = 'auto';
+                                actualButton.style.cursor = 'pointer';
+                            }
+                            
+                            // 点击页面其他区域关闭下拉菜单 - 优化检测逻辑
+                            // 使用变量标记按钮是否刚刚被点击，防止菜单闪烁
+                            let buttonJustClicked = false;
+                            
+                            document.addEventListener('click', function(e) {
+                                if (!dropdownMenu || !dropdownToggle) return;
+                                
+                                // 使用实际的按钮引用
+                                const actualButton = toggleButton || dropdownToggle;
+                                  
+                                // 检查是否是按钮点击后的快速事件，如果是则忽略本次关闭
+                                if (buttonJustClicked) {
+                                    // 重置标记，但设置一个短暂延迟以确保菜单有时间显示
+                                    setTimeout(() => {
+                                        buttonJustClicked = false;
+                                    }, 100);
+                                    return;
+                                }
+                                
+                                // 使用计算样式检查菜单是否可见（更可靠）
+                                const isMenuVisible = window.getComputedStyle(dropdownMenu).display !== 'none';
+                                
+                                // 检查点击目标是否在菜单或按钮内
+                                const isClickInsideMenu = dropdownMenu.contains(e.target);
+                                const isClickOnToggle = actualButton.contains(e.target); // 使用实际按钮检查点击目标
+                                
+                                // 只有当菜单可见且点击在菜单外部、不在切换按钮上时才关闭
+                                if (isMenuVisible && !isClickInsideMenu && !isClickOnToggle) {
+                                    // 收起动画
+                                    dropdownMenu.style.opacity = '0';
+                                    dropdownMenu.style.transform = 'translateY(-10px)';
+                                    setTimeout(() => {
+                                        dropdownMenu.style.display = 'none';
+                                    }, 300);
+                                }
+                            });
+                            
+                            // 修改按钮点击处理函数，在点击时设置标记
+                            const originalHandleToggleClick = handleToggleClick;
+                            handleToggleClick = function(e) {
+                                buttonJustClicked = true;
+                                originalHandleToggleClick(e);
+                            };
+                            
+
+                            
+                            // 菜单项悬停特效
+                            const menuItems = dropdownMenu.querySelectorAll('.dropdown-item');
+                            menuItems.forEach(item => {
+                                // 添加发光效果和渐变背景
+                                item.addEventListener('mouseenter', function() {
+                                    this.style.background = 'linear-gradient(90deg, rgba(74, 158, 255, 0.2) 0%, rgba(74, 158, 255, 0.1) 100%)';
+                                    this.style.boxShadow = 'inset 0 0 10px rgba(74, 158, 255, 0.3)';
+                                    this.style.transform = 'translateX(5px)';
+                                    this.querySelector('i').style.textShadow = '0 0 8px #4a9eff';
+                                });
+                                
+                                item.addEventListener('mouseleave', function() {
+                                    this.style.background = 'linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%)';
+                                    this.style.boxShadow = 'none';
+                                    this.style.transform = 'translateX(0)';
+                                    this.querySelector('i').style.textShadow = 'none';
+                                });
+                                
+                                // 点击波纹效果
+                                item.addEventListener('click', function(e) {
+                                    if (this.getAttribute('href') === '#') {
+                                        e.preventDefault();
+                                    }
+                                    
+                                    const ripple = document.createElement('span');
+                                    const rect = this.getBoundingClientRect();
+                                    const size = Math.max(rect.width, rect.height);
+                                    const x = e.clientX - rect.left - size / 2;
+                                    const y = e.clientY - rect.top - size / 2;
+                                    
+                                    ripple.style.width = ripple.style.height = size + 'px';
+                                    ripple.style.left = x + 'px';
+                                    ripple.style.top = y + 'px';
+                                    ripple.style.position = 'absolute';
+                                    ripple.style.borderRadius = '50%';
+                                    ripple.style.background = 'rgba(74, 158, 255, 0.4)';
+                                    ripple.style.transform = 'scale(0)';
+                                    ripple.style.animation = 'ripple 0.6s ease-out';
+                                    ripple.style.pointerEvents = 'none';
+                                    
+                                    this.appendChild(ripple);
+                                    
+                                    setTimeout(() => {
+                                        ripple.remove();
+                                        
+                                        // 在波纹动画结束后关闭菜单
+                                        if (dropdownMenu) {
+                                            dropdownMenu.style.opacity = '0';
+                                            dropdownMenu.style.transform = 'translateY(-10px)';
+                                            setTimeout(() => {
+                                                dropdownMenu.style.display = 'none';
+                                            }, 300);
+                                        }
+                                    }, 600);
+                                });
+                            });
+                            
+                            // 添加全局样式
+                            const style = document.createElement('style');
+                            style.textContent = `
+                                @keyframes ripple {
+                                    to {
+                                        transform: scale(4);
+                                        opacity: 0;
+                                    }
+                                }
+                                .dropdown-menu {
+                                    animation: glow 2s ease-in-out infinite alternate;
+                                }
+                                @keyframes glow {
+                                    from {
+                                        box-shadow: 0 0 10px rgba(74, 158, 255, 0.4);
+                                    }
+                                    to {
+                                        box-shadow: 0 0 20px rgba(74, 158, 255, 0.6);
+                                    }
+                                }
+                            `;
+                            document.head.appendChild(style);
+                        });
+                    </script>
                 </div>
             </div>
         </div>
@@ -940,73 +1323,410 @@
     <!-- 主内容区域 -->
     <main class="container py-6">
         <!-- 筛选区域 -->
-        <div class="filter-section mb-6 bg-card p-4 rounded-lg shadow-sm">
-            <div class="filter-grid flex flex-wrap items-center gap-6">
-                <!-- 类型筛选 -->
-                <div class="filter-item flex items-center">
-                    <label for="filterType" class="mr-2 text-text-secondary whitespace-nowrap font-medium">类型</label>
-                    <select id="filterType" class="py-2 px-3 border border-border rounded bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
-                        <option value="">全部类型</option>
-                        <!-- 类型选项将动态生成 -->
-                    </select>
-                </div>
+        <div class="filter-section bg-card p-3 rounded-lg shadow-sm">
+            <!-- 主要筛选行 - 桌面端 -->
+            <div class="filter-primary flex flex-wrap items-center gap-4" style="margin: 8px;">
+                <!-- 按照要求的顺序重新组织元素：添加按钮,图标排序,类型,归属,搜索,筛选按钮,重置按钮 -->
                 
-                <!-- 归属筛选 -->
-                <div class="filter-item flex items-center">
-                    <label for="filterOwner" class="mr-2 text-text-secondary whitespace-nowrap font-medium">归属</label>
-                    <select id="filterOwner" class="py-2 px-3 border border-border rounded bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
-                        <option value="">全部归属</option>
-                        <!-- 归属选项将动态生成 -->
-                    </select>
+                <!-- 添加按钮 -->
+                <button title="-- 添加新图标/文件夹 --"
+                    id="addBtn" 
+                    class="btn btn-primary py-1.5 px-3 rounded transition-all hover:shadow-lg flex items-center justify-center"
+                >
+                    <i class="fa fa-plus fa-lg mr-1"></i>
+                    <span class="sm:inline hidden">添加</span>
+                </button>
+                
+                <!-- 第一行：图标排序、类型、归属 -->
+                <div class="filter-row-1">
+                    <!-- 图标排序 -->
+                    <div class="flex items-center min-w-[180px] sm:min-w-0 sm:flex-shrink-0">
+                        <span class="mr-2 text-text-secondary whitespace-nowrap hidden sm:inline">桌面图标：</span>
+                        <select id="iconSortSelect" title="-- 这里是指飞牛桌面里的图标加载顺序! --" class="py-1.5 px-3 border border-border rounded bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
+                            <option value="1">默认顺序</option>
+                            <option value="2">反向顺序</option>
+                        </select>
+                    </div>
+                    
+                    <!-- 类型筛选 -->
+                    <div class="filter-item flex items-center min-w-[140px]">
+                        <label for="filterType" class="mr-2 text-text-secondary whitespace-nowrap font-medium"></label>
+                        <select id="filterType" title="-- 筛选图标类型 --" class="py-1.5 px-3 border border-border rounded bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
+                            <option value="">全类型</option>
+                            <!-- 类型选项将动态生成 -->
+                        </select>
+                    </div>
+                    
+                    <!-- 归属筛选 -->
+                    <div class="filter-item flex items-center min-w-[140px]">
+                        <label for="filterOwner" class="mr-2 text-text-secondary whitespace-nowrap font-medium"></label>
+                        <select id="filterOwner" title="-- 筛选图标归属 --" class="py-1.5 px-3 border border-border rounded bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
+                            <option value="">全归属</option>
+                            <!-- 归属选项将动态生成 -->
+                        </select>
+                    </div>
                 </div>
                 
                 <!-- 关键词搜索 - 占据剩余空间 -->
-                <div class="filter-item flex-grow flex items-center min-w-[200px]">
-                    <label for="filterKeyword" class="mr-2 text-text-secondary whitespace-nowrap font-medium">关键词搜索</label>
+                <div class="filter-item flex-grow flex items-center min-w-[250px] w-full sm:w-auto">
+                    <label for="filterKeyword" class="mr-2 text-text-secondary whitespace-nowrap font-medium">搜：</label>
                     <div class="relative w-full">
                         <input 
                             type="text" 
                             id="filterKeyword" 
-                            placeholder="搜索标题..." 
-                            class="w-full py-2 px-3 border border-border rounded bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                            placeholder="搜索 任意关键字..." 
+                            class="w-full py-1.5 px-3 border border-border rounded bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                         >
                     </div>
                 </div>
                 
-                <!-- 操作按钮组 -->
-                <div class="filter-actions flex items-center gap-6 ml-auto">
+                <!-- 第二行：筛选、重置按钮 -->
+                <div class="filter-row-2">
+                    <!-- 筛选按钮 -->
                     <button 
-                        id="filterBtn" 
-                        class="btn btn-primary py-2 px-4 rounded transition-all hover:shadow-lg flex items-center justify-center"
+                        id="filterBtn"  title="-- 筛选按钮 --"
+                        class="btn btn-primary py-1.5 px-3 rounded transition-all hover:shadow-lg flex items-center justify-center"
                     >
                         <i class="fa fa-filter mr-1"></i>
-                        筛选
+                        <span class="sm:inline hidden">筛选</span>
                     </button>
+                    
+                    <!-- 重置按钮 -->
                     <button 
-                        id="resetFilterBtn" 
-                        class="btn btn-secondary py-2 px-4 rounded transition-all hover:shadow-lg flex items-center justify-center"
+                        id="resetFilterBtn"  title="-- 重置筛选条件 --"
+                        class="btn btn-secondary py-1.5 px-3 rounded transition-all hover:shadow-lg flex items-center justify-center"
                     >
                         <i class="fa fa-refresh mr-1"></i>
-                        重置
+                        <span class="sm:inline hidden">重置</span>
                     </button>
                 </div>
             </div>
+            </div>
+            
+            <!-- 移动端专用样式 -->
+            <style>
+                /* 响应式布局优化 - 470px宽度布局 */
+                @media (max-width: 470px) {
+                    .filter-primary {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 0.5rem;
+                    }
+                    
+                    /* 添加按钮单行 */
+                    #addBtn {
+                        width: 100%;
+                        margin-bottom: 0.25rem;
+                    }
+                    
+                    /* 搜索框单行 */
+                    .filter-item.min-w\[250px\] {
+                        width: 100%;
+                        margin-bottom: 0.25rem;
+                    }
+                    
+                    /* 第一行：图标排序、类型、归属在同一行 */
+                    .filter-row-1 {
+                        display: flex;
+                        gap: 0.5rem;
+                        width: 100%;
+                    }
+                    
+                    /* 图标排序、类型、归属在同一行，平均分配宽度 */
+                    .filter-row-1 > div {
+                        flex: 1;
+                        min-width: 0;
+                        margin-bottom: 0;
+                    }
+                    
+                    /* 调整下拉框宽度和内边距以适应空间 */
+                    .filter-row-1 > div select {
+                        width: 100%;
+                        padding: 0.3rem 0.5rem;
+                        font-size: 0.85rem;
+                    }
+                    
+                    /* 移除文字标签以节省空间 */
+                    .filter-row-1 > div:first-child span {
+                        display: none;
+                    }
+                    
+                    /* 第二行：筛选、重置按钮在同一行 */
+                    .filter-row-2 {
+                        display: flex;
+                        gap: 0.5rem;
+                        width: 100%;
+                    }
+                    
+                    /* 筛选、重置按钮在同一行，平均分配宽度 */
+                    .filter-row-2 > button {
+                        flex: 1;
+                        margin-bottom: 0;
+                    }
+                    
+                    /* 移除最小宽度限制 */
+                    .filter-row-1 > div {
+                        min-width: auto;
+                    }
+                }
+                
+                /* 确保在470px以上宽度时保持原有布局 */
+                @media (min-width: 471px) {
+                    .filter-row-1,
+                    .filter-row-2 {
+                        display: contents;
+                    }
+                    
+                    .filter-primary > div:nth-child(2),
+                    .filter-item.min-w\[140px\] {
+                        min-width: auto;
+                        flex-shrink: 0;
+                    }
+                    
+                    #filterBtn,
+                    #resetFilterBtn {
+                        margin-bottom: 0;
+                    }
+                }
+                
+                /* 小于470px的移动设备布局 */
+                @media (max-width: 469px) {
+                    .filter-primary {
+                        flex-direction: column;
+                        align-items: stretch;
+                    }
+                    
+                    /* 移动端按钮布局 */
+                    #addBtn,
+                    #filterBtn,
+                    #resetFilterBtn {
+                        width: 100%;
+                        margin-bottom: 0.5rem;
+                    }
+                    
+                    /* 移动端图标排序调整 */
+                    .filter-primary > div:nth-child(2) {
+                        width: 100%;
+                        margin-bottom: 0.5rem;
+                    }
+                    
+                    /* 所有筛选项在移动端占满宽度 */
+                    .filter-item,
+                    .filter-primary > div {
+                        width: 100%;
+                    }
+                    
+                    /* 移除最小宽度限制 */
+                    .filter-item.min-w\[140px\],
+                    .filter-primary > div.min-w\[180px\],
+                    .filter-item.min-w\[250px\] {
+                        min-width: auto;
+                    }
+                }
+                
+                /* 平板设备优化 */
+                @media (min-width: 470px) and (max-width: 800px) {
+                    .filter-primary {
+                        flex-wrap: wrap;
+                    }
+                    
+                    /* 搜索框在平板上占满宽度 */
+                    .filter-item.min-w\[250px\] {
+                        width: 100%;
+                    }
+                    
+                    /* 按钮组在平板上适当排列 */
+                    #addBtn,
+                    #filterBtn,
+                    #resetFilterBtn {
+                        flex-shrink: 0;
+                    }
+                }
+                
+                /* 表格列响应式隐藏规则 */
+                /* 宽度小于800px隐藏URL列 */
+                @media (max-width: 859px) {
+                    table th:nth-child(4),
+                    table td:nth-child(4) {
+                        display: none;
+                    }
+                }
+                 @media (max-width: 779px) {
+                    table th:nth-child(5),
+                    table td:nth-child(5) {
+                        display: none;
+                    }
+                } 
+                
+                /* 宽度小于680px隐藏归属列 */
+                @media (max-width: 679px) {
+                    table th:nth-child(8),
+                    table td:nth-child(8) {
+                        display: none;
+                    }
+                }
+                
+                /* 宽度小于600px隐藏类型列 */
+                @media (max-width: 599px) {
+                    table th:nth-child(7),
+                    table td:nth-child(7) {
+                        display: none;
+                    }
+                }
+                 /* 宽度小于600px隐藏图标列 */
+                @media (max-width: 480px) {
+                    table th:nth-child(6),
+                    table td:nth-child(6) {
+                        display: none;
+                    }
+                }
+                
+                /* 科技蓝色调下拉框样式 */
+                select#iconSortSelect,
+                select#filterType,
+                select#filterOwner {
+                    /* 科技蓝色背景渐变 */
+                    background: linear-gradient(135deg, rgba(0, 168, 255, 0.1), rgba(0, 210, 211, 0.1));
+                    /* 科技蓝边框 */
+                    border: 1px solid var(--primary);
+                    /* 文字颜色 */
+                    color: var(--text-primary);
+                    /* 科技感发光效果 */
+                    box-shadow: var(--glow-primary);
+                    /* 过渡效果 */
+                    transition: all 0.3s ease;
+                    /* 保持原有尺寸和形状 */
+                    padding: 0.375rem 0.75rem;
+                    border-radius: 0.375rem;
+                }
+                
+                /* 鼠标悬停效果 */
+                select#iconSortSelect:hover,
+                select#filterType:hover,
+                select#filterOwner:hover {
+                    box-shadow: var(--glow-secondary);
+                    border-color: var(--secondary);
+                }
+                
+                /* 聚焦效果 */
+                select#iconSortSelect:focus,
+                select#filterType:focus,
+                select#filterOwner:focus {
+                    outline: none;
+                    box-shadow: 0 0 0 3px rgba(0, 168, 255, 0.3);
+                    border-color: var(--primary);
+                }
+                
+                /* 只针对筛选区域的三个下拉框设置样式 */
+                select#iconSortSelect,
+                select#filterType,
+                select#filterOwner {
+                    background-color: #1a1a2e !important;
+                    color: #ffffff !important;
+                    border: 1px solid #00a8ff !important;
+                    padding: 0.375rem 0.75rem !important;
+                    border-radius: 0.375rem !important;
+                    box-shadow: 0 0 10px rgba(0, 168, 255, 0.3) !important;
+                    display: inline-block !important;
+                    cursor: pointer !important;
+                    box-sizing: border-box !important;
+                }
+                
+                /* 只针对筛选区域的下拉选项设置深色背景 */
+                select#iconSortSelect option,
+                select#filterType option,
+                select#filterOwner option {
+                    background-color: #1a1a2e !important;
+                    color: #ffffff !important;
+                    padding: 4px 8px !important;
+                    margin: 0 !important;
+                    border: none !important;
+                }
+                
+                /* 只针对筛选区域的下拉选项设置选中和悬停状态 */
+                select#iconSortSelect option:checked,
+                select#filterType option:checked,
+                select#filterOwner option:checked,
+                select#iconSortSelect option:hover,
+                select#filterType option:hover,
+                select#filterOwner option:hover {
+                    background-color: #00a8ff !important;
+                    color: #ffffff !important;
+                }
+            </style>
         </div>
 
+        <!-- 桌面图标排序独立区域 -->
+        <div class="mt-4">
+            <div class="flex items-center gap-2">
+<!-- ////////////////////////////////////////////////////排序原来位置 -->
+
+            </div>
+        </div>
+
+        <!-- 初始化图标排序设置 -->
+        <script>
+            // 页面加载时从fnstyle.json读取iconSort字段并设置下拉框默认值
+            document.addEventListener('DOMContentLoaded', function() {
+                fetch('deskdata/fnstyle.json')
+                    .then(response => response.json())
+                    .then(data => {
+                        const iconSortSelect = document.getElementById('iconSortSelect');
+                        if (data.iconSort && (data.iconSort === 1 || data.iconSort === 2)) {
+                            iconSortSelect.value = data.iconSort.toString();
+                        }
+                    })
+                    .catch(error => console.error('读取fnstyle.json失败:', error));
+                
+                // 监听下拉框变化，更新fnstyle.json的iconSort字段
+                const iconSortSelect = document.getElementById('iconSortSelect');
+                iconSortSelect.addEventListener('change', function() {
+                    const selectedValue = parseInt(this.value);
+                    
+                    fetch('api/fnstyle.json', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ iconSort: selectedValue })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('网络响应错误');
+                        }
+                        return response.json();
+                    })
+                    .then(() => {
+                        // 显示操作成功的通知
+                        if (typeof showNotification === 'function') {
+                            showNotification('图标排序设置已保存', 'success');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('保存图标排序设置失败:', error);
+                        if (typeof showNotification === 'function') {
+                            showNotification('保存失败，请重试', 'error');
+                        }
+                    });
+                });
+            });
+        </script>
+        
         <!-- 数据表格 -->
         <div class="table-container">
             <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead>
                         <tr>
-                            <th id="sortable-order" class="cursor-pointer hover:bg-card-hover">优先级 <i class="fa fa-sort ml-1"></i></th>
+                            <th id="sortable-order" class="cursor-pointer hover:bg-card-hover">拖动排序 <i class="fa fa-sort ml-1"></i></th>
                             <th class="hidden">ID</th>
-                            <th>标题</th>
+                            <th>标 题</th>
                             <th>URL</th>
-                            <th>网络 ◀图▶ 本地</th>
-                            <th>类型</th>
-                            <th>归属</th>
-                            <th class="text-center">操作</th>
+                            <th>打开方式</th>
+                            <th>图标预览</th>
+                            <th>类 型</th>
+                            <th>归 属</th>
+                            <th class="text-center">操 作</th>
                         </tr>
                     </thead>
                     <tbody id="dataTableBody">
@@ -1017,7 +1737,7 @@
             <!-- 分页 -->
             <div class="pagination flex items-center justify-between py-4 px-2">
                 <div class="text-sm text-text-secondary">
-                    显示 <span id="startItem">0</span> 到 <span id="endItem">0</span> 条，共 <span id="totalItems">0</span> 条
+                    本页 <span id="startItem">0</span> 到 <span id="endItem">0</span> 条，共 <span id="totalItems">0</span> 条
                 </div>
                 <div class="flex gap-4">
                     <button id="prevPage" class="pagination-btn px-4 py-2 border rounded transition-all hover:bg-card-hover disabled:opacity-50" disabled>
@@ -1035,7 +1755,7 @@
     <div id="editModal" class="modal-overlay hidden">
         <div class="modal">
             <div class="modal-header">
-                <h2 id="modalTitle" class="modal-title">添加记录</h2>
+                <h2 id="modalTitle" class="modal-title">添加图标</h2>
                 <button id="closeModal">
                     <i class="fa fa-times"></i>
                 </button>
@@ -1044,23 +1764,30 @@
                 <form id="editForm">
                     <input type="hidden" id="recordId">
                     
-                    <!-- 第一行：句号，类型，归属 -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <!-- 第一行：序号，类型，归属，打开方式 -->
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                         <div class="input-group">
-                            <label for="edit序号">序号（越大图标越靠前）</label>
+                            <label for="edit序号">序号（越大靠前）</label>
                             <input type="number" id="edit序号" required>
                         </div>
                         <div class="input-group">
-                            <label for="edit类型">类型（图标/文件夹）</label>
+                            <label for="edit类型">图标类型</label>
                             <select id="edit类型" required>
                                 <option value="0">图标</option>
                                 <option value="1">文件夹</option>
                             </select>
                         </div>
                         <div class="input-group">
-                            <label for="edit归属">归属（桌面/其他文件夹）</label>
+                            <label for="edit归属">归属文件夹</label>
                             <select id="edit归属" required>
                                 <!-- 归属选项将动态生成 -->
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="editOpenInPage">打开方式</label>
+                            <select id="editOpenInPage" required>
+                                <option value="0">新窗打开</option>
+                                <option value="1">页内打开</option>
                             </select>
                         </div>
                     </div>
@@ -1076,6 +1803,7 @@
                         const urlFieldsRow1 = document.getElementById('urlFieldsRow1');
                         const urlFieldsRow2 = document.getElementById('urlFieldsRow2');
                         const titleInput = document.getElementById('edit标题');
+                        const openInPageField = document.querySelector('.input-group:has(#editOpenInPage)');
                         
                         // 当类型为文件夹时隐藏URL相关字段，确保显示时使用正确的display值
                         if (publicUrlField) {
@@ -1088,6 +1816,12 @@
                         }
                         if (urlFieldsRow1) urlFieldsRow1.style.display = isFolder ? 'none' : 'grid';
                         if (urlFieldsRow2) urlFieldsRow2.style.display = isFolder ? 'none' : 'grid';
+                        
+                        // 当类型为文件夹时隐藏打开方式字段，当类型为图标时显示
+                        if (openInPageField) {
+                            // 使用flex而不是block以保持原始布局结构
+                            openInPageField.style.display = isFolder ? 'none' : 'flex';
+                        }
                         
                         // 获取当前记录ID，判断是否为新增记录
                         const recordId = document.getElementById('recordId').value;
@@ -1196,7 +1930,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div class="input-group">
                             <label for="edit标题">* 标题（必须填写！）</label>
-                            <input type="text" id="edit标题" value="一个新图标" required>
+                            <input type="text" id="edit标题" value="一个新图标" required onfocus="this.select();">
                         </div>
                         <div id="publicUrlField" class="input-group">
                             <label for="edit外网跳转URL">公网地址：（完整的URL地址）</label>
@@ -1211,52 +1945,107 @@
                             <input type="text" id="edit内网跳转URL" placeholder="识别到内网将跳转到此地址" value="" onfocus="if(this.value=='') this.value='http://' + window.neiwangURL; this.select();">
                         </div>
                         <div class="input-group">
-                            <label for="edit备用URL1">备用URL1</label>
-                            <input type="text" id="edit备用URL1" placeholder="http:// or https://">
+                            <label for="edit备用URL1">备用URL1（桌面图标右键菜单可选）</label>
+                            <input type="text" id="edit备用URL1" placeholder="http:// or https://" onfocus="this.select();">
                         </div>
                     </div>
                     
                     <!-- 第四行：备用URL2、备用URL3 -->
                     <div id="urlFieldsRow2" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div class="input-group">
-                            <label for="edit备用URL2">备用URL2</label>
-                            <input type="text" id="edit备用URL2" placeholder="http:// or https://">
+                            <label for="edit备用URL2">备用URL2（桌面图标右键菜单可选）</label>
+                            <input type="text" id="edit备用URL2" placeholder="http:// or https://" onfocus="this.select();">
                         </div>
                         <div class="input-group">
-                            <label for="edit备用URL3">备用URL3</label>
-                            <input type="text" id="edit备用URL3" placeholder="http:// or https://">
+                            <label for="edit备用URL3">备用URL3（桌面图标右键菜单可选）</label>
+                            <input type="text" id="edit备用URL3" placeholder="http:// or https://" onfocus="this.select();">
                         </div>
                     </div>
                     
                     <!-- 第五行：网络图片URL、本地图片URL -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div class="input-group">
-                            <label for="edit网络图片URL">网络图片URL（若不填则尝试从URL中获取）</label>
-                            <div class="flex gap-2">
-                                <input type="text" id="edit网络图片URL" placeholder="不填则尝试从URL中获取" class="flex-1">
+                    <div class="grid grid-cols-1 gap-6 mb-6">
+                        <div class="input-group" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <label for="edit网络图片URL" style="display: none;">网络图片URL（若不填则尝试从URL中获取）</label>
+                            <input type="text" id="edit网络图片URL" placeholder="不填则尝试从URL中获取" class="flex-1" onfocus="this.select();" style="display: none;">
+                            <label for="edit本地图片URL">图标图片（若手动请别用中文，把图片放到deskdata/img/目录下）</label>
+                            <div class="flex gap-2 items-center" style="width: 100%;">
+                                <!-- 图片预览区域 -->
+                                <div id="imagePreview" style="width: 50px; height: 50px; border: 1px solid var(--border-color); border-radius: 4px; background-color: rgba(15, 23, 42, 0.3); display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                    <i class="fa fa-picture-o text-text-secondary" style="font-size: 20px;"></i>
+                                </div>
+                                
+                                <input type="text" id="edit本地图片URL" placeholder="1上传/2填入网络图片url/3点击获取/4手动" class="flex-1 flex-grow min-w-0" onfocus="this.select();" oninput="updateImagePreview(this.value)" style="flex: 1 1 auto; width: 0;">
                                 <button id="autoFetchBtn" type="button" class="btn btn-primary whitespace-nowrap">获取</button>
-                            </div>
-                        </div>
-                        <div class="input-group">
-                            <label for="edit本地图片URL">本地图片（自动，若手动填请用英文）</label>
-                            <div class="flex gap-2">
-                                <input type="text" id="edit本地图片URL" placeholder="不需要填写，除非手动放置图片文件" class="flex-1">
                                 <button id="uploadLocalImgBtn" type="button" class="btn btn-primary whitespace-nowrap">上传</button>
                                 <input type="file" id="localImgFileInput" accept="image/*" style="display: none;">
                             </div>
+                            
+                            <script>
+                            // 更新图片预览 - 设为全局函数以便在打开编辑模态框时调用
+                            window.updateImagePreview = function(url) {
+                                const previewContainer = document.getElementById('imagePreview');
+                                
+                                // 清除现有内容
+                                previewContainer.innerHTML = '';
+                                
+                                if (!url) {
+                                    // 如果URL为空，显示图标
+                                    const icon = document.createElement('i');
+                                    icon.className = 'fa fa-picture-o text-text-secondary';
+                                    icon.style.fontSize = '20px';
+                                    previewContainer.appendChild(icon);
+                                    return;
+                                }
+                                
+                                try {
+                                    // 创建图片元素
+                                    const img = document.createElement('img');
+                                    img.style.width = '100%';
+                                    img.style.height = '100%';
+                                    img.style.objectFit = 'cover';
+                                    img.style.transition = 'opacity 0.3s ease';
+                                    img.style.opacity = '0';
+                                    
+                                    // 设置图片加载成功处理
+                                    img.onload = function() {
+                                        img.style.opacity = '1';
+                                    };
+                                    
+                                    // 设置图片加载失败处理
+                                    img.onerror = function() {
+                                        const icon = document.createElement('i');
+                                        icon.className = 'fa fa-exclamation-circle text-warning';
+                                        icon.style.fontSize = '20px';
+                                        previewContainer.innerHTML = '';
+                                        previewContainer.appendChild(icon);
+                                    };
+                                    
+                                    // 设置图片URL
+                                    img.src = url + `?v=${Date.now()}`;  
+                                    previewContainer.appendChild(img);
+                                } catch (error) {
+                                    // 出错时显示警告图标
+                                    const icon = document.createElement('i');
+                                    icon.className = 'fa fa-exclamation-circle text-warning';
+                                    icon.style.fontSize = '20px';
+                                    previewContainer.innerHTML = '';
+                                    previewContainer.appendChild(icon);
+                                }
+                            }
+                            </script>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <a href="otn.html" class="text-secondary mr-auto" style="margin-right: auto; padding-top: 10px;">
-                    <small>合拼旧版数据</small>
+                <a target="_blank" href="HDicon/HDicon.html" class="text-secondary mr-auto" style="margin-right: auto; padding-top: 10px;">
+                    <small>打开图标库</small>
                 </a>
                 <button id="cancelEditBtn" class="btn btn-secondary">
-                    取消
+                    取 消
                 </button>
                 <button id="saveBtn" class="btn btn-primary">
-                    保存
+                    保 存
                 </button>
             </div>
         </div>
@@ -1292,11 +2081,11 @@
             </div>
             <div class="modal-body">
                 <p class="text-text-primary">确定要立即应用当前配置吗？（飞牛也是牛，请不要频繁点击此按钮）</p>
-                <p class="text-text-secondary text-sm mt-2">应用后若没效果请清空浏览器缓存/浏览器按F12在网络里禁用缓存/使用无痕模式浏览</p>
+                <p class="text-text-secondary text-sm mt-2">应用后若没效果请清空浏览器缓存/浏览器按F12在网络里禁用缓存/使用无痕模式浏览</p></br>
             </div>
             <div class="modal-footer">
                 <button id="cancelApplyBtn" class="btn btn-secondary">
-                    取消
+                    取 消
                 </button>
                 <button id="confirmApplyBtn" class="btn btn-primary">
                     确认应用
@@ -1309,16 +2098,15 @@
     <div id="resetDesktopModal" class="modal-overlay hidden">
         <div class="modal max-w-md">
             <div class="modal-header">
-                <h2 class="modal-title">确认还原桌面</h2>
+                <h2 class="modal-title">确认还原桌面？</h2>
             </div>
             <div class="modal-body">
-                <p class="text-text-primary">确定要还原桌面吗？这将彻底还原成使用本工具之前都得状态。</p>
-                <p class="text-text-secondary text-sm mt-2">⚠操作后请到Docker Compose把fndesk项目清理！（不用删除，清理就可以，随时构建数据都在）</p>
-                <p class="text-text-secondary text-sm mt-2">⚠还原后若未生效请重启一次系统。</p>
+                <p class="text-text-primary">这将彻底还原成使用本工具之前状态。</p>
+                <p class="text-text-secondary text-sm mt-2">⚠ 还原后请稍等片刻刷新桌面！</p></br>
             </div>
             <div class="modal-footer">
                 <button id="cancelResetBtn" class="btn btn-secondary">
-                    取消
+                    取 消
                 </button>
                 <button id="confirmResetBtn" class="btn btn-primary">
                     确认还原
@@ -1335,11 +2123,11 @@
             </div>
             <div class="modal-body">
                 <p class="text-text-primary">确定要退出当前登录吗？</p>
-                <p class="text-text-secondary text-sm mt-2">退出后需要重新登录才能管理桌面配置。</p>
+                <p class="text-text-secondary text-sm mt-2">退出后需要重新登录才能管理桌面配置。</p></br>
             </div>
             <div class="modal-footer">
                 <button id="cancelLogoutBtn" class="btn btn-secondary">
-                    取消
+                    取 消
                 </button>
                 <button id="confirmLogoutBtn" class="btn btn-secondary">
                     确认退出
@@ -1398,7 +2186,7 @@
         try {
                 // 从指定URL获取公告内容，添加CORS和缓存控制选项
                 //const response = await fetch('https:// 通过本地代理API获取公告内容，避免CORS问题
-                const remoteUrl = 'https://sh.on79.cfd/fndesk.html';
+                const remoteUrl = '';  //直接server.js地址
                 const proxyUrl = `/api/announcement?url=${encodeURIComponent(remoteUrl)}`;
                 
                 const response = await fetch(proxyUrl, {
@@ -1494,11 +2282,90 @@
     <script src="index.js"></script>
     
     <!-- 页脚 -->
+    <!-- 在线升级确认模态框 -->
+    <div id="updateModal" class="modal-overlay hidden">
+        <div class="modal max-w-md">
+            <div class="modal-header">
+                <h2 class="modal-title">在线升级</h2>
+            </div>
+            <div class="modal-body">
+                <p class="text-text-primary">在线升级功能开发中...手动升级步骤： </p></br>
+                <p class="text-text-primary">应用中心升级：</br>下载最新安装包直接安装（<a target="_blank" href="https://fndesk.imcq.top/?url=dl&at=FnAPP" style="color: #60a5fa;font-size:16px; font-weight: bold; text-decoration: none;">fpk下载链接</a>）</p></br>
+                <p class="text-text-primary">Docker Compose升级步骤：</p>
+                <p class="text-text-secondary text-sm mt-2">1.打开Docker>Compose>fndesk项目>右边三个点>清理</p>
+                <p class="text-text-secondary text-sm mt-2">2.打开Docker>本地镜像>把imgzcq/fndesk镜像删除</p>
+                <p class="text-text-secondary text-sm mt-2">3.回到Docker>Compose>fndesk项目>右边三个点>构建</p></br>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelUpdateBtn" class="btn btn-secondary">
+                    取 消
+                </button>
+                <button id="confirmUpdateBtn" class="btn btn-secondary">
+                    我知道了
+                </button>
+            </div>
+        </div>
+    </div>
+    
     <footer class="bg-card py-6 border-t">
         <div class="container text-center text-text-secondary">
-            <p class="mb-1" style="font-size: 10px;">飞牛桌面管理工具 by 米恋泥</p>
-            <p style="font-size: 10px;">组织机构 @小宠瞭望塔</p>
+            <p class="mb-1" style="font-size: 12px;">飞牛桌面管理工具 by 米恋泥</p>
+            <p style="font-size: 11px;">组织机构 @小宠瞭望塔</p></br>
         </div>
     </footer>
+
+    <script>
+        // 在线升级模态框逻辑
+        document.addEventListener('DOMContentLoaded', function() {
+            const updateModal = document.getElementById('updateModal');
+            const menuUpdateDesktop = document.getElementById('menuUpdateDesktop');
+            const cancelUpdateBtn = document.getElementById('cancelUpdateBtn');
+            const confirmUpdateBtn = document.getElementById('confirmUpdateBtn');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            
+            // 打开模态框
+            function openUpdateModal() {
+                if (updateModal) {
+                    updateModal.classList.remove('hidden');
+                }
+                // 关闭下拉菜单
+                if (dropdownMenu) {
+                    dropdownMenu.style.display = 'none';
+                }
+            }
+            
+            // 关闭模态框
+            function closeUpdateModal() {
+                if (updateModal) {
+                    updateModal.classList.add('hidden');
+                }
+            }
+            
+            // 为在线升级菜单项添加点击事件
+            if (menuUpdateDesktop) {
+                menuUpdateDesktop.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    openUpdateModal();
+                });
+            }
+            
+            // 为按钮添加点击事件
+            if (cancelUpdateBtn) {
+                cancelUpdateBtn.addEventListener('click', closeUpdateModal);
+            }
+            
+            if (confirmUpdateBtn) {
+                confirmUpdateBtn.addEventListener('click', closeUpdateModal);
+            }
+            
+            // 添加ESC键关闭模态框功能
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && updateModal && !updateModal.classList.contains('hidden')) {
+                    closeUpdateModal();
+                }
+            });
+        });
+    </script>
 </body>
 </html>

@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fndesk图标库</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #00d4ff;
+            --card-bg: #1a1a2e;
+            --dark-bg: #0f0c29;
+            --border-color: #16213e;
+            --text-secondary: #8899aa;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #1a1a2e;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+            border: 1px solid #16213e;
+        }
+
+        /* 导航栏样式 */
+        .navbar {
+            background: linear-gradient(90deg, var(--card-bg), var(--dark-bg));
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .navbar-title {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .navbar-title-main {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(0, 168, 255, 0.5);
+        }
+
+        .navbar-title-sub {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        /* 返回按钮 */
+        .back-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .search-box {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            font-size: 16px;
+            border: 2px solid #00d4ff;
+            border-radius: 50px;
+            outline: none;
+            background: #16213e;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.2);
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+            border-color: #00ffff;
+        }
+
+        .search-box input::placeholder {
+            color: #8899aa;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #00d4ff;
+            font-size: 20px;
+        }
+
+        /* CDN开关样式 */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #16213e;
+            transition: .4s;
+            border-radius: 24px;
+            border: 2px solid #00d4ff;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 2px;
+            background-color: #00d4ff;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #00d4ff;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+            background-color: #16213e;
+        }
+
+        .stats {
+            margin-top: 15px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .icon-card {
+            background: #16213e;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid #0e1628;
+        }
+
+        .icon-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+            border-color: #00d4ff;
+        }
+
+        .icon-image {
+            width: 100%;
+            height: 120px;
+            object-fit: contain;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            background: #0e1628;
+            padding: 5px;
+        }
+
+        .icon-name {
+            font-size: 13px;
+            color: #00d4ff;
+            word-break: break-all;
+            line-height: 1.4;
+            min-height: 36px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .icon-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .icon-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #00d4ff;
+            background: transparent;
+            color: #00d4ff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .icon-btn:hover {
+            background: #00d4ff;
+            color: #16213e;
+            transform: scale(1.05);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .pagination button {
+            padding: 10px 20px;
+            border: 2px solid #00d4ff;
+            background: transparent;
+            color: #00d4ff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            min-width: 80px;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: #00d4ff;
+            color: #16213e;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+        }
+
+        .pagination button:disabled {
+            background: transparent;
+            border-color: #444;
+            color: #444;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .pagination .page-info {
+            padding: 10px 15px;
+            background: #16213e;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #00d4ff;
+            border: 2px solid #00d4ff;
+            box-shadow: 0 2px 10px rgba(0, 212, 255, 0.2);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: #00d4ff;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 50px;
+            color: #8899aa;
+            font-size: 18px;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #00d4ff 0%, #00ffff 100%);
+            color: #16213e;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.5);
+            z-index: 9999;
+            animation: slideIn 0.3s;
+            font-weight: bold;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .icon-image {
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+                <div class="navbar-content">
+            <div class="navbar-title">
+                <div></br> </div>
+                <div class="navbar-title-main">🎨 Fndesk 图标库</div>
+                <div class="navbar-title-sub">  请到公告下载离线包！图标资源来自于xushier/HD-Icons，经ghfast加速访问，建议下载后使用</div>
+            </div>
+            <a href="../index.html" class="back-btn">
+                <span>返回主页</span>
+            </a>
+        </div>
+        <div style="padding: 20px; text-align: center;">
+            <div style="text-align: center; color: #8899aa; font-size: 14px; margin-bottom: 15px;">
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 15px; width: 100%;">
+                <div class="search-box" style="flex: 1; min-width: 300px;">
+                    <input type="text" id="searchInput" placeholder="搜索图标名称...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 8px; color: #00d4ff; font-size: 14px;">
+                    <span>CDN加速</span>
+                    <label class="switch">
+                        <input type="checkbox" id="cdnToggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="warning" style="margin-top: 10px; color: #ff9900; font-size: 14px; display: none;">⚠️ 检测到本地文件模式，部分功能可能受限。请使用本地服务器运行此页面以获得最佳体验。</div>
+        </div>
+
+        <div class="content">
+            <div id="iconGrid" class="grid"></div>
+            <div id="pagination" class="pagination"></div>
+        </div>
+    </div>
+
+    <script>
+        // 防止Webpack相关错误
+        if (typeof __webpack_require__ !== 'undefined') {
+            __webpack_require__.p = '';
+        }
+        
+        let iconsData = [];
+        let filteredIcons = [];
+        let currentPage = 1;
+        const iconsPerPage = 20;
+        const CDN_PREFIX = 'https://ghfast.top/';
+        let useCDN = true; // 默认使用CDN
+
+        // 加载JSON数据
+        async function loadIcons() {
+            try {
+                const response = await fetch('HDicon.json');
+                if (!response.ok) throw new Error('文件加载失败');
+                iconsData = await response.json();
+                filteredIcons = iconsData;
+                updateStats();
+                renderIcons();
+            } catch (error) {
+                console.error('加载错误:', error);
+                document.getElementById('iconGrid').innerHTML = 
+                    `<div class="no-results">
+                        <p>⚠️ 加载失败</p>
+                        <p style="font-size: 14px; margin-top: 10px;">请使用本地服务器打开此页面,例如:</p>
+                        <p style="font-size: 14px; color: #667eea; margin-top: 5px;">python -m http.server 8000</p>
+                        <p style="font-size: 14px; margin-top: 5px;">然后访问: http://localhost:8000/icon-viewer.html</p>
+                    </div>`;
+            }
+        }
+
+        // 更新统计信息
+        function updateStats() {
+            // 统计信息现在显示在分页栏中
+        }
+
+        // 渲染图标
+        function renderIcons() {
+            const grid = document.getElementById('iconGrid');
+            const start = (currentPage - 1) * iconsPerPage;
+            const end = start + iconsPerPage;
+            const pageIcons = filteredIcons.slice(start, end);
+
+            if (pageIcons.length === 0) {
+                grid.innerHTML = '<div class="no-results">未找到匹配的图标</div>';
+                renderPagination();
+                return;
+            }
+
+            grid.innerHTML = pageIcons.map(icon => {
+                const nameWithoutExt = icon.name.replace(/\.png$/i, '');
+                // 优先使用本地HDicons目录中的图标
+                const localPath = `../deskdata/HDicons/${icon.name}`;
+                const fullUrl = useCDN ? CDN_PREFIX + icon.download_url : icon.download_url;
+                return `
+                    <div class="icon-card">
+                        <img class="icon-image" 
+                             src="${localPath}" 
+                             alt="${nameWithoutExt}"
+                             onerror="this.src='${fullUrl}'; this.onerror=null;">
+                        <div class="icon-name">${nameWithoutExt}</div>
+                        <div class="icon-buttons">
+                            <button class="icon-btn" onclick="downloadIcon('${fullUrl}', '${icon.name}', event);">下载</button>
+                            <button class="icon-btn" onclick="copyUrl('${fullUrl}', event);">复制</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            renderPagination();
+        }
+
+        // 渲染分页
+        function renderPagination() {
+            const pagination = document.getElementById('pagination');
+            const totalPages = Math.ceil(filteredIcons.length / iconsPerPage);
+            
+            if (totalPages <= 1) {
+                // 只有一页的情况 - 简化显示
+                const simpleContainerHtml = `
+                    <div style="background: #0e1628; border-radius: 12px; border: 1px solid #16213e; padding: 15px 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                        <div style="color: #8899aa; font-size: 14px;">
+                            共 <span style="color: #00d4ff; font-weight: bold;">${filteredIcons.length}</span> 个图标
+                            <span style="margin: 0 8px;">|</span>
+                            每页 <span style="color: #00d4ff; font-weight: bold;">${iconsPerPage}</span> 个
+                        </div>
+                        <div style="color: #00d4ff; font-size: 14px; font-weight: 500;">
+                            第 1 / 1 页
+                        </div>
+                    </div>
+                `;
+                pagination.innerHTML = simpleContainerHtml;
+                return;
+            }
+            
+            // 统计信息和分页控件容器 - 单行布局
+            const containerHtml = `
+                <div style="background: #0e1628; border-radius: 12px; border: 1px solid #16213e; padding: 15px 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                    <!-- 左侧统计信息 -->
+                    <div style="color: #8899aa; font-size: 14px; white-space: nowrap;">
+                        共 <span style="color: #00d4ff; font-weight: bold;">${filteredIcons.length}</span> 个图标
+                        <span style="margin: 0 8px;">|</span>
+                        每页 <span style="color: #00d4ff; font-weight: bold;">${iconsPerPage}</span> 个
+                    </div>
+                    
+                    <!-- 中间分页按钮 -->
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <button onclick="changePage(1)" ${currentPage === 1 ? 'disabled' : ''} style="padding: 6px 12px; min-width: 50px;">首页</button>
+                        <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} style="padding: 6px 12px; min-width: 50px;">上页</button>
+                        <span class="page-info" style="min-width: 100px; text-align: center; padding: 6px 12px;">
+                            ${currentPage} / ${totalPages}
+                        </span>
+                        <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} style="padding: 6px 12px; min-width: 50px;">下页</button>
+                        <button onclick="changePage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''} style="padding: 6px 12px; min-width: 50px;">末页</button>
+                    </div>
+                    
+                    <!-- 右侧页码跳转 -->
+                    <div style="display: flex; align-items: center; gap: 8px; color: #8899aa; font-size: 13px; white-space: nowrap;">
+                        跳转:
+                        <input type="number" 
+                               min="1" 
+                               max="${totalPages}" 
+                               value="${currentPage}" 
+                               style="width: 50px; padding: 6px; background: #16213e; border: 2px solid #00d4ff; border-radius: 6px; color: white; text-align: center;"
+                               onchange="if(this.value >= 1 && this.value <= ${totalPages}) changePage(parseInt(this.value));">
+                        <button onclick="const input = this.previousElementSibling; if(input.value >= 1 && input.value <= ${totalPages}) changePage(parseInt(input.value));" 
+                                style="padding: 6px 12px; border: 2px solid #00d4ff; background: transparent; color: #00d4ff; border-radius: 6px; cursor: pointer; transition: all 0.3s;"
+                                onmouseover="this.style.background='#00d4ff'; this.style.color='#16213e';"
+                                onmouseout="this.style.background='transparent'; this.style.color='#00d4ff';">
+                            Go
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            pagination.innerHTML = containerHtml;
+        }
+
+        // 切换页面
+        function changePage(page) {
+            const totalPages = Math.ceil(filteredIcons.length / iconsPerPage);
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            renderIcons();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 搜索功能
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const keyword = e.target.value.toLowerCase();
+            filteredIcons = iconsData.filter(icon => 
+                icon.name.toLowerCase().includes(keyword)
+            );
+            currentPage = 1;
+            updateStats();
+            renderIcons();
+        });
+
+        // 显示提示信息
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
+        }
+
+        // 复制URL到剪贴板
+        function copyUrl(url, event) {
+            // 阻止事件冒泡
+            if (event) event.stopPropagation();
+            
+            // 尝试使用现代Clipboard API
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast('✓ 链接已复制到剪贴板');
+                }).catch((err) => {
+                    console.error('Clipboard API 失败:', err);
+                    // 降级到传统方法
+                    fallbackCopyTextToClipboard(url);
+                });
+            } else {
+                // 降级到传统方法
+                fallbackCopyTextToClipboard(url);
+            }
+        }
+
+        // 传统复制方法
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast('✓ 链接已复制到剪贴板');
+            } catch (err) {
+                console.error('传统复制方法失败:', err);
+                showToast('✗ 复制失败');
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // 下载图标
+        function downloadIcon(url, filename, event) {
+            // 阻止事件冒泡
+            if (event) event.stopPropagation();
+            
+            // 创建临时链接进行下载
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.target = '_blank';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            showToast('✓ 开始下载: ' + filename);
+        }
+
+        // CDN开关事件监听
+        document.getElementById('cdnToggle').addEventListener('change', (e) => {
+            useCDN = e.target.checked;
+            renderIcons();
+        });
+
+        // 页面加载时初始化
+        if (window.location.protocol === 'file:') {
+            document.getElementById('warning').style.display = 'block';
+        }
+        loadIcons();
+    </script>
+</body>
+</html>

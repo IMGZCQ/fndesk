@@ -204,6 +204,8 @@ function checkLoginStatus() {
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('authToken');
         localStorage.removeItem('loginTimestamp');
+        // 记录当前页面URL作为来源页面
+        localStorage.setItem('returnUrl', window.location.href);
         window.location.href = 'login.html';
         return false;
     }
@@ -291,6 +293,16 @@ async function init() {
         
         // 然后加载数据
         await loadData();
+        
+        // 从本地缓存加载筛选条件（在下拉选项生成后再设置值）
+        const savedFilterType = localStorage.getItem('filterType');
+        const savedFilterOwner = localStorage.getItem('filterOwner');
+        const savedFilterKeyword = localStorage.getItem('filterKeyword');
+        
+        if (savedFilterType) filterType.value = savedFilterType;
+        if (savedFilterOwner) filterOwner.value = savedFilterOwner;
+        if (savedFilterKeyword) filterKeyword.value = savedFilterKeyword;
+        
         applyFilters();
     }
 
@@ -377,94 +389,23 @@ async function loadData() {
             }
         }
         
-        // 如果API失败或没有返回数组，尝试直接从文件加载（用于静态环境）
-        const staticResponse = await fetch('deskdata/data.json', {
-            headers: {
-                'Cache-Control': 'no-cache, no-store, must-revalidate',
-                'Pragma': 'no-cache',
-                'Expires': '0'
-            },
-            cache: 'no-store'
-        });
-        if (staticResponse.ok) {
-            const staticData = await staticResponse.json();
-            // 即使数据为空也接受
-            if (Array.isArray(staticData)) {
-                data = staticData;
-                // 确保数据按序号排序（如果有数据）
-                if (data.length > 0) {
-                    data.sort((a, b) => parseInt(a.序号) - parseInt(b.序号));
-                }
-                
-                // 生成下拉选项
-                generateDropdownOptions();
-                showNotification('从静态文件加载数据成功', 'info');
-                return;
-            }
-        }
-        
-        // 如果静态文件也失败，尝试从localStorage加载
-        const localData = localStorage.getItem('deskData');
-        if (localData) {
-            try {
-                const parsedLocalData = JSON.parse(localData);
-                if (Array.isArray(parsedLocalData)) {
-                    data = parsedLocalData;
-                    // 确保数据按序号排序（如果有数据）
-                    if (data.length > 0) {
-                        data.sort((a, b) => parseInt(a.序号) - parseInt(b.序号));
-                    }
-                    
-                    // 生成下拉选项
-                    generateDropdownOptions();
-                    showNotification('从本地缓存加载数据成功', 'info');
-                    return;
-                }
-            } catch (parseError) {
-                console.error('解析本地数据失败:', parseError);
-            }
-        }
-        
-        // 如果所有加载方式都失败，初始化空数据
+        // 如果API失败或没有返回数组，直接初始化空数据
         data = [];
         generateDropdownOptions();
         showNotification('无数据，初始化为空数组', 'info');
     } catch (error) {
         console.error('加载数据失败:', error);
         showNotification('加载数据失败: ' + error.message, 'error');
-        
-        // 最后的降级方案：尝试从localStorage加载
-        try {
-            const localData = localStorage.getItem('deskData');
-            if (localData) {
-                const parsedLocalData = JSON.parse(localData);
-                if (Array.isArray(parsedLocalData)) {
-                    data = parsedLocalData;
-                    // 确保数据按序号排序（如果有数据）
-                    if (data.length > 0) {
-                        data.sort((a, b) => parseInt(a.序号) - parseInt(b.序号));
-                    }
-                    
-                    // 生成下拉选项
-                    generateDropdownOptions();
-                    showNotification('从本地缓存加载数据成功', 'info');
-                }
-            } else {
-                // 如果localStorage也没有数据，初始化为空数组
-                data = [];
-                generateDropdownOptions();
-            }
-        } catch (localError) {
-            console.error('本地缓存加载也失败:', localError);
-            // 即使解析失败，也要确保data是数组
-            data = [];
-            generateDropdownOptions();
-        }
+        // 初始化空数据作为最终降级方案
+        data = [];
+        generateDropdownOptions();
     }
 }
 
 // 应用筛选条件
 function applyFilters() {
+    // 直接使用当前筛选控件的值，不再从localStorage恢复（恢复操作应在init函数中进行）
+    
     filteredData = data.filter(item => {
         // 类型筛选（数字类型比较）
         if (filterType.value !== '' && item.类型 !== parseInt(filterType.value)) {
@@ -496,6 +437,11 @@ function applyFilters() {
         return sortDirection === 'asc' ? aOrder - bOrder : bOrder - aOrder;
     });
     
+    // 保存筛选条件到本地缓存
+    localStorage.setItem('filterType', filterType.value);
+    localStorage.setItem('filterOwner', filterOwner.value);
+    localStorage.setItem('filterKeyword', filterKeyword.value);
+    
     currentPage = 1;
     renderTable();
     updatePagination();
@@ -506,6 +452,12 @@ function resetFilters() {
     filterType.value = '';
     filterOwner.value = '';
     filterKeyword.value = '';
+    
+    // 清除本地缓存中的筛选条件
+    localStorage.removeItem('filterType');
+    localStorage.removeItem('filterOwner');
+    localStorage.removeItem('filterKeyword');
+    
     applyFilters();
 }
 
@@ -521,6 +473,654 @@ function toggleSort() {
 }
 
 // 渲染表格
+// 拖放排序相关全局变量
+let draggedItem = null;
+let draggedElement = null;
+let isDragging = false;
+// 拖放功能相关全局变量
+
+// 拖放排序样式
+const addDragDropStyles = () => {
+    // 检查样式是否已存在
+    if (!document.getElementById('drag-drop-styles')) {
+        const style = document.createElement('style');
+        style.id = 'drag-drop-styles';
+        style.textContent = `
+            /* 表格样式优化 */
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            
+            /* 标题栏美化 */
+            thead {
+                background: #20213dff;
+                color: white;
+            }
+            
+            thead th {
+                text-align: center;
+                font-size: 16px;
+                font-weight: 600;
+                padding: 12px 8px;
+                border-bottom: 2px solid #e5e7eb;
+                transition: all 0.3s ease;
+            }
+            
+            thead th:hover {
+                background-color: #374151;
+                transform: translateY(-1px);
+            }
+            
+            /* 表格内容居中 */
+            tbody td {
+                text-align: center;
+                vertical-align: middle;
+            }
+            
+            /* 操作列保持原样式但居中 */
+            tbody td.text-center {
+                text-align: center;
+            }
+            
+            /* 拖放滑块样式 - 科技感设计 */
+            .drag-handle {
+                cursor: grab;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
+                color: #58aadaff;
+                transition: all 0.3s ease;
+                border: 1px solid #4749afff;
+                border-radius: 6px;
+                box-shadow: 0 2px 8px rgba(79, 70, 229, 0.1);
+                position: relative;
+                overflow: hidden;
+            }
+            .drag-handle::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(79, 70, 229, 0.2), transparent);
+                transition: left 0.5s;
+            }
+            .drag-handle:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 16px rgba(79, 70, 229, 0.25);
+                border-color: #4338CA;
+                color: #4338CA;
+            }
+            .drag-handle:hover::before {
+                left: 100%;
+            }
+            .drag-handle:active {
+                cursor: grabbing;
+                transform: translateY(0);
+                box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2);
+            }
+            .drag-handle:active {
+                cursor: grabbing;
+            }
+            
+            /* 拖动时的样式 */
+            .dragging {
+                opacity: 0.5;
+                background-color: #181952ff !important;
+            }
+            
+            /* 拖动时的占位符 */
+            .drag-placeholder {
+                background-color: #e5e7eb;
+                border: 2px dashed #9ca3af;
+                height: 60px;
+                border-radius: 4px;
+            }
+            
+            /* 拖拽行的临时元素 - 改为半透明 */
+            .drag-ghost {
+                position: fixed;
+                pointer-events: none;
+                opacity: 0.9;
+                z-index: 9999;
+                background-color: rgba(33, 83, 150, 0.68);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                border-radius: 4px;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+};
+
+// 初始化拖放功能
+function initDragDrop() {
+    addDragDropStyles();
+    
+    // 为所有拖动句柄添加事件监听器
+    document.querySelectorAll('.drag-handle').forEach(handle => {
+        // 鼠标事件
+        handle.addEventListener('mousedown', handleMouseDown);
+        
+        // 触摸事件（移动端支持）
+        handle.addEventListener('touchstart', handleTouchStart, { passive: true });
+    });
+    
+    // 为表格添加放置事件
+    dataTableBody.addEventListener('dragover', handleDragOver);
+    dataTableBody.addEventListener('dragenter', handleDragEnter);
+    dataTableBody.addEventListener('drop', handleDrop);
+    
+    // 全局事件监听
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd);
+}
+
+// 鼠标按下处理
+function handleMouseDown(e) {
+    e.preventDefault();
+    const row = e.target.closest('tr');
+    
+    if (!row) {
+        return;
+    }
+    
+    startDragging(row, e.clientX, e.clientY);
+}
+
+// 触摸开始处理
+function handleTouchStart(e) {
+    const row = e.target.closest('tr');
+    if (!row) {
+        return;
+    }
+    
+    if (e.touches.length === 0) {
+        return;
+    }
+    
+    const touch = e.touches[0];
+    startDragging(row, touch.clientX, touch.clientY);
+}
+
+// 开始拖动
+function startDragging(row, clientX, clientY) {
+    try {
+        const idCell = row.querySelector('td:nth-child(2)');
+        if (!idCell) {
+            return;
+        }
+        
+        const itemId = parseInt(idCell.textContent);
+        
+        draggedItem = data.find(item => item.id === itemId);
+        if (!draggedItem) {
+            return;
+        }
+        
+        draggedElement = row;
+        isDragging = true;
+        
+        // 设置行的拖动样式
+        row.classList.add('dragging');
+        row.setAttribute('draggable', 'true');
+        
+        // 创建拖动时的幽灵元素
+        const ghostElement = row.cloneNode(true);
+        ghostElement.className = 'drag-ghost';
+        ghostElement.style.width = `${row.offsetWidth}px`;
+        document.body.appendChild(ghostElement);
+        
+        // 设置幽灵元素的初始位置
+        updateGhostPosition(clientX, clientY, ghostElement);
+        
+        // 存储拖动状态
+        row._dragData = {
+            ghostElement,
+            startX: clientX,
+            startY: clientY,
+            startTime: new Date().toISOString()
+        };
+        
+    } catch (error) {
+        isDragging = false;
+    }
+}
+
+// 更新幽灵元素位置
+function updateGhostPosition(clientX, clientY, ghostElement) {
+    // 让元素中心跟随鼠标/触摸点
+    const offsetX = ghostElement.offsetWidth / 2;
+    const offsetY = ghostElement.offsetHeight / 2;
+    ghostElement.style.left = `${clientX - offsetX}px`;
+    ghostElement.style.top = `${clientY - offsetY}px`;
+}
+
+// 鼠标移动处理
+function handleMouseMove(e) {
+    if (!isDragging || !draggedElement) {
+        return;
+    }
+    
+    try {
+        if (!draggedElement._dragData || !draggedElement._dragData.ghostElement) {
+            return;
+        }
+        
+        const ghostElement = draggedElement._dragData.ghostElement;
+        updateGhostPosition(e.clientX, e.clientY, ghostElement);
+        
+        // 处理自动滚动
+        handleAutoScroll(e.clientY);
+    } catch (error) {
+        // 忽略错误，继续执行
+    }
+}
+
+// 触摸移动处理
+function handleTouchMove(e) {
+    if (!isDragging || !draggedElement) return;
+    
+    // 阻止默认行为以避免页面滚动
+    e.preventDefault();
+    
+    if (e.touches.length === 0) {
+        return;
+    }
+    
+    const touch = e.touches[0];
+    
+    try {
+        if (!draggedElement._dragData || !draggedElement._dragData.ghostElement) {
+            return;
+        }
+        
+        const ghostElement = draggedElement._dragData.ghostElement;
+        updateGhostPosition(touch.clientX, touch.clientY, ghostElement);
+        
+        // 处理自动滚动
+        handleAutoScroll(touch.clientY);
+    } catch (error) {
+        // 忽略错误，继续执行
+    }
+}
+
+// 处理自动滚动
+function handleAutoScroll(clientY) {
+    const scrollThreshold = 50;
+    const scrollSpeed = 5;
+    
+    // 向上滚动
+    if (clientY < scrollThreshold) {
+        window.scrollBy(0, -scrollSpeed);
+    }
+    // 向下滚动
+    else if (clientY > window.innerHeight - scrollThreshold) {
+        window.scrollBy(0, scrollSpeed);
+    }
+}
+
+// 鼠标松开处理
+function handleMouseUp(e) {
+    if (!isDragging) return;
+    
+    try {
+        // 尝试获取鼠标位置下的元素
+        const elementUnderCursor = document.elementFromPoint(e.clientX, e.clientY);
+        const rowUnderCursor = elementUnderCursor ? elementUnderCursor.closest('tr') : null;
+        
+        // 创建一个模拟的drop事件
+        const dropEvent = new MouseEvent('drop', {
+            clientX: e.clientX,
+            clientY: e.clientY,
+            bubbles: true,
+            cancelable: true
+        });
+        
+        handleDrop(dropEvent);
+    } catch (error) {
+        endDragging();
+    }
+}
+
+// 触摸结束处理
+function handleTouchEnd(e) {
+    if (!isDragging || !draggedElement) return;
+    
+    try {
+        // 模拟鼠标事件的drop行为
+        handleDrop(e);
+    } catch (error) {
+        endDragging();
+    }
+}
+
+// 结束拖动
+function endDragging() {
+    if (!draggedElement) return;
+    
+    try {
+        // 移除拖动样式和属性
+        draggedElement.classList.remove('dragging');
+        draggedElement.removeAttribute('draggable');
+        
+        // 移除幽灵元素
+        if (draggedElement._dragData && draggedElement._dragData.ghostElement) {
+            try {
+                document.body.removeChild(draggedElement._dragData.ghostElement);
+            } catch (err) {
+                // 忽略错误，元素可能已被移除
+            }
+        }
+        
+        // 清除拖动数据
+        delete draggedElement._dragData;
+        draggedItem = null;
+        draggedElement = null;
+        isDragging = false;
+        
+        // 移除所有占位符
+        const placeholders = document.querySelectorAll('.drag-placeholder');
+        placeholders.forEach(placeholder => {
+            try {
+                placeholder.remove();
+            } catch (err) {
+                // 忽略错误，元素可能已被移除
+            }
+        });
+    } catch (error) {
+        // 确保状态被重置
+        draggedItem = null;
+        draggedElement = null;
+        isDragging = false;
+    }
+}
+
+// 拖动经过处理
+function handleDragOver(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!isDragging) return;
+    
+    try {
+        const targetRow = findTargetRow(e);
+        
+        if (!targetRow || targetRow === draggedElement || targetRow.classList.contains('drag-placeholder')) {
+            return;
+        }
+        
+        // 移除所有占位符
+        document.querySelectorAll('.drag-placeholder').forEach(placeholder => {
+            placeholder.remove();
+        });
+        
+        // 创建并插入新的占位符
+        const placeholder = document.createElement('tr');
+        placeholder.className = 'drag-placeholder';
+        placeholder.innerHTML = '<td colspan="8"></td>';
+        
+        // 根据位置插入占位符
+        const shouldInsertBefore = isBefore(draggedElement, targetRow);
+        
+        if (shouldInsertBefore) {
+            targetRow.parentNode.insertBefore(placeholder, targetRow);
+        } else {
+            targetRow.parentNode.insertBefore(placeholder, targetRow.nextSibling);
+        }
+    } catch (error) {
+        // 忽略错误
+    }
+}
+
+// 拖动进入处理
+function handleDragEnter(e) {
+    e.preventDefault();
+}
+
+// 放置处理
+async function handleDrop(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!isDragging || !draggedItem || !draggedElement) {
+        endDragging();
+        return;
+    }
+    
+    const targetRow = findTargetRow(e);
+    
+    // 如果没有找到目标行或者目标行是拖动元素本身，结束拖动
+    if (!targetRow || targetRow === draggedElement || targetRow.classList.contains('drag-placeholder')) {
+        endDragging();
+        return;
+    }
+    
+    try {
+        // 获取目标项的ID和序号
+        const idCell = targetRow.querySelector('td:nth-child(2)');
+        
+        if (!idCell) {
+            showNotification('排序失败：找不到目标项信息', 'error');
+            return;
+        }
+        
+        const targetIdText = idCell.textContent.trim();
+        const targetId = parseInt(targetIdText);
+        
+        if (isNaN(targetId)) {
+            showNotification('排序失败：目标项ID无效', 'error');
+            return;
+        }
+        
+        const targetItem = data.find(item => item.id === targetId);
+        
+        if (!targetItem) {
+            showNotification('排序失败：找不到目标项数据', 'error');
+            return;
+        }
+        
+        // 重新排序数据（异步调用）
+        const sourceOrder = parseInt(draggedItem.序号);
+        const targetOrder = parseInt(targetItem.序号);
+        
+        // 只有序号不同时才重新排序
+        if (sourceOrder !== targetOrder) {
+            const success = await reorderItems(sourceOrder, targetOrder);
+            
+            // 如果排序成功，重新加载数据并渲染表格
+            if (success) {
+                try {
+                    await loadData();
+                    
+                    // 重新从本地缓存恢复筛选条件
+                    const savedFilterType = localStorage.getItem('filterType');
+                    const savedFilterOwner = localStorage.getItem('filterOwner');
+                    const savedFilterKeyword = localStorage.getItem('filterKeyword');
+                    
+                    if (savedFilterType) filterType.value = savedFilterType;
+                    if (savedFilterOwner) filterOwner.value = savedFilterOwner;
+                    if (savedFilterKeyword) filterKeyword.value = savedFilterKeyword;
+                    
+                    applyFilters();
+                } catch (error) {
+                    showNotification('排序成功，但刷新表格失败', 'warning');
+                }
+            } else {
+                showNotification('排序操作失败', 'error');
+            }
+        }
+    } catch (error) {
+        showNotification('排序失败，请重试', 'error');
+    } finally {
+        // 确保总是结束拖动状态
+        endDragging();
+    }
+}
+
+// 查找目标行
+function findTargetRow(e) {
+    let clientX, clientY;
+    
+    // 处理触摸结束事件的changedTouches
+    if (e.changedTouches && e.changedTouches.length > 0) {
+        const touch = e.changedTouches[0];
+        clientX = touch.clientX;
+        clientY = touch.clientY;
+    }
+    // 处理触摸移动事件的touches
+    else if (e.touches && e.touches.length > 0) {
+        const touch = e.touches[0];
+        clientX = touch.clientX;
+        clientY = touch.clientY;
+    }
+    // 处理鼠标事件
+    else if (e.clientX !== undefined && e.clientY !== undefined) {
+        clientX = e.clientX;
+        clientY = e.clientY;
+    }
+    
+    if (clientX === undefined || clientY === undefined) {
+        return null;
+    }
+    
+    try {
+        // 获取坐标位置的元素
+        const element = document.elementFromPoint(clientX, clientY);
+        
+        // 查找最近的tr元素
+        const row = element ? element.closest('tr') : null;
+        
+        return row;
+    } catch (error) {
+        return null;
+    }
+}
+
+// 判断元素A是否在元素B之前
+function isBefore(a, b) {
+    if (a.parentNode === b.parentNode) {
+        for (let cur = a; cur; cur = cur.previousSibling) {
+            if (cur === b) return false;
+        }
+    }
+    return true;
+}
+
+// 重新排序项目（核心排序逻辑）
+async function reorderItems(sourceOrder, targetOrder) {
+    try {
+        // 确保sourceOrder和targetOrder是数字
+        sourceOrder = parseInt(sourceOrder);
+        targetOrder = parseInt(targetOrder);
+        
+        // 如果序号相同，不需要重新排序
+        if (sourceOrder === targetOrder) {
+            return true;
+        }
+        
+        // 找到源项目和目标项目（通过序号查找）
+        const sourceItem = data.find(item => parseInt(item.序号) === sourceOrder);
+        const targetItem = data.find(item => parseInt(item.序号) === targetOrder);
+        
+        if (!sourceItem || !targetItem) {
+            return false;
+        }
+        
+        // 获取当前排序顺序的所有项目
+        const sortedItems = [...data].sort((a, b) => parseInt(a.序号) - parseInt(b.序号));
+        
+        // 找到源项目和目标项目在排序数组中的索引
+        const sourceIndex = sortedItems.findIndex(item => item.id === sourceItem.id);
+        const targetIndex = sortedItems.findIndex(item => item.id === targetItem.id);
+        
+        if (sourceIndex === -1 || targetIndex === -1) {
+            return false;
+        }
+        
+        // 实现用户要求的排序算法
+        if (sourceIndex > targetIndex) {
+            // 向下拖动：源项目序号变大（例如从第五行拖到第三行）
+            
+            // 临时记录源项目的序号
+            const tempSourceOrder = sourceItem.序号;
+            
+            // 把源项目的序号改成目标项目的序号
+            sourceItem.序号 = targetItem.序号;
+            
+            // 从目标项目到源项目前一个项目，依次向后移动一位
+            // 例如：第三行 -> 第四行，第四行 -> 第五行（原来的第五行）
+            for (let i = targetIndex; i < sourceIndex; i++) {
+                const currentItem = sortedItems[i];
+                const nextItem = sortedItems[i + 1];
+                
+                // 跳过源项目本身
+                if (nextItem.id === sourceItem.id) continue;
+                
+                currentItem.序号 = nextItem.序号;
+            }
+            
+            // 把最后一个受影响的项目序号改成临时记录的源项目序号
+            if (sourceIndex > 0) {
+                const lastAffectedItem = sortedItems[sourceIndex - 1];
+                lastAffectedItem.序号 = tempSourceOrder;
+            }
+        } else {
+            // 向上拖动：源项目序号变小（例如从第三行拖到第五行）
+            
+            // 临时记录源项目的序号
+            const tempSourceOrder = sourceItem.序号;
+            
+            // 把源项目的序号改成目标项目的序号
+            sourceItem.序号 = targetItem.序号;
+            
+            // 从目标项目到源项目后一个项目，依次向前移动一位
+            for (let i = targetIndex; i > sourceIndex; i--) {
+                const currentItem = sortedItems[i];
+                const prevItem = sortedItems[i - 1];
+                
+                // 跳过源项目本身
+                if (prevItem.id === sourceItem.id) continue;
+                
+                currentItem.序号 = prevItem.序号;
+            }
+            
+            // 把最后一个受影响的项目序号改成临时记录的源项目序号
+            if (sourceIndex < sortedItems.length - 1) {
+                const lastAffectedItem = sortedItems[sourceIndex + 1];
+                lastAffectedItem.序号 = tempSourceOrder;
+            }
+        }
+        
+        // 保存更新后的数据（异步保存）
+        const saved = await saveDataToFile();
+        
+        if (!saved) {
+            // 作为后备方案，我们可以尝试直接写入localStorage
+            localStorage.setItem('deskData', JSON.stringify(data));
+            // 同时提供视觉反馈
+            showNotification('排序已更新，但数据同步可能需要手动刷新', 'warning');
+        }
+        
+        return true;
+    } catch (error) {
+        // 降级到本地保存
+        try {
+            localStorage.setItem('deskData', JSON.stringify(data));
+            showNotification('排序已更新，但数据同步失败，已保存到本地', 'warning');
+            return true;
+        } catch (localError) {
+            showNotification('排序更新失败，请刷新页面重试', 'error');
+            return false;
+        }
+    }
+}
+
 function renderTable() {
     // 如果是全部显示，则显示所有数据
     const paginatedData = pageSize === Infinity ? 
@@ -538,7 +1138,7 @@ function renderTable() {
     if (paginatedData.length === 0) {
         const emptyRow = document.createElement('tr');
         emptyRow.innerHTML = `
-            <td colspan="8" class="px-4 py-8 text-center text-gray-500">
+            <td colspan="9" class="px-4 py-8 text-center text-gray-500">
                 <i class="fa fa-search-minus text-2xl mb-2"></i>
                 <p>没有找到符合条件的记录</p>
             </td>
@@ -597,7 +1197,7 @@ function renderTable() {
                     <span style="color: #3B82F6; cursor: pointer; font-weight: 500;">${urlCount}个链接</span>
                     
                     <!-- 悬浮框 - 调整margin-top为0，确保鼠标可以平滑移动到浮窗 -->
-                    <div style="position: absolute; left: 0; top: 100%; margin-top: 0; 
+                    <div style="position: absolute; left: 0; top: 100%; margin-top: -5px; 
                                 z-index: 9999; background: #161630b0; border: 1px solid #303644; 
                                 border-radius: 6px; padding: 12px; min-width: 100px; max-width: 720px; 
                                 box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); opacity: 0.95; 
@@ -620,30 +1220,30 @@ function renderTable() {
                 </div>`;
             } else {
                 // 没有链接时显示"无链接"
-                urlDisplay = '<span class="text-gray-400">无链接</span>';
+                urlDisplay = '<span class="text-gray-400">無链接</span>';
             }
         } else if (item.类型 === 1 || item.类型 === '1') { // 文件夹类型
             // 文件夹类型留空
-            urlDisplay = '';
+            urlDisplay = '❌';
         }
         
-        // 构建图片显示（并排显示，不换行，顺序为网络图片再到本地图片）
-        let imageDisplay = '<div class="flex space-x-1 whitespace-nowrap items-center">';
+        // 构建图片显示（并排显示，不换行，顺序为网络图片再到本地图片，确保居中）
+        let imageDisplay = '<div class="flex space-x-1 whitespace-nowrap items-center" style="justify-content: center;">';
         
         // 网络图片占位（无论是否有图片都显示）
-        if (item.网络图片URL) {
-            imageDisplay += `<img src="${item.网络图片URL}" alt="网络图片" style="height: 48px; width: 48px; object-fit: cover;" class="rounded" title="网络图片"><span style="margin-right: 6px;"></span>`;
+/*         if (item.网络图片URL) {
+            imageDisplay += `<img src="${item.网络图片URL}" alt="网络图片" style="height: 56px; width: 56px; object-fit: cover;" class="rounded" title="网络图片"><span style="margin-right: 6px;"></span>`;
         } else {
-            imageDisplay += '<div style="height: 48px; width: 48px;" class="bg-gray-100 rounded flex items-center justify-center text-gray-400"><i class="fa fa-image"></i></div><span style="margin-right: 6px;"></span>';
-        }
+            imageDisplay += '<div style="height: 56px; width: 56px;" class="bg-gray-100 rounded flex items-center justify-center text-gray-400"><i class="fa fa-image"></i></div><span style="margin-right: 6px;"></span>';
+        } */
         
         // 本地图片占位（无论是否有图片都显示）
         if (item.本地图片URL) {
             // 对本地图片URL进行编码，确保中文和特殊字符能正确显示
             const encodedLocalImageUrl = encodeURI(item.本地图片URL);
-            imageDisplay += `<img src="${encodedLocalImageUrl}" alt="本地图片" style="height: 48px; width: 48px; object-fit: cover;" class="rounded" title="本地图片">`;
+            imageDisplay += `<img src="${encodedLocalImageUrl}" alt="本地图片" style="height: 56px; width: 56px; object-fit: cover;" class="rounded" title="本地图片">`;
         } else {
-            imageDisplay += '<div style="height: 48px; width: 48px;" class="bg-gray-100 rounded flex items-center justify-center text-gray-400"><i class="fa fa-file-image-o"></i></div>';
+            imageDisplay += '<div style="height: 56px; width: 56px;" class="bg-gray-100 rounded flex items-center justify-center text-gray-400"><i class="fa fa-file-image-o"></i></div>';
         }
         
         imageDisplay += '</div>';
@@ -658,19 +1258,25 @@ function renderTable() {
             ownerDisplay = ownerItem ? ownerItem.标题 : item.归属;
         }
         
+        // 在优先级列添加拖放滑块，将序号移到title属性中
         row.innerHTML = `
-            <td class="px-4 py-3 whitespace-nowrap">${item.序号}</td>
-            <td class="px-4 py-3 whitespace-nowrap hidden">${item.id}</td>
-            <td class="px-4 py-3 font-medium">${item.标题}</td>
-            <td class="px-4 py-3 whitespace-nowrap">${urlDisplay}</td>
-            <td class="px-4 py-3 whitespace-nowrap">${imageDisplay}</td>
             <td class="px-4 py-3 whitespace-nowrap">
-                <span class="px-2 py-1 text-xs rounded-full ${getTypeColorClass(item.类型)} inline-flex items-center">
-                    ${item.类型 === 0 || item.类型 === '0' ? '<i class="fa fa-star-o mr-1"></i>' : '<i class="fa fa-folder mr-1"></i>'}
+                <div class="drag-handle" title="序号: ${item.序号}">
+                    <i class="fa fa-align-justify"></i>
+                </div>
+            </td>
+            <td class="px-4 py-3 whitespace-nowrap hidden">${item.id}</td>
+            <td class="px-4 py-3 font-medium" style="color: #FFC107; font-size: 16px;">${item.标题}</td>
+            <td class="px-4 py-3 whitespace-nowrap">${urlDisplay}</td>
+            <td class="px-4 py-3 whitespace-nowrap">${item.OpenInPage === 1 ? '<span style="color: #f57474ff; font-weight: 500;">📃页内</span>' : '<span style="color: #f76ccdff; font-weight: 500;">🚀新窗</span>'}</td>
+            <td class="px-4 py-3 whitespace-nowrap">${imageDisplay}</td>
+            <td class="px-4 py-3 whitespace-nowrap" style="color: ${item.类型 === 0 || item.类型 === '0' ? '#aaeeffff' : '#fff9a3ff'}; font-weight: 500;">
+                <span class="px-2 py-1 text-xs rounded-full ${getTypeColorClass(item.类型)}">
+                    ${item.类型 === 0 || item.类型 === '0' ? '📌' : '📁'}
                     ${typeText}
                 </span>
             </td>
-            <td class="px-4 py-3 whitespace-nowrap">${ownerDisplay}</td>
+            <td class="px-4 py-3 whitespace-nowrap" style="color: ${item.归属 === 0 || item.归属 === '0' ? '#FFFFFF' : '#aab0ffff'}; font-weight: 500;">${ownerDisplay}</td>
             <td class="px-4 py-3 whitespace-nowrap text-center">
                 <button class="edit-btn" data-id="${item.id}">
                     改
@@ -693,6 +1299,9 @@ function renderTable() {
         btn.addEventListener('click', () => confirmDelete(btn.getAttribute('data-id')));
     });
     
+    // 初始化拖放功能
+    initDragDrop();
+    
     // 移除旧的排序事件监听（如果存在）
 }
 
@@ -705,8 +1314,8 @@ function typeNumberToText(type) {
 function getTypeColorClass(type) {
     const typeNum = parseInt(type);
     const typeColors = {
-        0: 'bg-blue-100 text-blue-800',
-        1: 'bg-green-100 text-green-800'
+        0: 'bg-purple-100 text-purple-800', // 图标使用紫蓝色
+        1: 'bg-cyan-100 text-cyan-800'      // 文件夹使用青蓝色
     };
     return typeColors[typeNum] || 'bg-gray-100 text-gray-800';
 }
@@ -715,6 +1324,11 @@ function getTypeColorClass(type) {
 function generateDropdownOptions() {
     // 生成类型下拉选项（固定为0和1）
     const filterType = document.getElementById('filterType');
+    const filterOwner = document.getElementById('filterOwner');
+    
+    // 保存当前选择状态
+    const currentFilterType = filterType.value;
+    const currentFilterOwner = filterOwner.value;
     
     // 清空类型筛选下拉框（保留第一个全部选项）
     while (filterType.options.length > 1) {
@@ -735,7 +1349,7 @@ function generateDropdownOptions() {
     });
     
     // 生成归属下拉选项
-    const filterOwner = document.getElementById('filterOwner');
+   
     const editOwner = document.getElementById('edit归属');
     
     // 清空现有选项（保留第一个全部选项）
@@ -790,6 +1404,15 @@ function generateDropdownOptions() {
         
         filterOwner.appendChild(filterOption);
     });
+    
+    // 恢复之前的选择状态
+    try {
+        filterType.value = currentFilterType;
+        filterOwner.value = currentFilterOwner;
+    } catch (e) {
+        // 如果选项不存在（比如删除了对应的选项），保持默认值
+        console.log('部分筛选选项不存在，无法完全恢复选择状态');
+    }
 }
 
 // 更新分页信息
@@ -863,17 +1486,38 @@ function openAddModal() {
     // 设置默认序号为当前最大序号+100，但用户可以自由修改
     const maxOrder = data.length > 0 ? Math.max(...data.map(item => parseInt(item.序号))) : 0;
     document.getElementById('edit序号').value = maxOrder + 100;
+    // 设置打开方式默认值为页内打开
+    document.getElementById('editOpenInPage').value = '0';
     // 确保添加时类型字段可用
     document.getElementById('edit类型').disabled = false;
     
     // 初始化类型选择事件监听
     initTypeSelectionListener();
     
-    // 根据当前类型设置URL字段的显示状态
+    // 根据当前类型设置URL字段和打开方式字段的显示状态
     const typeSelect = document.getElementById('edit类型');
-    toggleUrlFields(typeSelect.value === '0');
+    // 使用延迟执行以确保DOM元素完全加载
+    setTimeout(() => {
+        if (window.toggleUrlFieldsByType) {
+            window.toggleUrlFieldsByType();
+        } else {
+            // 降级处理：如果toggleUrlFieldsByType不存在，则调用原函数并手动显示打开方式字段
+            toggleUrlFields(typeSelect.value === '0');
+            const openInPageField = document.querySelector('.input-group:has(#editOpenInPage)');
+            if (openInPageField) {
+                openInPageField.style.display = 'flex';
+            }
+        }
+    }, 100);
     
+    // 打开模态框后初始化图片预览
     editModal.classList.remove('hidden');
+    setTimeout(() => {
+        const localImgUrl = document.getElementById('edit本地图片URL')?.value;
+        if (window.updateImagePreview) {
+            window.updateImagePreview(localImgUrl || '');
+        }
+    }, 100);
 }
 
 // 编辑记录
@@ -913,11 +1557,23 @@ function editRecord(id) {
         // 初始化类型选择事件监听
         initTypeSelectionListener();
         
-        // 根据记录类型设置URL字段的显示状态
-        const isIconType = record.类型 === 0;
-        toggleUrlFields(isIconType);
+        // 根据记录类型设置URL字段和打开方式字段的显示状态
+        // 使用toggleUrlFieldsByType函数处理字段显示/隐藏
+        setTimeout(() => {
+            const typeSelect = document.getElementById('edit类型');
+            if (typeSelect && window.toggleUrlFieldsByType) {
+                window.toggleUrlFieldsByType();
+            }
+        }, 100);
         
+        // 打开模态框后加载图片预览
         editModal.classList.remove('hidden');
+        setTimeout(() => {
+            const localImgUrl = document.getElementById('edit本地图片URL')?.value;
+            if (localImgUrl && window.updateImagePreview) {
+                window.updateImagePreview(localImgUrl);
+            }
+        }, 100);
     }
 }
 
@@ -970,7 +1626,7 @@ async function autoFetchImage() {
         
         // 设置30秒超时
         const timeoutPromise = new Promise((_, reject) => {
-            setTimeout(() => reject(new Error('下载超时')), 30000);
+            setTimeout(() => reject(new Error('下载超时')), 15000);
         });
         
         // 确定记录ID - 使用真实的记录ID或预生成最终ID
@@ -1028,6 +1684,12 @@ async function autoFetchImage() {
             
             // 成功获取图片，填充本地图片URL
             document.getElementById('edit本地图片URL').value = result.filePath;
+            // 更新图片预览
+            setTimeout(() => {
+                if (window.updateImagePreview) {
+                    window.updateImagePreview(result.filePath);
+                }
+            }, 50);
             
             // 如果有原始网络地址，填充网络图片URL
             if (result.imageUrl) {
@@ -1036,11 +1698,21 @@ async function autoFetchImage() {
             
             showNotification('图片获取成功！', 'success');
         } else {
+
+
+            
             // 如果下载失败，根据类型设置默认图片
             if (type === 1) { // 文件夹类型
                 const defaultFolderImageUrl = 'https://help-static.fnnas.com/images/文件管理.png';
                 document.getElementById('edit网络图片URL').value = defaultFolderImageUrl;
+                
                 document.getElementById('edit本地图片URL').value = '/deskdata/img/f.png';
+                // 更新图片预览
+                setTimeout(() => {
+                    if (window.updateImagePreview) {
+                        window.updateImagePreview('/deskdata/img/f.png');
+                    }
+                }, 50);
                 
                 // 尝试下载默认文件夹图片
                 try {
@@ -1069,6 +1741,12 @@ async function autoFetchImage() {
                 const defaultIconUrl = 'https://help-static.fnnas.com/images/Margin-1.png';
                 document.getElementById('edit网络图片URL').value = defaultIconUrl;
                 document.getElementById('edit本地图片URL').value = '/deskdata/img/i.png';
+                // 更新图片预览
+                setTimeout(() => {
+                    if (window.updateImagePreview) {
+                        window.updateImagePreview();
+                    }
+                }, 50);
                 
                 // 尝试下载默认图标
                 try {
@@ -1243,6 +1921,7 @@ async function saveRecord() {
             序号: parseInt(document.getElementById('edit序号').value),
             类型: type,
             归属: parseInt(document.getElementById('edit归属').value),
+            OpenInPage: parseInt(document.getElementById('editOpenInPage').value),
             标题: title,
             外网跳转URL: document.getElementById('edit外网跳转URL').value,
             内网跳转URL: document.getElementById('edit内网跳转URL').value,
@@ -1387,52 +2066,28 @@ function setupEventListeners() {
     addBtn.addEventListener('click', openAddModal);
     
     // 更多操作下拉菜单
-const moreActionsBtn = document.getElementById('moreActionsBtn');
-const dropdownMenu = document.getElementById('dropdownMenu');
-const menuLogout = document.getElementById('menuLogout');
-const menuMergeData = document.getElementById('menuMergeData');
-const menuCustomize = document.getElementById('menuCustomize');
-const menuResetDesktop = document.getElementById('menuResetDesktop');
-
-// 显示/隐藏下拉菜单
-if (moreActionsBtn && dropdownMenu) {
-    moreActionsBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // 阻止事件冒泡
-        dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-    });
-    
-    // 点击页面其他地方关闭下拉菜单
-    document.addEventListener('click', () => {
-        if (dropdownMenu.style.display === 'block') {
-            dropdownMenu.style.display = 'none';
-        }
-    });
-    
-    // 点击下拉菜单内部不关闭菜单
-    dropdownMenu.addEventListener('click', (e) => {
-        e.stopPropagation();
-    });
-}
-
 // 退出登录菜单项
+const menuLogout = document.getElementById('menuLogout');
 if (menuLogout) {
     menuLogout.addEventListener('click', logout);
 }
 
 // 合并数据菜单项
+const menuMergeData = document.getElementById('menuMergeData');
 if (menuMergeData) {
     menuMergeData.addEventListener('click', () => {
         window.location.href = 'otn.html';
-        dropdownMenu.style.display = 'none';
+        // 菜单关闭由index.html中的实现处理
     });
 }
 
 // 还原桌面菜单项
+const menuResetDesktop = document.getElementById('menuResetDesktop');
 if (menuResetDesktop) {
     menuResetDesktop.addEventListener('click', async () => {
         // 显示确认模态框
         document.getElementById('resetDesktopModal').classList.remove('hidden');
-        dropdownMenu.style.display = 'none';
+        // 菜单关闭由index.html中的实现处理
     });
     
     // 取消还原桌面
@@ -1452,7 +2107,7 @@ if (menuResetDesktop) {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ filePath: 'res/www.bak' })
+                body: JSON.stringify({ filePath: '/usr/trim/share/.restore/www.bak' })
             });
             
             const checkResult = await checkResponse.json();
@@ -1467,11 +2122,20 @@ if (menuResetDesktop) {
                         'Content-Type': 'application/json'
                     }
                 });
-                
+                    // 修改deskdata/pw.json的enabled为0
+                    await fetch('/api/update-data', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            filePath: 'deskdata/pw.json',
+                            update: { enabled: 0 }
+                        })
+                    });
                 const resetResult = await resetResponse.json();
-                
-                if (resetResult.success) {
-                    showNotification('系统还原成功，请重启系统。', 'success');
+                if (resetResult.success) {                    
+                    showNotification('系统还原成功，请稍后刷新桌面。', 'success');
                 } else {
                     showNotification('还原失败：' + (resetResult.error || '未知错误'), 'error');
                 }
@@ -1496,7 +2160,18 @@ if (menuResetDesktop) {
         confirmApplyBtn.addEventListener('click', async () => {
             try {
                 // 关闭模态框
-                applyConfigModal.classList.add('hidden');
+                applyConfigModal.classList.add('hidden');                
+                // 修改deskdata/pw.json的enabled为0
+                await fetch('/api/update-data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        filePath: `deskdata/pw.json`,
+                        update: { enabled: 1 }
+                    })
+                });
                 
                 // 向服务器发送退出请求
                 const response = await fetch('/api/exit', {
@@ -1513,11 +2188,14 @@ if (menuResetDesktop) {
                     showNotification('程序将重启使其配置生效...', 'success');
                     // 延迟几秒后刷新页面或跳转到其他页面
                     setTimeout(() => {
+                        showNotification('设置生效,重启程序...', 'success');
+                    }, 2600);
+                     setTimeout(() => {
                         showNotification('重启完毕,重载页面...', 'success');
-                    }, 3000);
-                                    setTimeout(() => {
+                    }, 5200);
+                    setTimeout(() => {
                         window.location.reload();
-                    }, 6000);
+                    }, 7800);
                 } else {
                     // 显示错误提示
                     alert(result.message || '退出程序失败！');
@@ -1628,6 +2306,10 @@ if (menuResetDesktop) {
     filterBtn.addEventListener('click', applyFilters);
     resetFilterBtn.addEventListener('click', resetFilters);
     
+    // 为筛选下拉框添加change事件监听器，确保选择后立即保存并应用
+    filterType.addEventListener('change', applyFilters);
+    filterOwner.addEventListener('change', applyFilters);
+    
     // 分页事件
     prevPage.addEventListener('click', () => {
         if (currentPage > 1 && pageSize !== Infinity) {
@@ -1736,6 +2418,10 @@ if (menuResetDesktop) {
                 if (result.success && result.filePath) {
                     // 上传成功，更新输入框
                     editLocalImgUrlInput.value = result.filePath;
+                    // 更新图片预览
+                    if (window.updateImagePreview) {
+                        window.updateImagePreview(result.filePath);
+                    }
                     showNotification('图片上传成功', 'success');
                 } else {
                     throw new Error(result.message || '上传失败');
@@ -1746,7 +2432,7 @@ if (menuResetDesktop) {
             } finally {
                 // 恢复按钮状态
                 uploadLocalImgBtn.disabled = false;
-                uploadLocalImgBtn.innerHTML = '上传图片';
+                uploadLocalImgBtn.innerHTML = '上传';
                 // 清空文件输入，允许重复选择同一文件
                 localImgFileInput.value = '';
             }

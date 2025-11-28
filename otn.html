@@ -314,6 +314,9 @@
                 // 登录已过期或未登录，清除登录信息并重定向到登录页
                 localStorage.removeItem('authToken');
                 localStorage.removeItem('loginTimestamp');
+                localStorage.removeItem('isLoggedIn');
+                // 记录当前页面URL作为来源页面
+                localStorage.setItem('returnUrl', window.location.href);
                 window.location.href = 'login.html';
                 return false;
             }

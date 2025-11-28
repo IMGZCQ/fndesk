@@ -1,8 +1,8 @@
 // 应用主题函数
 function applyTheme(themeData) {
     // 检查必要的URL是否存在
-    if (!themeData.t1 || !themeData.t2 || !themeData.t3) {
-        showNotification('主题数据不完整，请联系管理员', 'error');
+    if (!themeData.t1 || !themeData.t2 || !themeData.t3 || !themeData.t4) {
+        showNotification('主题数据不完整，请重新更新主题库', 'error');
         return;
     }
     
@@ -12,6 +12,7 @@ function applyTheme(themeData) {
     const requestData = {
         loginLogoUrl: themeData.t1.replace(/[`']/g, ''),      // t1对应loginLogo
         loginBackgroundUrl: themeData.t2.replace(/[`']/g, ''), // t2对应loginBackground
+        desktopWallpaperUrl: themeData.t4.replace(/[`']/g, ''), // t4也对应desktopWallpaper
         deviceLogoUrl: themeData.t3.replace(/[`']/g, '')       // t3对应deviceLogo
     };
     
@@ -41,6 +42,7 @@ function applyTheme(themeData) {
                 if (typeof saveLoginBackground === 'function') saveLoginBackground();
                 if (typeof saveLoginLogo === 'function') saveLoginLogo();
                 if (typeof saveDeviceLogo === 'function') saveDeviceLogo();
+                if (typeof saveDesktopWallpaper === 'function') saveDesktopWallpaper();
             }, 500);
         } else {
             throw new Error(data.error || '主题应用失败');

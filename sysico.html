@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统图标管理</title>
+    <style>
+        :root {
+            --dark-bg: #0d1117;
+            --darker-bg: #0a0d12;
+            --card-bg: #161b22;
+            --border-color: #30363d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-color: #58a6ff;
+            --accent-hover: #79c0ff;
+            --danger-color: #f85149;
+            --success-color: #3fb950;
+            --warning-color: #f5a623;
+            --glow-primary: 0 0 10px rgba(88, 166, 255, 0.5);
+            --glow-danger: 0 0 10px rgba(248, 81, 73, 0.5);
+            --glow-success: 0 0 10px rgba(63, 185, 80, 0.5);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(88, 166, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(88, 166, 255, 0.1) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0rem;
+            padding-bottom: 0rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--accent-color);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4), 0 0 20px rgba(88, 166, 255, 0.1);
+            border-color: var(--accent-color);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .search-input {
+            padding: 0.6rem 1rem;
+            background-color: var(--darker-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            min-width: 200px;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: var(--glow-primary);
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            box-shadow: var(--glow-primary);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: var(--darker-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--border-color);
+            border-color: var(--accent-color);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #f97268;
+            box-shadow: var(--glow-danger);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #56d364;
+            box-shadow: var(--glow-success);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn:disabled:hover {
+            background-color: initial;
+            border-color: initial;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--card-bg);
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--darker-bg);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background-color: rgba(88, 166, 255, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="password"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: var(--darker-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="password"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: var(--glow-primary);
+        }
+
+        .icon-preview {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            background-color: var(--darker-bg);
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        /* 返回按钮 */
+        .back-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* 导航栏样式 */
+        .navbar {
+            background: linear-gradient(90deg, var(--card-bg), var(--dark-bg));
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1170px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .navbar-title {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .navbar-title-main {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(0, 168, 255, 0.5);
+        }
+
+        .navbar-title-sub {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .status-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            min-width: 300px;
+        }
+
+        .status-message.success {
+            border-color: var(--success-color);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 20px rgba(63, 185, 80, 0.3);
+        }
+
+        .status-message.error {
+            border-color: var(--danger-color);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 20px rgba(248, 81, 73, 0.3);
+        }
+
+        .status-message i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+        }
+
+        .status-message.success i {
+            color: var(--success-color);
+        }
+
+        .status-message.error i {
+            color: var(--danger-color);
+        }
+
+        .status-message p {
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+            backdrop-filter: blur(3px);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .notification {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            max-width: 350px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .notification.success {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .notification.error {
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .notification.warning {
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .notification-info {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .notification-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            margin-top: 0.25rem;
+        }
+
+        .notification.success .notification-icon {
+            color: var(--success-color);
+        }
+
+        .notification.error .notification-icon {
+            color: var(--danger-color);
+        }
+
+        .notification.warning .notification-icon {
+            color: var(--warning-color);
+        }
+
+        .notification-content h4 {
+            margin-bottom: 0.25rem;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .notification-content p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+        }
+
+        .fade-out {
+            animation: fadeOut 0.3s ease-in;
+        }
+        
+        /* 状态栏消息样式 */
+        .status-message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        .status-info {
+            background-color: #1890ff;
+        }
+        
+        .status-success {
+            background-color: #52c41a;
+        }
+        
+        .status-error {
+            background-color: #ff4d4f;
+        }
+        
+        /* 通知样式 */
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .notification-success {
+            background-color: #52c41a;
+        }
+        
+        .notification-error {
+            background-color: #ff4d4f;
+        }
+        
+        .notification-warning {
+            background-color: #faad14;
+        }
+        
+        .notification-info {
+            background-color: #1890ff;
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* 响应式设计 - 全局布局调整 */
+        @media (max-width: 1200px) {
+            .container {
+                padding: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .container {
+                padding: 1.25rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+
+            .card-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .action-buttons {
+                flex-wrap: wrap;
+            }
+
+            .notification {
+                right: 1rem;
+                left: 1rem;
+                max-width: none;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+        <!-- 状态栏消息 -->
+        <div id="statusMessage" class="status-message" style="display: none;">
+            <span id="statusText"></span>
+        </div>
+        
+        <!-- 通知提示 -->
+        <div id="notification" class="notification" style="display: none;">
+            <span id="notificationText"></span>
+        </div>
+    <!-- 顶部导航栏 -->
+    <header class="navbar">
+        <div class="navbar-content" style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="navbar-title">
+                <div class="navbar-title-main">
+                    <i class="fa fa-cogs"></i> 系统图标管理
+                </div>
+                <div class="navbar-title-sub">注意：上传或者恢复默认后，需要点击【立即生效】</div>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <button id="applyBtn" class="back-btn" style="border-radius: 4px;">
+                    <i class="fa fa-check-circle"></i> 立即生效
+                </button>
+                <a href="index.html" class="back-btn" style="border-radius: 4px; margin-left: 0;">
+                    <i class="fa fa-arrow-left"></i> 返回主页
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- 隐藏图标配置 -->
+        <div class="card mb-4">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h2 class="card-title">隐藏图标</h2>
+                <button id="saveSysicoDisplayBtn" class="btn btn-primary">
+                    <i class="fa fa-save"></i> 保存
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+
+                    <input type="text" id="sysicoDisplay" class="form-control" placeholder="例如：应用中心,备份,Lucky">
+                    <label for="sysicoDisplay">填入要隐藏图标的名称，使用 逗号 分隔（中英文逗号无所谓，我能看懂！），保存后需要点【立即生效】</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- 系统图标列表 -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">系统图标列表</h2>
+<!--                 <button class="btn btn-primary" onclick="refreshIcons()">
+                    <i class="fa fa-refresh"></i>
+                    刷新
+                </button>
+                <button class="btn btn-success ml-2" onclick="syncAllIcons()">
+                    <i class="fa fa-save"></i>
+                    保存
+                </button>
+ -->            </div>
+
+            <div id="iconsList" class="icons-grid-container">
+                <!-- 图标列表将通过JavaScript动态生成 -->
+                <div class="loading-state">
+                    <i class="fa fa-spinner fa-spin" style="font-size: 2rem; margin-right: 1rem;"></i>
+                    加载中...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 状态消息弹窗 -->
+    <div id="overlay" class="overlay hidden"></div>
+    <div id="statusMessage" class="status-message hidden">
+        <i class="fa fa-info-circle"></i>
+        <p id="statusMessageText">操作进行中...</p>
+        <button class="btn btn-primary" onclick="hideStatusMessage()">确定</button>
+    </div>
+
+    <!-- 应用配置确认模态框 -->
+    <div id="applyConfigModal" class="overlay" style="display: none; justify-content: center; align-items: center;">
+        <div style="background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 0.8rem; padding: 2rem; max-width: 500px; width: 90%; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);">
+            <h3 style="color: var(--primary); margin-bottom: 1rem; text-align: center;">应用配置确认</h3>
+            <p style="margin-bottom: 2rem; text-align: center; color: var(--text-secondary);">
+                应用配置将重启程序以使其生效，确定要继续吗？
+            </p>
+            <div style="display: flex; justify-content: center; gap: 1rem;">
+                <button id="cancelApplyBtn" class="btn btn-secondary">
+                    取 消
+                </button>
+                <button id="confirmApplyBtn" class="btn btn-primary">
+                    确 定
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <link rel="stylesheet" href="fonts/font-awesome.min.css">
+    <script>
+        // 登录状态检查
+        function checkLoginStatus() {
+            const authToken = localStorage.getItem('authToken');
+            const loginTimestamp = localStorage.getItem('loginTimestamp');
+            const thirtyMinutes = 30 * 60 * 1000; // 30分钟
+            const currentTime = new Date().getTime();
+
+            // 检查是否有认证令牌和登录时间戳，且未过期
+            if (!authToken || !loginTimestamp || (currentTime - parseInt(loginTimestamp)) > thirtyMinutes) {
+                // 清除过期的令牌
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('loginTimestamp');
+                localStorage.removeItem('isLoggedIn');
+                // 记录当前页面URL作为来源页面
+                localStorage.setItem('returnUrl', window.location.href);
+                // 重定向到登录页面
+                window.location.href = 'login.html';
+                return false;
+            }
+
+            // 更新登录时间戳
+            localStorage.setItem('authToken', 'authenticated');
+            localStorage.setItem('loginTimestamp', currentTime.toString());
+            return true;
+        }
+
+        // 显示状态消息
+        function showStatusMessage(type, message) {
+            const statusElement = document.getElementById('statusMessage');
+            const statusText = document.getElementById('statusMessageText');
+            const overlay = document.getElementById('overlay');
+            const icon = statusElement.querySelector('i');
+
+            // 设置消息类型和内容
+            statusElement.className = 'status-message ' + type;
+            statusText.textContent = message;
+
+            // 设置图标
+            if (type === 'success') {
+                icon.className = 'fa fa-check-circle';
+            } else if (type === 'error') {
+                icon.className = 'fa fa-exclamation-circle';
+            } else {
+                icon.className = 'fa fa-info-circle';
+            }
+
+            // 显示消息
+            statusElement.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+
+        // 隐藏状态消息
+        function hideStatusMessage() {
+            const statusElement = document.getElementById('statusMessage');
+            const overlay = document.getElementById('overlay');
+            
+            statusElement.style.display = 'none';
+            overlay.style.display = 'none';
+        }
+
+        // 显示通知
+        function showNotification(message, type = 'info') {
+            // 检查是否已有通知容器
+            let notificationContainer = document.getElementById('notification-container');
+            if (!notificationContainer) {
+                notificationContainer = document.createElement('div');
+                notificationContainer.id = 'notification-container';
+                notificationContainer.style.position = 'fixed';
+                notificationContainer.style.top = '20px';
+                notificationContainer.style.right = '20px';
+                notificationContainer.style.zIndex = '9999';
+                notificationContainer.style.maxWidth = '300px';
+                document.body.appendChild(notificationContainer);
+            }
+
+            // 创建通知元素
+            const notification = document.createElement('div');
+            notification.className = 'notification ' + type;
+
+            // 创建通知内容
+            notification.innerHTML = `
+                <div class="notification-info">
+                    <div class="notification-icon">
+                        <i class="fa fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                    </div>
+                    <div class="notification-content">
+                        <h4>${type === 'success' ? '成功' : type === 'error' ? '错误' : type === 'warning' ? '警告' : '信息'}</h4>
+                        <p>${message}</p>
+                    </div>
+                </div>
+            `;
+
+            notificationContainer.appendChild(notification);
+
+            // 3秒后自动消失
+            setTimeout(() => {
+                notification.classList.add('fade-out');
+                setTimeout(() => {
+                    if (notificationContainer.contains(notification)) {
+                        notificationContainer.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // 保存设置到JSON文件
+        function saveToJson(key, value) {
+            return new Promise((resolve, reject) => {
+                fetch('/api/save-settings', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-auth-token': 'authenticated'
+                    },
+                    body: JSON.stringify({
+                        key: key,
+                        value: value
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('保存失败');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        resolve();
+                    } else {
+                        reject(new Error(data.message || '保存失败'));
+                    }
+                })
+                .catch(error => {
+                    reject(error);
+                });
+            });
+        }
+
+        // 加载图标数据
+        async function loadIcons() {
+            const iconsList = document.getElementById('iconsList');
+            iconsList.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: 2rem;">
+                        <i class="fa fa-spinner fa-spin" style="font-size: 2rem; margin-right: 1rem;"></i>
+                        加载中...
+                    </td>
+                </tr>
+            `;
+
+            try {
+                // 使用API获取/res/tow/static/app/icons目录下的文件夹列表
+                const directories = await scanIconsDirectory();
+                
+                if (directories.length === 0) {
+                    iconsList.innerHTML = `
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding: 2rem;">
+                                <i class="fa fa-exclamation-circle text-warning" style="font-size: 2rem; margin-right: 1rem;"></i>
+                                暂无图标数据
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                // 转换目录数据格式
+                const iconsData = directories.map(dir => ({
+                    id: dir.name,
+                    name: dir.title || dir.name, // 使用目录的title字段，如果没有则使用name
+                    previewUrl: `res/tow/static/app/icons/${dir.name}/icon.png`,
+                    customPath: ''
+                }));
+                
+                // 直接显示所有图标，不需要特殊的第一行记录
+                renderIconsList(iconsData);
+            } catch (error) {
+                console.error('扫描图标目录失败:', error);
+                showNotification('扫描图标目录失败', 'error');
+                // 显示空状态
+                iconsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa fa-exclamation-circle" style="font-size: 2rem; margin-right: 1rem;"></i>
+                        无法加载图标数据，请刷新页面重试
+                    </div>
+                `;
+            }
+        }
+
+        // 扫描图标目录 - 从本地JSON文件读取
+        function scanIconsDirectory() {
+            return new Promise((resolve, reject) => {
+                fetch('/sysico.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    resolve(data);
+                })
+                .catch(error => {
+                    console.error('读取目录配置文件失败:', error);
+                    showNotification('读取目录配置文件失败，请刷新页面重试', 'error');
+                    reject(error);
+                });
+            });
+        }
+
+        // 渲染图标列表
+        function renderIconsList(icons) {
+            const iconsList = document.getElementById('iconsList');
+            iconsList.innerHTML = '';
+
+            if (icons.length === 0) {
+                iconsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa fa-exclamation-circle text-warning" style="font-size: 2rem; margin-right: 1rem;"></i>
+                        暂无图标数据
+                    </div>
+                `;
+                return;
+            }
+
+            // 设置为自适应网格布局
+            
+            // 添加颜色变量（从fnstyle.html借鉴的深色科技风格）
+            if (!document.querySelector('#sysico-theme-vars')) {
+                const varsStyle = document.createElement('style');
+            varsStyle.id = 'sysico-theme-vars';
+            varsStyle.textContent = `
+                :root {
+                    --primary: #00a8ff;
+                    --secondary: #00d2d3;
+                    --accent: #5f27cd;
+                    --success: #10ac84;
+                    --danger: #ee5a24;
+                    --warning: #feca57;
+                    --info: #3498db;
+                    --dark-bg: #0f172a;
+                    --card-bg: #1e293b;
+                    --card-hover: #273449;
+                    --border-color: #334155;
+                    --text-primary: #e2e8f0;
+                    --text-secondary: #94a3b8;
+                    --shadow-color: rgba(0, 0, 0, 0.3);
+                    --glow-primary: 0 0 10px rgba(0, 168, 255, 0.5);
+                    --glow-secondary: 0 0 15px rgba(0, 210, 211, 0.3);
+                }
+                
+                /* 自适应网格容器 */
+                .icons-grid-container {
+                    display: grid;
+                    grid-template-columns: 1fr; /* 默认1列 */
+                    gap: 12px;
+                    padding: 10px;
+                    justify-items: stretch;
+                    align-items: start;
+                }
+                
+                .loading-state,
+                .empty-state {
+                    grid-column: 1 / -1;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    padding: 2rem;
+                    text-align: center;
+                    color: var(--text-secondary);
+                    font-size: 1.1rem;
+                }
+                
+                /* 500px以上显示2列 */
+                @media (min-width: 530px) {
+                    .icons-grid-container {
+                        grid-template-columns: 1fr 1fr;
+                        gap: 16px;
+                        padding: 15px;
+                    }
+                }
+                
+                /* 700px以上显示3列 */
+                @media (min-width: 740px) {
+                    .icons-grid-container {
+                        grid-template-columns: repeat(3, 1fr);
+                        gap: 18px;
+                        padding: 20px;
+                    }
+                }
+                
+                /* 880px以上显示4列 */
+                @media (min-width: 940px) {
+                    .icons-grid-container {
+                        grid-template-columns: repeat(4, 1fr);
+                        gap: 20px;
+                        padding: 22px;
+                    }
+                }
+                
+                /* 1080px以上显示5列 */
+                @media (min-width: 1160px) {
+                    .icons-grid-container {
+                        grid-template-columns: repeat(5, 1fr);
+                        gap: 24px;
+                        padding: 24px;
+                    }
+                }
+            `;
+            document.head.appendChild(varsStyle);
+            }
+            
+            // 创建四列布局的容器
+            const gridContainer = document.createElement('div');
+            gridContainer.className = 'icon-grid';
+            
+            icons.forEach(icon => {
+                const iconCard = document.createElement('div');
+                iconCard.className = 'anime-card';
+                iconCard.dataset.iconId = icon.id;
+                
+                // 检查是否已选择（可以根据需要从localStorage或其他地方获取选择状态）
+                const isSelected = localStorage.getItem(`icon_selected_${icon.id}`) === 'true';
+                
+                iconCard.innerHTML = `
+                    <div class="anime-cover">
+                        <img src="${icon.previewUrl}" alt="${icon.name}" class="anime-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22300%22 viewBox=%220 0 200 300%22%3E%3Crect width=%22200%22 height=%22300%22 fill=%22%232d3748%22/%3E%3Ctext x=%22100%22 y=%22150%22 font-family=%22Arial%22 font-size=%2240%22 fill=%22%23a0aec0%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3E?%3C/text%3E%3C/svg%3E'">
+                    </div>
+                    <div class="anime-info">
+                        <h3 class="anime-title">${icon.name}</h3>
+                        <div class="anime-actions">
+                            <button class="anime-default-btn" onclick="resetToDefault('${icon.id}')">
+                                <i class="fa fa-refresh"></i>
+                                默认
+                            </button>
+                            <button class="anime-upload-btn" onclick="triggerFileUpload('${icon.id}')">
+                                <i class="fa fa-upload"></i>
+                                上传
+                            </button>
+                        </div>
+                    </div>
+                    <input type="file" id="fileInput_${icon.id}" style="display: none;" accept="image/*" onchange="handleFileUpload('${icon.id}', this.files[0])">
+                `;
+                gridContainer.appendChild(iconCard);
+            });
+            
+            // 恢复默认功能和上传功能
+            
+            iconsList.appendChild(gridContainer);
+            
+            // 添加美化的CSS样式
+            if (!document.querySelector('#sysico-icon-grid-styles')) {
+                const style = document.createElement('style');
+                style.id = 'sysico-icon-grid-styles';
+                style.textContent = `
+                    /* 自适应网格布局 - 按明确的断点和列数要求设置 */
+                    .icon-grid {
+                        display: grid;
+                        grid-template-columns: 1fr; /* 默认1列 */
+                        gap: 12px;
+                        padding: 10px;
+                        width: 100%;
+                    }
+                    
+                    /* 500px以上显示2列 */
+                    @media (min-width: 530px) {
+                        .icon-grid {
+                            grid-template-columns: 1fr 1fr;
+                            gap: 16px;
+                            padding: 15px;
+                        }
+                    }
+                    
+                    /* 700px以上显示3列 */
+                    @media (min-width: 740px) {
+                        .icon-grid {
+                            grid-template-columns: repeat(3, 1fr);
+                            gap: 18px;
+                            padding: 20px;
+                        }
+                    }
+                    
+                    /* 880px以上显示4列 */
+                    @media (min-width: 940px) {
+                        .icon-grid {
+                            grid-template-columns: repeat(4, 1fr);
+                            gap: 20px;
+                            padding: 22px;
+                        }
+                    }
+                    
+                    /* 1080px以上显示5列 */
+                    @media (min-width: 1160px) {
+                        .icon-grid {
+                            grid-template-columns: repeat(5, 1fr);
+                            gap: 24px;
+                            padding: 24px;
+                        }
+                    }
+                    
+                    /* 动漫风格卡片 - 进一步减小整体大小 */
+                    .anime-card {
+                        background: #1a1a2e;
+                        border: 2px solid rgba(255, 255, 255, 0.1);
+                        border-radius: 12px;
+                        overflow: hidden;
+                        transition: all 0.3s ease;
+                        position: relative;
+                        height: 200px;
+                        display: flex;
+                        flex-direction: column;
+                        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+                        /* 悬空效果 */
+                        transform: translateY(0);
+                    }
+                    
+                    .anime-card:hover {
+                        transform: translateY(-10px) scale(1.02);
+                        box-shadow: 0 16px 48px rgba(67, 97, 238, 0.4);
+                        border-color: rgba(255, 255, 255, 0.3);
+                    }
+                    
+                    /* 封面区域 - 适配更小的卡片 */
+                    .anime-cover {
+                        position: relative;
+                        width: 100%;
+                        height: 120px;
+                        overflow: hidden;
+                        display: flex;
+                        align-items: flex-end;
+                        justify-content: center;
+                        padding-bottom: 8px;
+                        margin-top: 15px;
+                    }
+                    
+                    /* 预览图片调整位置并增大，为弹跳动画预留更多空间 */
+                    .anime-cover img {
+                        width: 80%;
+                        height: 80%;
+                        object-fit: contain;
+                        animation: bounce 3s ease-in-out infinite;
+                    }
+                    
+                    /* 弹跳动画效果 */
+                    @keyframes bounce {
+                        0%, 100% {
+                            transform: translateY(0) scale(1);
+                        }
+                        25% {
+                            transform: translateY(-10px) scale(1.05);
+                        }
+                        50% {
+                            transform: translateY(0) scale(1);
+                        }
+                        75% {
+                            transform: translateY(-10px) scale(1.05);
+                        }
+                    }
+                    
+                    /* 随机延迟动画，让不同图标弹跳时间错开 */
+                    .anime-cover:nth-child(1) img {
+                        animation-delay: 0s;
+                    }
+                    .anime-cover:nth-child(2) img {
+                        animation-delay: 0.3s;
+                    }
+                    .anime-cover:nth-child(3) img {
+                        animation-delay: 0.6s;
+                    }
+                    .anime-cover:nth-child(4) img {
+                        animation-delay: 0.9s;
+                    }
+                    
+                    /* 已移除阴影遮盖效果 */
+                    
+                    /* 动漫图片 */
+                    .anime-image {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        transition: transform 0.5s ease;
+                    }
+                    
+                    .anime-card:hover .anime-image {
+                        transform: scale(1.05);
+                    }
+                    
+                    /* 信息区域 */
+                    .anime-info {
+                        padding: 12px;
+                        flex: 1;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
+                    }
+                    
+                    /* 动漫标题 */
+                    .anime-title {
+                        color: white;
+                        font-size: 1rem;
+                        font-weight: 600;
+                        margin: 0 0 10px 0;
+                        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+                        line-height: 1.3;
+                        display: -webkit-box;
+                        -webkit-line-clamp: 2;
+                        -webkit-box-orient: vertical;
+                        overflow: hidden;
+                    }
+                    
+                    /* 操作按钮区域 */
+                    .anime-actions {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    }
+                    
+                    /* 选择按钮 - 动漫风格 */
+                    .anime-select-btn {
+                        background: linear-gradient(135deg, #4361ee, #3f37c9);
+                        color: white;
+                        border: none;
+                        padding: 8px 16px;
+                        border-radius: 20px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                        flex: 1;
+                        justify-content: center;
+                        margin-right: 8px;
+                    }
+                    
+                    .anime-select-btn:hover {
+                        background: linear-gradient(135deg, #3a0ca3, #4361ee);
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(67, 97, 238, 0.4);
+                    }
+                    
+                    /* 已选择状态 */
+                    .anime-select-btn.selected {
+                        background: linear-gradient(135deg, #4cc9f0, #4361ee);
+                        box-shadow: 0 0 15px rgba(76, 201, 240, 0.6);
+                    }
+                    
+                    .anime-select-btn .fa-check {
+                        opacity: 0;
+                        transform: translateX(10px);
+                        transition: all 0.3s ease;
+                    }
+                    
+                    .anime-select-btn.selected .fa-check {
+                        opacity: 1;
+                        transform: translateX(0);
+                    }
+                    
+                     /* 按钮样式 - 大小一致 */
+                    .anime-default-btn,
+                    .anime-upload-btn {
+                        flex: 1;
+                        background: linear-gradient(135deg, #ff5c8d, #ff2e63);
+                        color: white;
+                        border: none;
+                        padding: 8px 12px;
+                        border-radius: 20px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 6px;
+                        font-size: 0.85rem;
+                    }
+                    
+                    .anime-default-btn {
+                        margin-right: 8px;
+                    }
+                    
+                    .anime-upload-btn {
+                        background: linear-gradient(135deg, #4361ee, #3f37c9);
+                    }
+                    
+                    .anime-default-btn:hover {
+                        background: linear-gradient(135deg, #e04a7a, #ff2e63);
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(255, 92, 141, 0.4);
+                    }
+                    
+                    .anime-upload-btn:hover {
+                        background: linear-gradient(135deg, #3a0ca3, #4361ee);
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(67, 97, 238, 0.4);
+                    }
+                    
+                    .anime-upload-btn:hover {
+                        background: linear-gradient(135deg, #3a0ca3, #4361ee);
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(67, 97, 238, 0.4);
+                    }
+                    
+                    /* 确保容器正确显示 */
+                    #iconsList {
+                        display: block;
+                        width: 100%;
+                        border: none;
+                        background: transparent;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        // 状态栏消息函数
+        function showStatusMessage(type, message) {
+            const statusElement = document.getElementById('statusMessage');
+            const textElement = document.getElementById('statusText');
+            
+            // 设置消息文本
+            textElement.textContent = message;
+            
+            // 设置消息类型样式
+            statusElement.className = 'status-message';
+            statusElement.classList.add(`status-${type}`);
+            
+            // 显示消息
+            statusElement.style.display = 'block';
+        }
+        
+        function hideStatusMessage() {
+            const statusElement = document.getElementById('statusMessage');
+            statusElement.style.display = 'none';
+        }
+        
+        // 通知函数
+        function showNotification(message, type = 'info') {
+            const notificationElement = document.getElementById('notification');
+            const textElement = document.getElementById('notificationText');
+            
+            // 设置消息文本
+            textElement.textContent = message;
+            
+            // 设置消息类型样式
+            notificationElement.className = 'notification';
+            notificationElement.classList.add(`notification-${type}`);
+            
+            // 显示消息
+            notificationElement.style.display = 'block';
+            
+            // 3秒后自动隐藏
+            setTimeout(() => {
+                notificationElement.style.display = 'none';
+            }, 3000);
+        }
+
+        // 科技感确认对话框
+        function showCustomConfirm(title, message, onConfirm, iconId) {
+            const confirmDialog = document.createElement('div');
+            confirmDialog.className = 'custom-confirm-overlay';
+            confirmDialog.innerHTML = `
+                <div class="custom-confirm-dialog">
+                    <div class="custom-confirm-header">
+                        <h3>${title}</h3>
+                        <div class="tech-glow"></div>
+                    </div>
+                    <div class="custom-confirm-content">
+                        <div class="tech-icon">
+                            <i class="fa fa-refresh fa-spin"></i>
+                        </div>
+                        <p>${message}</p>
+                    </div>
+                    <div class="custom-confirm-actions">
+                        <button class="custom-btn cancel-btn" onclick="hideCustomConfirm()">取消</button>
+                        <button class="custom-btn confirm-btn" onclick="hideCustomConfirm(true, '${iconId}')">确认</button>
+                    </div>
+                </div>
+            `;
+            
+            // 保存确认回调
+            window.customConfirmCallback = onConfirm;
+            
+            // 添加样式
+            const style = document.createElement('style');
+            style.textContent = `
+                .custom-confirm-overlay {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.7);
+                    backdrop-filter: blur(5px);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10000;
+                    font-family: 'Arial', sans-serif;
+                }
+                
+                .custom-confirm-dialog {
+                    background: #1a1a2e;
+                    border-radius: 12px;
+                    border: 1px solid #3a3a5e;
+                    width: 90%;
+                    max-width: 450px;
+                    overflow: hidden;
+                    box-shadow: 0 8px 32px rgba(0, 191, 255, 0.15);
+                    position: relative;
+                    animation: dialogSlideIn 0.3s ease-out;
+                }
+                
+                @keyframes dialogSlideIn {
+                    from {
+                        opacity: 0;
+                        transform: translateY(-20px) scale(0.95);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0) scale(1);
+                    }
+                }
+                
+                .custom-confirm-header {
+                    background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+                    padding: 20px;
+                    position: relative;
+                    overflow: hidden;
+                }
+                
+                .custom-confirm-header h3 {
+                    color: #00f2fe;
+                    margin: 0;
+                    font-size: 18px;
+                    font-weight: 500;
+                    position: relative;
+                    z-index: 2;
+                    text-align: center;
+                }
+                
+                .tech-glow {
+                    position: absolute;
+                    top: -50%;
+                    left: -50%;
+                    width: 200%;
+                    height: 200%;
+                    background: radial-gradient(circle, rgba(0, 242, 254, 0.2) 0%, transparent 70%);
+                    animation: glowPulse 2s infinite alternate;
+                    z-index: 1;
+                }
+                
+                @keyframes glowPulse {
+                    from { opacity: 0.3; }
+                    to { opacity: 0.6; }
+                }
+                
+                .custom-confirm-content {
+                    padding: 25px;
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+                }
+                
+                .tech-icon {
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #1a1a2e;
+                    font-size: 20px;
+                    flex-shrink: 0;
+                }
+                
+                .custom-confirm-content p {
+                    color: #e9e9f0;
+                    margin: 0;
+                    font-size: 16px;
+                    line-height: 1.5;
+                }
+                
+                .custom-confirm-actions {
+                    background: #16213e;
+                    padding: 15px 20px;
+                    display: flex;
+                    justify-content: flex-end;
+                    gap: 10px;
+                    border-top: 1px solid #3a3a5e;
+                }
+                
+                .custom-btn {
+                    padding: 10px 20px;
+                    border: none;
+                    border-radius: 6px;
+                    font-size: 14px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    position: relative;
+                    overflow: hidden;
+                }
+                
+                .cancel-btn {
+                    background: transparent;
+                    color: #e9e9f0;
+                    border: 1px solid #3a3a5e;
+                }
+                
+                .cancel-btn:hover {
+                    background: rgba(233, 233, 240, 0.1);
+                    border-color: #4a4a6e;
+                }
+                
+                .confirm-btn {
+                    background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+                    color: #1a1a2e;
+                    font-weight: 600;
+                }
+                
+                .confirm-btn:hover {
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 12px rgba(0, 242, 254, 0.3);
+                }
+                
+                .confirm-btn::after {
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 0;
+                    height: 0;
+                    background: rgba(255, 255, 255, 0.3);
+                    border-radius: 50%;
+                    transform: translate(-50%, -50%);
+                    transition: width 0.6s, height 0.6s;
+                }
+                
+                .confirm-btn:active::after {
+                    width: 300px;
+                    height: 300px;
+                }
+            `;
+            
+            document.head.appendChild(style);
+            document.body.appendChild(confirmDialog);
+        }
+        
+        function hideCustomConfirm(confirmed = false, iconId = null) {
+            const overlay = document.querySelector('.custom-confirm-overlay');
+            const style = document.querySelector('style:has(.custom-confirm-overlay)');
+            
+            if (overlay) {
+                // 添加退出动画
+                overlay.style.opacity = '0';
+                overlay.style.transition = 'opacity 0.3s ease';
+                
+                setTimeout(() => {
+                    if (overlay.parentNode) {
+                        overlay.parentNode.removeChild(overlay);
+                    }
+                    if (style && style.parentNode) {
+                        style.parentNode.removeChild(style);
+                    }
+                    
+                    // 如果确认，执行回调
+                    if (confirmed && window.customConfirmCallback && iconId) {
+                        window.customConfirmCallback(iconId);
+                    }
+                    
+                    // 清理回调
+                    window.customConfirmCallback = null;
+                }, 300);
+            }
+        }
+        
+        // 重置为默认图标
+        function resetToDefault(iconId) {
+            // 使用自定义确认对话框
+            showCustomConfirm(
+                '图标重置确认',
+                '确定要将此图标重置为默认状态吗？',
+                performIconReset,
+                iconId
+            );
+        }
+        
+        // 执行图标重置操作
+        function performIconReset(iconId) {
+                // 显示加载状态
+                showStatusMessage('info', '正在恢复默认图标...');
+                
+                // 调用API恢复默认图标
+                fetch(`/api/restore-default-icon?directory=${iconId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        hideStatusMessage();
+                        if (data.success) {
+                            showNotification('默认图标已恢复', 'success');
+                            // 刷新图标预览
+                            const imgElement = document.querySelector(`div[data-icon-id="${iconId}"] img`);
+                            imgElement.src = `res/tow/static/app/icons/${iconId}/icon.png?${new Date().getTime()}`;
+                            
+                            // 调用API删除deskdata/sysico/目录里的iconId文件
+                            fetch(`/api/delete-sysico-file?iconId=${iconId}`)
+                                .then(response => response.json())
+                                .then(deleteData => {
+                                    if (!deleteData.success && deleteData.message) {
+                                        console.warn('删除sysico文件时出现警告:', deleteData.message);
+                                    }
+                                })
+                                .catch(deleteError => {
+                                    console.warn('删除sysico文件时发生错误:', deleteError);
+                                });
+                        } else {
+                            showNotification(data.message || '恢复默认图标失败', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        hideStatusMessage();
+                        console.error('恢复默认图标失败:', error);
+                        showNotification('恢复默认图标时发生错误', 'error');
+                    });
+        }
+
+        // 触发文件上传
+        function triggerFileUpload(iconId) {
+            document.getElementById(`fileInput_${iconId}`).click();
+        }
+
+        // 处理文件上传
+        function handleFileUpload(iconId, file) {
+            if (!file) return;
+
+            // 显示加载状态
+            showStatusMessage('info', '正在备份当前图标...');
+            
+            // 第一步：备份当前图标
+            fetch(`/api/backup-icon?directory=${iconId}`)
+                .then(response => response.json())
+                .then(backupData => {
+                    if (!backupData.success) {
+                        hideStatusMessage();
+                        showNotification(backupData.message || '备份图标失败', 'error');
+                        return Promise.reject(new Error('备份失败'));
+                    }
+                    
+                    // 备份成功，开始上传新图标
+                    showStatusMessage('info', '上传中...');
+                    
+                    // 创建读取器来获取文件内容
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        // 发送文件数据到服务器
+                        fetch(`/api/upload-icon?directory=${iconId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': file.type || 'image/png'
+                            },
+                            body: e.target.result
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            hideStatusMessage();
+                            if (data.success) {
+                                showNotification('图标上传成功', 'success');
+                                // 刷新图标预览
+                                const imgElement = document.querySelector(`div[data-icon-id="${iconId}"] img`);
+                                imgElement.src = `res/tow/static/app/icons/${iconId}/icon.png?${new Date().getTime()}`;
+                            } else {
+                                showNotification(data.message || '图标上传失败', 'error');
+                            }
+                        })
+                        .catch(error => {
+                            hideStatusMessage();
+                            console.error('上传图标失败:', error);
+                            showNotification('图标上传时发生错误', 'error');
+                        });
+                    };
+                    reader.readAsArrayBuffer(file);
+                })
+                .catch(error => {
+                    hideStatusMessage();
+                    console.error('备份图标失败:', error);
+                });
+        }
+
+
+
+        // 同步所有图标到目标目录
+        function syncAllIcons() {
+            showNotification('正在同步图标...', 'info');
+            showStatusMessage('info', '正在同步图标到目标目录，请稍候...');
+            
+            fetch('/api/sync-icons')
+                .then(response => response.json())
+                .then(data => {
+                    hideStatusMessage();
+                    if (data.success) {
+                        showNotification(`图标同步成功，成功: ${data.successFiles.length}, 失败: ${data.failedFiles.length}`, 'success');
+                        // 如果有失败的文件，可以显示详细信息
+                        if (data.failedFiles.length > 0) {
+                            console.warn('部分图标同步失败:', data.failedFiles);
+                        }
+                    } else {
+                        showNotification(data.message || '图标同步失败', 'error');
+                    }
+                })
+                .catch(error => {
+                    hideStatusMessage();
+                    console.error('同步图标失败:', error);
+                    showNotification('图标同步时发生错误', 'error');
+                });
+        }
+
+        // 页面加载时从fnstyle.json读取sysicoDisplay字段
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('deskdata/fnstyle.json')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.sysicoDisplay) {
+                        document.getElementById('sysicoDisplay').value = data.sysicoDisplay;
+                    }
+                })
+                .catch(error => console.error('读取fnstyle.json失败:', error));
+        });
+
+        // 保存按钮点击事件
+        document.getElementById('saveSysicoDisplayBtn').addEventListener('click', function() {
+            const sysicoDisplayValue = document.getElementById('sysicoDisplay').value;
+            
+            // 数据预处理：去除前后空格和逗号，将中文逗号替换为英文逗号
+            let processedValue = sysicoDisplayValue
+                .trim() // 去除前后空格
+                .replace(/^,|,$/g, '') // 去除前后逗号
+                .replace(/，/g, ',') // 将中文逗号替换为英文逗号
+                .trim(); // 再次去除可能产生的空格
+            
+            // 更新输入框显示处理后的值
+            document.getElementById('sysicoDisplay').value = processedValue;
+            
+            // 显示确认对话框
+            showCustomConfirm(
+                '保存确认', 
+                '确定要保存隐藏图标设置吗？', 
+                function() {
+                    // 保存到fnstyle.json
+                    fetch('api/fnstyle.json', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ sysicoDisplay: processedValue })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('网络响应错误');
+                        }
+                        return response.json();
+                    })
+                    .then(() => {
+                        showNotification('保存成功！', 'success');
+                    })
+                    .catch(error => {
+                        console.error('保存失败:', error);
+                        showNotification('保存失败，请重试', 'error');
+                    });
+                }, 
+                'saveSysicoDisplay'
+            );
+        });
+
+        // 刷新图标列表
+        function refreshIcons() {
+            showNotification('正在刷新图标列表...', 'info');
+            loadIcons();
+        }
+
+        // 搜索功能已移除
+
+        // 立即生效按钮功能
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查登录状态
+            if (!checkLoginStatus()) {
+                return;
+            }
+            
+            // 加载图标列表
+            loadIcons();
+            
+            // 立即生效按钮功能
+            const applyBtn = document.getElementById('applyBtn');
+            const applyConfigModal = document.getElementById('applyConfigModal');
+            const cancelApplyBtn = document.getElementById('cancelApplyBtn');
+            const confirmApplyBtn = document.getElementById('confirmApplyBtn');
+            
+            // 显示确认模态框
+            if (applyBtn && applyConfigModal) {
+                applyBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    applyConfigModal.style.display = 'flex';
+                });
+            }
+            
+            // 取消应用配置
+            if (cancelApplyBtn && applyConfigModal) {
+                cancelApplyBtn.addEventListener('click', () => {
+                    applyConfigModal.style.display = 'none';
+                });
+            }
+            
+            // 点击模态框外部关闭
+            if (applyConfigModal) {
+                applyConfigModal.addEventListener('click', (e) => {
+                    if (e.target === applyConfigModal) {
+                        applyConfigModal.style.display = 'none';
+                    }
+                });
+            }
+            
+            // 确认应用配置
+            if (confirmApplyBtn && applyConfigModal) {
+                confirmApplyBtn.addEventListener('click', async () => {
+                    try {
+                        // 关闭模态框
+                        applyConfigModal.style.display = 'none';
+                        
+                        // 修改deskdata/pw.json的enabled为1
+                        const updateResponse = await fetch('/api/update-data', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'x-auth-token': 'authenticated'
+                            },
+                            body: JSON.stringify({
+                                filePath: 'deskdata/pw.json',
+                                update: { enabled: 1 }
+                            })
+                        });
+                        
+                        if (!updateResponse.ok) {
+                            throw new Error('更新配置数据失败');
+                        }
+                        
+                        // 向服务器发送退出请求
+                        const response = await fetch('/api/exit', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'x-auth-token': 'authenticated'
+                            }
+                        });
+                        
+                        if (response.ok) {
+                            showNotification('应用配置成功，程序即将重启...', 'success');
+                        } else {
+                            throw new Error('重启请求失败');
+                        }
+                    } catch (error) {
+                        console.error('应用配置失败:', error);
+                        showNotification('应用配置失败，请重试', 'error');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
