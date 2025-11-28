@@ -64,6 +64,8 @@
 </div>
 
 ## <span style="color:#06d6a0">更新日志</span>
+#### 2025.11.27 v0.83  
+- ✅ 提前适配飞牛1.1.0内测版
 #### 2025.11.27 v0.82.3  
 - ✅ 每个图标/文件夹增加独立开关
 - ✅ 页內窗口/文件夹增加明暗色调ui风格
@@ -153,7 +155,8 @@
 <img src="https://github.com/user-attachments/assets/b4d8395f-1f2e-493c-a214-ccafdbcdbdc1" alt="fn-icon界面展示4" style="width: 480px; height: auto;">
 
 **管理工具界面**
-<img width="1078" height="1065" alt="ScreenShot_2025-11-12_023549_499" src="https://github.com/user-attachments/assets/2f641b3d-401e-4d1c-b6f1-5f3a7e1bd80a" />
+<img width="1679" height="865" alt="98c1d486d22f1fddc5f8ef51bf1f7768" src="https://github.com/user-attachments/assets/4ce0ed0a-abe4-43da-8dbc-4f6841f4bf81" />
+<img width="933" height="1057" alt="image" src="https://github.com/user-attachments/assets/0bb969ab-f0e1-4eda-8ec0-3cda466117bf" />
 <img width="1061" height="1040" alt="11112" src="https://github.com/user-attachments/assets/ae18d97e-33bf-4c50-8527-77237e61bdf5" />
 ![H)E}P%(Q1 )4ZKZ{01E35H6](https://github.com/user-attachments/assets/b13f5dfc-1989-413f-b3c1-3c6ccbfba8e1)
 <img width="1270" height="992" alt="ScreenShot_2025-10-30_111530_261" src="https://github.com/user-attachments/assets/f84ebfa8-e060-468c-9749-8feac117302b" />
@@ -161,7 +164,6 @@
 <img width="1037" height="1044" alt="1111" src="https://github.com/user-attachments/assets/5cd746cd-345f-4e56-9975-e4b30ea427ed" />
 <img width="1001" height="1011" alt="11113" src="https://github.com/user-attachments/assets/7aba2b91-81c9-4651-8b7e-1c3b2d5758f2" />
 <img width="855" height="957" alt="ScreenShot_2025-11-12_000235_088" src="https://github.com/user-attachments/assets/73b4a832-aa8d-40f8-9881-0432f8fe78eb" />
-<img width="979" height="842" alt="PixPin_2025-10-29_19-48-01" src="https://github.com/user-attachments/assets/bcf10e62-a8c3-4244-bb1e-34cecd40d11b" />
 
 
 
