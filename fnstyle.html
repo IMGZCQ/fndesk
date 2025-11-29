@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>飞牛桌面管理 - 个性化定制</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href="fonts/font-awesome.min.css" rel="stylesheet">
@@ -422,191 +422,10 @@
             font-size: 0.95rem;
         }
     </style>
-<script>
-            // 立即生效按钮功能
-            document.addEventListener('DOMContentLoaded', function() {
-                const applyBtn = document.getElementById('applyBtn');
-                const applyConfigModal = document.getElementById('applyConfigModal');
-                const cancelApplyBtn = document.getElementById('cancelApplyBtn');
-                const confirmApplyBtn = document.getElementById('confirmApplyBtn');
-                
-                // 显示确认模态框
-                if (applyBtn && applyConfigModal) {
-                    applyBtn.addEventListener('click', (e) => {
-                        e.preventDefault(); // 阻止a标签的默认跳转行为
-                        applyConfigModal.style.display = 'flex';
-                    });
-                }
-                
-                // 取消应用配置
-                if (cancelApplyBtn && applyConfigModal) {
-                    cancelApplyBtn.addEventListener('click', () => {
-                        applyConfigModal.style.display = 'none';
-                    });
-                }
-                
-                // 点击模态框外部关闭
-                if (applyConfigModal) {
-                    applyConfigModal.addEventListener('click', (e) => {
-                        if (e.target === applyConfigModal) {
-                            applyConfigModal.style.display = 'none';
-                        }
-                    });
-                }
-                
-                // 确认应用配置
-                if (confirmApplyBtn && applyConfigModal) {
-                    confirmApplyBtn.addEventListener('click', async () => {
-                        try {
-                            // 关闭模态框
-                            applyConfigModal.style.display = 'none';
-                            
-                            // 修改deskdata/pw.json的enabled为1
-                            await fetch('/api/update-data', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    filePath: 'deskdata/pw.json',
-                                    update: { enabled: 1 }
-                                })
-                            });
-                            
-                            // 向服务器发送退出请求
-                            const response = await fetch('/api/exit', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                }
-                            });
-                            
-                            const result = await response.json();
-                            
-                            if (result.success) {
-                                // 显示退出提示
-                                showStatusMessage('success', '程序将重启使其配置生效...');
-                                // 延迟几秒后刷新页面
-                                setTimeout(() => {
-                                    showStatusMessage('success', '设置生效,重启程序...');
-                                }, 2600);
-                                setTimeout(() => {
-                                    showStatusMessage('success', '重启完毕,重载页面...');
-                                }, 5200);
-                                setTimeout(() => {
-                                    window.location.reload();
-                                }, 7800);
-                            } else {
-                                // 显示错误提示
-                                showStatusMessage('error', result.message || '退出程序失败！');
-                            }
-                        } catch (error) {
-                            console.error('应用配置出错:', error);
-                            showStatusMessage('error', '应用配置失败，请重试！');
-                        }
-                    });
-                }
-                
-                // 显示状态消息
-                // 注意：此函数已在第2067行重新定义，使用新的参数顺序(type, message)
-            });
-            
-            function updatePreview(url, previewId) {
-                const previewImg = document.getElementById(previewId);
-                if (previewImg) {
-                    // 验证URL是否有效（简单检查）
-                    if (url && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('/') || url.startsWith('data:image/'))) {
-                        // 添加URL映射逻辑
-                        let displayUrl = url;
-                        
-                        // 处理飞牛登录背景和桌面默认壁纸的URL映射
-                        if ((previewId === 'loginBackgroundPreview' || previewId === 'desktopWallpaperPreview') && 
-                            url === '/static/bg/wallpaper-1.webp') {
-                            displayUrl = '/res/tow/static/bg/wallpaper-1.webp';
-                        }
-                        // 处理飞牛网页favicon图标的URL映射
-                        else if (previewId === 'webFaviconPreview' && url === '/favicon.ico') {
-                            displayUrl = '/res/tow/favicon.ico';
-                        }
-
-                        // 处理影视背景的URL映射
-                        else if (previewId === 'movieBackgroundPreview' && url === '/v/assets/eb314afd427b95eaaa0eab022a44c1cc-CVNYCT4h.webp') {
-                            displayUrl = '/trim.media/static/assets/eb314afd427b95eaaa0eab022a44c1cc-CVNYCT4h.webp';
-                        }
-                        // 处理影视LOGO的URL映射
-                        else if (previewId === 'movieLogoPreview' && url === '/v/static/img/logo.png') {
-                            displayUrl = '/trim.media/static/static/img/logo.png';
-                        }
-                        // 处理影视网页favicon图标的URL映射
-                        else if (previewId === 'movieFaviconPreview' && url === '/v/static/favicon.ico') {
-                            displayUrl = '/trim.media/static/static/favicon.ico';
-                        }
-
-                        previewImg.src = displayUrl;
-                        previewImg.style.display = 'block';
-                        // 处理图片加载失败的情况
-                        previewImg.onerror = function() {
-                            this.src = '';
-                            this.style.display = 'block';
-                            // 设置加载失败时的占位样式
-                            this.style.backgroundColor = '#f0f0f0';
-                            this.style.backgroundImage = 'none';
-                        };
-                        previewImg.onload = function() {
-                            this.style.backgroundColor = 'transparent';
-                        };
-                    } else {
-                        previewImg.src = '';
-                        previewImg.style.display = 'block';
-                        previewImg.style.backgroundColor = '#f0f0f0';
-                    }
-                }
-            }
-            
-            // 页面加载时初始化预览图
-            document.addEventListener('DOMContentLoaded', function() {
-                // 获取存储的配置并更新预览图
-                const config = getThemeConfig();
-                
-                // 初始化所有预览图元素
-                const previews = [
-                    {key: 'loginBackground', previewId: 'loginBackgroundPreview', inputId: 'loginBackground'},
-                    {key: 'loginLogo', previewId: 'loginLogoPreview', inputId: 'loginLogo'},
-                    {key: 'deviceLogo', previewId: 'deviceLogoPreview', inputId: 'deviceLogo'},
-                    {key: 'webFavicon', previewId: 'webFaviconPreview', inputId: 'webFavicon'},
-                    {key: 'desktopWallpaper', previewId: 'desktopWallpaperPreview', inputId: 'desktopWallpaper'}
-                ];
-                
-                previews.forEach(item => {
-                    const previewImg = document.getElementById(item.previewId);
-                    const inputElem = document.getElementById(item.inputId);
-                    
-                    if (previewImg && inputElem) {
-                        previewImg.style.display = 'block';
-                        
-                        if (config && config[item.key]) {
-                            previewImg.src = config[item.key];
-                            inputElem.value = config[item.key];
-                            
-                            // 设置错误处理
-                            previewImg.onerror = function() {
-                                this.src = '';
-                                this.style.backgroundColor = '#f0f0f0';
-                            };
-                            previewImg.onload = function() {
-                                this.style.backgroundColor = 'transparent';
-                            };
-                        } else {
-                            previewImg.src = '';
-                            previewImg.style.backgroundColor = '#f0f0f0';
-                        }
-                    }
-                });
-            });
-        </script>
+<script>document.addEventListener("DOMContentLoaded",function(){const e=document.getElementById("applyBtn");const o=document.getElementById("applyConfigModal");const t=document.getElementById("cancelApplyBtn");const i=document.getElementById("confirmApplyBtn");if(e&&o){e.addEventListener("click",e=>{e.preventDefault();o.style.display="flex"})}if(t&&o){t.addEventListener("click",()=>{o.style.display="none"})}if(o){o.addEventListener("click",e=>{if(e.target===o){o.style.display="none"}})}if(i&&o){i.addEventListener("click",async()=>{try{o.style.display="none";await fetch("/api/update-data",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({filePath:"deskdata/pw.json",update:{enabled:1}})});const e=await fetch("/api/exit",{method:"POST",headers:{"Content-Type":"application/json"}});const t=await e.json();if(t.success){showStatusMessage("success","程序将重启使其配置生效...");setTimeout(()=>{showStatusMessage("success","设置生效,重启程序...")},2600);setTimeout(()=>{showStatusMessage("success","重启完毕,重载页面...")},5200);setTimeout(()=>{window.location.reload()},7800)}else{showStatusMessage("error",t.message||"退出程序失败！")}}catch(e){console.error("应用配置出错:",e);showStatusMessage("error","应用配置失败，请重试！")}})}});function updatePreview(t,o){const i=document.getElementById(o);if(i){if(t&&(t.startsWith("http://")||t.startsWith("https://")||t.startsWith("/")||t.startsWith("data:image/"))){let e=t;if((o==="loginBackgroundPreview"||o==="desktopWallpaperPreview")&&t==="/static/bg/wallpaper-1.webp"){e="/res/tow/static/bg/wallpaper-1.webp"}else if(o==="webFaviconPreview"&&t==="/favicon.ico"){e="/res/tow/favicon.ico"}else if(o==="movieBackgroundPreview"&&t==="/v/assets/eb314afd427b95eaaa0eab022a44c1cc-CVNYCT4h.webp"){e="/trim.media/static/assets/eb314afd427b95eaaa0eab022a44c1cc-CVNYCT4h.webp"}else if(o==="movieLogoPreview"&&t==="/v/static/img/logo.png"){e="/trim.media/static/static/img/logo.png"}else if(o==="movieFaviconPreview"&&t==="/v/static/favicon.ico"){e="/trim.media/static/static/favicon.ico"}i.src=e;i.style.display="block";i.onerror=function(){this.src="";this.style.display="block";this.style.backgroundColor="#f0f0f0";this.style.backgroundImage="none"};i.onload=function(){this.style.backgroundColor="transparent"}}else{i.src="";i.style.display="block";i.style.backgroundColor="#f0f0f0"}}}document.addEventListener("DOMContentLoaded",function(){const i=getThemeConfig();const e=[{key:"loginBackground",previewId:"loginBackgroundPreview",inputId:"loginBackground"},{key:"loginLogo",previewId:"loginLogoPreview",inputId:"loginLogo"},{key:"deviceLogo",previewId:"deviceLogoPreview",inputId:"deviceLogo"},{key:"webFavicon",previewId:"webFaviconPreview",inputId:"webFavicon"},{key:"desktopWallpaper",previewId:"desktopWallpaperPreview",inputId:"desktopWallpaper"}];e.forEach(e=>{const t=document.getElementById(e.previewId);const o=document.getElementById(e.inputId);if(t&&o){t.style.display="block";if(i&&i[e.key]){t.src=i[e.key];o.value=i[e.key];t.onerror=function(){this.src="";this.style.backgroundColor="#f0f0f0"};t.onload=function(){this.style.backgroundColor="transparent"}}else{t.src="";t.style.backgroundColor="#f0f0f0"}}})})</script>
         </head>
 <body>
-    <!-- 顶部导航栏 -->
+    
     <header class="navbar">
         <div class="navbar-content">
             <div class="navbar-title">
@@ -626,7 +445,7 @@
         </div>
     </header>
 
-    <!-- 应用配置确认模态框 -->
+    
     <div id="applyConfigModal" class="overlay" style="display: none; justify-content: center; align-items: center;">
         <div style="background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 0.8rem; padding: 2rem; max-width: 500px; width: 90%; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);">
             <h3 style="color: var(--primary); margin-bottom: 1rem; text-align: center;">应用配置确认</h3>
@@ -644,37 +463,37 @@
         </div>
     </div>
 
-    <!-- 主内容区域 -->
+    
     <main class="container">
 
-        <!-- 登录页备案信息区域 -->
+        
         <div class="content-card">
             <h2><i class="fa fa-id-card"></i> 登录页备案信息</h2>
 
             <form id="beianForm">
-                <!-- 第一行：网站名称和网站链接 -->
+                
                 <div style="display: flex; gap: 20px; margin-bottom: 15px;">
                     <div class="form-group" style="flex: 1;">
                         <label for="beianName" class="control-label">网站名称：</label>
                         <div class="input-container">
-                            <input type="text" id="beianName" placeholder="边个嘅飞牛" />
+                            <input type="text" id="beianName" placeholder="边个嘅飞牛">
                         </div>
                     </div>
                     
                     <div class="form-group" style="flex: 1;">
                         <label for="beianUrl" class="control-label">网站链接：</label>
                         <div class="input-container">
-                            <input type="text" id="beianUrl" placeholder="https://www.123.com" />
+                            <input type="text" id="beianUrl" placeholder="https://www.123.com">
                         </div>
                     </div>
                 </div>
                 
-                <!-- 第二行：备案号、启用备案信息和保存按钮 -->
+                
                 <div style="display: flex; gap: 20px; align-items: flex-end;">
                     <div class="form-group" style="flex: 1;">
                         <label for="beianNum" class="control-label">备案号：</label>
                         <div class="input-container">
-                            <input type="text" id="beianNum" placeholder="粤ICP备95279394号-1" />
+                            <input type="text" id="beianNum" placeholder="粤ICP备95279394号-1">
                         </div>
                     </div>
                     
@@ -697,19 +516,19 @@
             </form>
         </div>
         
-         <!-- 外链分享设置区域 -->
+         
         <div class="content-card">
             <h2><i class="fa fa-share-alt"></i> 外链分享设置</h2>
             
             <form id="shareCustomizeForm">
-                <!-- 第一行：PC Web端LOGO -->
+                
                 <div class="form-group">
                     <div class="preview-img-container" style="display: inline-block; width: 50px; height: 40px; border: 1px solid #444; border-radius: 4px; margin-right: 8px; overflow: hidden; vertical-align: middle; position: relative; cursor: pointer;">
-                        <img id="sharePcLogoPreview" src="" alt="预览" style="width: 100%; height: 100%; object-fit: cover;" />
+                        <img id="sharePcLogoPreview" src="" alt="预览" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                     <label for="sharePcLogo" style="vertical-align: middle;">PC Web端LOGO：</label>
                     <div class="input-container">
-                        <input type="text" id="sharePcLogo" placeholder="请输入LOGO图片URL" />
+                        <input type="text" id="sharePcLogo" placeholder="请输入LOGO图片URL">
                     </div>
                     <button type="button" class="btn btn-secondary" id="defaultSharePcLogoBtn">
                         <i class="fa fa-refresh"></i> 默认
@@ -720,17 +539,17 @@
                     <button type="button" class="btn btn-primary" id="saveSharePcLogoBtn">
                         <i class="fa fa-check"></i>保存
                     </button>
-                    <input type="file" id="sharePcLogoFile" accept="image/*" style="display: none;" />
+                    <input type="file" id="sharePcLogoFile" accept="image/*" style="display: none;">
                 </div>
                 
-                <!-- 第二行：移动Web端LOGO -->
+                
                 <div class="form-group">
                     <div class="preview-img-container" style="display: inline-block; width: 50px; height: 40px; border: 1px solid #444; border-radius: 4px; margin-right: 8px; overflow: hidden; vertical-align: middle; position: relative; cursor: pointer;">
-                        <img id="shareMbLogoPreview" src="" alt="预览" style="width: 100%; height: 100%; object-fit: cover;" />
+                        <img id="shareMbLogoPreview" src="" alt="预览" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                     <label for="shareMbLogo" style="vertical-align: middle;">移动Web端LOGO：</label>
                     <div class="input-container">
-                        <input type="text" id="shareMbLogo" placeholder="请输入LOGO图片URL" />
+                        <input type="text" id="shareMbLogo" placeholder="请输入LOGO图片URL">
                     </div>
                     <button type="button" class="btn btn-secondary" id="defaultShareMbLogoBtn">
                         <i class="fa fa-refresh"></i> 默认
@@ -741,14 +560,14 @@
                     <button type="button" class="btn btn-primary" id="saveShareMbLogoBtn">
                         <i class="fa fa-check"></i>保存
                     </button>
-                    <input type="file" id="shareMbLogoFile" accept="image/*" style="display: none;" />
+                    <input type="file" id="shareMbLogoFile" accept="image/*" style="display: none;">
                 </div>
                 
-                <!-- 第三行：移动Web端标题 -->
+                
                 <div class="form-group">
                     <label for="shareMbTitle">移动端Web标题：</label>
                     <div class="input-container">
-                        <input type="text" id="shareMbTitle" placeholder="请输入移动Web端标题" />
+                        <input type="text" id="shareMbTitle" placeholder="请输入移动Web端标题">
                     </div>
                     <button type="button" class="btn btn-secondary" id="defaultShareMbTitleBtn">
                         <i class="fa fa-refresh"></i> 默认
@@ -756,53 +575,51 @@
                     <button type="button" class="btn btn-primary" id="saveShareMbTitleBtn">
                         <i class="fa fa-check"></i> 保存
                     </button>
-                </div>
-                
-                <!-- 第四行：移动Web端跳转链接 -->
-                <div class="form-group">
-                    <label for="shareMbUrl">移动Web端跳转链接：</label>
-                    <div class="input-container">
-                        <input type="text" id="shareMbUrl" placeholder="请输入移动Web端跳转链接" />
+                </div>               
+                    
+                    <div class="form-group">
+                        <label for="shareMbDesc">移动Web端描述：</label>
+                        <div class="input-container">
+                            <input type="text" id="shareMbDesc" placeholder="请输入移动Web端描述">
+                        </div>
+                        <button type="button" class="btn btn-secondary" id="defaultShareMbDescBtn">
+                            <i class="fa fa-refresh"></i> 默认
+                        </button>
+                        <button type="button" class="btn btn-primary" id="saveShareMbDescBtn">
+                            <i class="fa fa-check"></i> 保存
+                        </button>
                     </div>
-                    <button type="button" class="btn btn-secondary" id="defaultShareMbUrlBtn">
-                        <i class="fa fa-refresh"></i> 默认
-                    </button>
-                    <button type="button" class="btn btn-primary" id="saveShareMbUrlBtn">
-                        <i class="fa fa-check"></i> 保存
-                    </button>
-                </div>
-                
-                <!-- 第五行：移动Web端描述 -->
-                <div class="form-group">
-                    <label for="shareMbDesc">移动Web端描述：</label>
-                    <div class="input-container">
-                        <input type="text" id="shareMbDesc" placeholder="请输入移动Web端描述" />
+                    
+                    <div class="form-group">
+                        <label for="shareMbUrl">点击Logo跳转链接：</label>
+                        <div class="input-container">
+                            <input type="text" id="shareMbUrl" placeholder="请输入Logo跳转链接">
+                        </div>
+                        <button type="button" class="btn btn-secondary" id="defaultShareMbUrlBtn">
+                            <i class="fa fa-refresh"></i> 默认
+                        </button>
+                        <button type="button" class="btn btn-primary" id="saveShareMbUrlBtn">
+                            <i class="fa fa-check"></i> 保存
+                        </button>
                     </div>
-                    <button type="button" class="btn btn-secondary" id="defaultShareMbDescBtn">
-                        <i class="fa fa-refresh"></i> 默认
-                    </button>
-                    <button type="button" class="btn btn-primary" id="saveShareMbDescBtn">
-                        <i class="fa fa-check"></i> 保存
-                    </button>
-                </div>
             </form>
         </div>
 
 
 
 
-         <!-- 飞牛个性化设置区域 -->
+         
         <div class="content-card">
             <h2><i class="fa fa-sliders"></i> 飞牛个性化设置 <span style="text-shadow:none;color:rgb(202, 154, 51);float:right;font-size:13px;margin-top:20px;">⚠ 为减轻肥牛服务器压力，此项功能仅为非FN Connect连接生效</span></h2>
             
             <form id="customizeForm">
-                <!-- 第一行：飞牛标题和登录框透明度 -->
+                
                 <div class="form-group two-column">
-                    <!-- 飞牛标题 -->
+                    
                     <div class="form-column">
                         <label for="appTitle">飞牛标题：</label>
                         <div class="input-container">
-                        <input type="text" id="appTitle" placeholder="请输入飞牛标题" />
+                        <input type="text" id="appTitle" placeholder="请输入飞牛标题">
                     </div>
                     <button type="button" class="btn btn-secondary" id="defaultTitleBtn">
                         <i class="fa fa-refresh"></i> 默认
@@ -811,11 +628,11 @@
                             <i class="fa fa-check"></i> 保存
                         </button>
                     </div>
-                    <!-- 登录框透明度 -->
+                    
                     <div class="form-column">
                         <label for="loginOpacity">登录框透明度：</label>
                         <select id="loginOpacity" style="width: 120px; padding: 0.5rem 0.8rem; background-color: var(--dark-bg); border: 1px solid var(--border-color); border-radius: 0.5rem; color: var(--text-primary); font-size: 0.9rem;">
-                            <!-- 透明度选项将在JavaScript中动态生成 -->
+                            
                         </select>
                         <button type="button" class="btn btn-primary" id="saveOpacityBtn" style="display: none;">
                             <i class="fa fa-check"></i> 保存
@@ -824,98 +641,62 @@
                             <option value="1">显示登录框名字</option>
                             <option value="2">隐藏登录框名字</option>
                         </select>
-                        <script>
-                            // 更新登录框名字显示设置
-                            function updateNasNameDisplay(value) {
-                                fetch('/api/fnstyle.json')
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        // 只修改nasNameDisplay字段
-                                        data.nasNameDisplay = parseInt(value);
-                                         
-                                        // 保存回fnstyle.json使用正确的API端点
-                                        return fetch('/api/fnstyle.json', {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json'
-                                            },
-                                            body: JSON.stringify(data)
-                                        });
-                                    })
-                                    .then(() => {
-                                        console.log('登录框名字显示设置已保存！');
-                                    })
-                                    .catch(error => {
-                                        console.error('保存失败:', error);
-                                    });
-                            }
-                            
-                            // 页面加载时设置当前选择项
-                            document.addEventListener('DOMContentLoaded', function() {
-                                fetch('/api/fnstyle.json')
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        if (data.nasNameDisplay !== undefined) {
-                                            document.getElementById('nasNameDisplay').value = data.nasNameDisplay.toString();
-                                        }
-                                    });
-                            });
-                        </script>
+                        <script>function updateNasNameDisplay(n){fetch("/api/fnstyle.json").then(e=>e.json()).then(e=>{e.nasNameDisplay=parseInt(n);return fetch("/api/fnstyle.json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(e)})}).then(()=>{console.log("登录框名字显示设置已保存！")}).catch(e=>{console.error("保存失败:",e)})}document.addEventListener("DOMContentLoaded",function(){fetch("/api/fnstyle.json").then(e=>e.json()).then(e=>{if(e.nasNameDisplay!==undefined){document.getElementById("nasNameDisplay").value=e.nasNameDisplay.toString()}})})</script>
                     </div>
                 </div>
                 
-                <!-- 第二行：飞牛登录背景 -->
+                
                 <div class="form-group">
                     <div class="preview-img-container" style="display: inline-block; width: 50px; height: 40px; border: 1px solid #444; border-radius: 4px; margin-right: 8px; overflow: hidden; vertical-align: middle; position: relative; cursor: pointer; transition: all 0.3s ease;">
-                        <img id="loginBackgroundPreview" src="" alt="预览" style="width: 100%; height: 100%; object-fit: cover;" />
+                        <img id="loginBackgroundPreview" src="" alt="预览" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                     <label for="loginBackground" style="vertical-align: middle;">飞牛登录背景：</label>
                     <div class="input-container">
-                        <input type="text" id="loginBackground" placeholder="请输入背景图片URL" />
+                        <input type="text" id="loginBackground" placeholder="请输入背景图片URL">
                     </div>
                     <button type="button" class="btn btn-secondary" id="defaultBackgroundBtn">
                         <i class="fa fa-refresh"></i> 默认
                     </button>
-                    <button type="button" class="btn btn-secondary" id="uploadBackgroundBtn" >
+                    <button type="button" class="btn btn-secondary" id="uploadBackgroundBtn">
                         <i class="fa fa-upload"></i> 上传
                     </button>
-                    <button type="button" class="btn btn-primary" id="saveBackgroundBtn" >
+                    <button type="button" class="btn btn-primary" id="saveBackgroundBtn">
                         <i class="fa fa-check"></i>保存
                     </button>
-                    <input type="file" id="backgroundFile" accept="image/*" style="display: none;" />
+                    <input type="file" id="backgroundFile" accept="image/*" style="display: none;">
                 </div>
                 
-                <!-- 第三行：飞牛登录LOGO -->
+                
                 <div class="form-group">
                     <div class="preview-img-container" style="display: inline-block; width: 50px; height: 40px; border: 1px solid #444; border-radius: 4px; margin-right: 8px; overflow: hidden; vertical-align: middle; position: relative; cursor: pointer;">
-                        <img id="loginLogoPreview" src="" alt="预览" style="width: 100%; height: 100%; object-fit: cover;" />
+                        <img id="loginLogoPreview" src="" alt="预览" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                     <label for="loginLogo" style="vertical-align: middle;">飞牛登录LOGO：</label>
                     <div class="input-container">
-                        <input type="text" id="loginLogo" placeholder="请输入LOGO图片URL" />
+                        <input type="text" id="loginLogo" placeholder="请输入LOGO图片URL">
                     </div>
                     <button type="button" class="btn btn-secondary" id="defaultLogoBtn">
                         <i class="fa fa-refresh"></i> 默认
                     </button>
-                    <button type="button" class="btn btn-secondary" id="uploadLogoBtn" >
+                    <button type="button" class="btn btn-secondary" id="uploadLogoBtn">
                         <i class="fa fa-upload"></i> 上传
                     </button>
-                    <button type="button" class="btn btn-primary" id="saveLogoBtn" >
+                    <button type="button" class="btn btn-primary" id="saveLogoBtn">
                             <i class="fa fa-check"></i>保存
                         </button>
-                    <input type="file" id="logoFile" accept="image/*" style="display: none;" />
+                    <input type="file" id="logoFile" accept="image/*" style="display: none;">
                 </div>
                 
 
                 
-                <!-- 第四行：飞牛设备LOGO -->
+                
                 <div class="form-group">
                     <div class="preview-img-container" style="display: inline-block; width: 50px; height: 40px; border: 1px solid #444; border-radius: 4px; margin-right: 8px; overflow: hidden; vertical-align: middle; position: relative; cursor: pointer;">
-                        <img id="deviceLogoPreview" src="" alt="预览" style="width: 100%; height: 100%; object-fit: cover;" />
+                        <img id="deviceLogoPreview" src="" alt="预览" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                     <label for="deviceLogo" style="vertical-align: middle;">飞牛设备LOGO：</label>
                     <div class="input-container">
-                        <input type="text" id="deviceLogo" placeholder="请输入LOGO图片URL" />
+                        <input type="text" id="deviceLogo" placeholder="请输入LOGO图片URL">
                     </div>
                     <button type="button" class="btn btn-secondary" id="defaultDeviceLogoBtn">
                         <i class="fa fa-refresh"></i> 默认
@@ -926,17 +707,17 @@
                     <button type="button" class="btn btn-primary" id="saveDeviceLogoBtn">
                             <i class="fa fa-check"></i> 保存
                         </button>
-                    <input type="file" id="deviceLogoFile" accept="image/*" style="display: none;" />
+                    <input type="file" id="deviceLogoFile" accept="image/*" style="display: none;">
                 </div>
                 
-                <!-- 第五行：飞牛网页favicon图标 -->
+                
                 <div class="form-group">
                     <div class="preview-img-container" style="display: inline-block; width: 50px; height: 40px; border: 1px solid #444; border-radius: 4px; margin-right: 8px; overflow: hidden; vertical-align: middle; position: relative; cursor: pointer;">
-                        <img id="webFaviconPreview" src="" alt="预览" style="width: 100%; height: 100%; object-fit: cover;" />
+                        <img id="webFaviconPreview" src="" alt="预览" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                     <label for="webFavicon" style="vertical-align: middle;">飞牛网页favicon图标：</label>
                     <div class="input-container">
-                        <input type="text" id="webFavicon" placeholder="请输入favicon图标URL" />
+                        <input type="text" id="webFavicon" placeholder="请输入favicon图标URL">
                     </div>
                     <button type="button" class="btn btn-secondary" id="defaultFaviconBtn">
                         <i class="fa fa-refresh"></i> 默认
@@ -947,17 +728,17 @@
                     <button type="button" class="btn btn-primary" id="saveFaviconBtn">
                             <i class="fa fa-check"></i> 保存
                         </button>
-                    <input type="file" id="faviconFile" accept="image/x-icon,.ico,.png,.jpg" style="display: none;" />
+                    <input type="file" id="faviconFile" accept="image/x-icon,.ico,.png,.jpg" style="display: none;">
                 </div>
                 
-                <!-- 第六行：桌面默认壁纸 -->
+                
                 <div class="form-group">
                     <div class="preview-img-container" style="display: inline-block; width: 50px; height: 40px; border: 1px solid #444; border-radius: 4px; margin-right: 8px; overflow: hidden; vertical-align: middle; position: relative; cursor: pointer;">
-                        <img id="desktopWallpaperPreview" src="" alt="预览" style="width: 100%; height: 100%; object-fit: cover;" />
+                        <img id="desktopWallpaperPreview" src="" alt="预览" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                     <label for="desktopWallpaper" style="vertical-align: middle;">桌面默认壁纸：</label>
                     <div class="input-container">
-                        <input type="text" id="desktopWallpaper" placeholder="虽然肥牛自带此功能，但这里可以用图片API并且强制替换" />
+                        <input type="text" id="desktopWallpaper" placeholder="虽然肥牛自带此功能，但这里可以用图片API并且强制替换">
                     </div>
                     <button type="button" class="btn btn-secondary" id="defaultWallpaperBtn">
                         <i class="fa fa-refresh"></i> 默认
@@ -968,13 +749,13 @@
                     <button type="button" class="btn btn-primary" id="saveWallpaperBtn">
                             <i class="fa fa-check"></i> 保存
                         </button>
-                    <input type="file" id="wallpaperFile" accept="image/*" style="display: none;" />
+                    <input type="file" id="wallpaperFile" accept="image/*" style="display: none;">
                 </div>
                 
             </form>
         </div>
         
-        <!-- 独立的预设主题切换区域 -->
+        
         <div class="content-card">
             <div class="card-header">
                 <h2><i class="fa fa-paint-brush"></i> 一键切换预设主题 <small style="text-shadow:none;color:rgb(106, 149, 189);float:right;font-size:13px;margin-top:18px;margin-left:10px;"> (个人服务器小水管，若下载失败请再尝试)</small></h2>
@@ -983,7 +764,7 @@
                 </button>
             </div>
             <div id="themeGrid" class="theme-grid">
-                <!-- 主题卡片将通过JavaScript动态生成 -->
+                
                 <div class="theme-loading">
                     <i class="fa fa-circle-o-notch fa-spin fa-2x"></i>
                     <p>加载主题中...</p>
@@ -991,18 +772,18 @@
             </div>
         </div>
         
-        <!-- 影视个性化配置区域 -->
+        
         <div class="content-card">
             <h2><i class="fa fa-film"></i> 影视个性化配置 <small style="text-shadow:none;color:rgb(92, 204, 142);font-size:13px;">注意:影视区需要更新Compose代码,请更新v0.73后重新构建!</small></h2>
 
             <form id="movieCustomizeForm">
-                <!-- 第一行：影视标题和透明度 -->
+                
                 <div class="form-group two-column">
-                    <!-- 影视标题 -->
+                    
                     <div class="form-column">
                         <label for="movieTitle">影视标题：</label>
                         <div class="input-container">
-                        <input type="text" id="movieTitle" placeholder="请输入影视标题" />
+                        <input type="text" id="movieTitle" placeholder="请输入影视标题">
                          </div>
                         <button type="button" class="btn btn-secondary" id="defaultMovieTitleBtn">
                             <i class="fa fa-refresh"></i> 默认
@@ -1011,54 +792,18 @@
                             <i class="fa fa-check"></i> 保存
                         </button>
                     </div>
-                    <!-- 影视登录框透明度 -->
+                    
                     <div class="form-column">
                         <label for="movieOpacity">登录框透明度：</label>
-                        <select  id="movieOpacity" style="width: 120px; padding: 0.5rem 0.8rem; background-color: var(--dark-bg); border: 1px solid var(--border-color); border-radius: 0.5rem; color: var(--text-primary); font-size: 0.9rem;">
-                            <!-- 透明度选项将在JavaScript中动态生成 -->
+                        <select id="movieOpacity" style="width: 120px; padding: 0.5rem 0.8rem; background-color: var(--dark-bg); border: 1px solid var(--border-color); border-radius: 0.5rem; color: var(--text-primary); font-size: 0.9rem;">
+                            
                         </select>
                         
                         <select id="moveNameDisplay" style="margin-left: 10px; width: 150px; padding: 0.5rem 0.8rem; background-color: var(--dark-bg); border: 1px solid var(--border-color); border-radius: 0.5rem; color: var(--text-primary); font-size: 0.9rem;" onchange="updateMoveNameDisplay(this.value)">
                             <option value="1">显示登录框设备名称</option>
                             <option value="2">隐藏登录框设备名称</option>
                         </select>
-                        <script>
-                            // 更新登录框设备名称显示设置
-                            function updateMoveNameDisplay(value) {
-                                fetch('/api/fnstyle.json')
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        // 只修改moveNameDisplay字段
-                                        data.moveNameDisplay = parseInt(value);
-                                          
-                                        // 保存回fnstyle.json使用正确的API端点
-                                        return fetch('/api/fnstyle.json', {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json'
-                                            },
-                                            body: JSON.stringify(data)
-                                        });
-                                    })
-                                    .then(() => {
-                                        console.log('登录框设备名称显示设置已保存！');
-                                    })
-                                    .catch(error => {
-                                        console.error('保存失败:', error);
-                                    });
-                            }
-                            
-                            // 页面加载时设置当前选择项
-                            document.addEventListener('DOMContentLoaded', function() {
-                                fetch('/api/fnstyle.json')
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        if (data.moveNameDisplay !== undefined) {
-                                            document.getElementById('moveNameDisplay').value = data.moveNameDisplay.toString();
-                                        }
-                                    });
-                            });
-                        </script>
+                        <script>function updateMoveNameDisplay(n){fetch("/api/fnstyle.json").then(e=>e.json()).then(e=>{e.moveNameDisplay=parseInt(n);return fetch("/api/fnstyle.json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(e)})}).then(()=>{console.log("登录框设备名称显示设置已保存！")}).catch(e=>{console.error("保存失败:",e)})}document.addEventListener("DOMContentLoaded",function(){fetch("/api/fnstyle.json").then(e=>e.json()).then(e=>{if(e.moveNameDisplay!==undefined){document.getElementById("moveNameDisplay").value=e.moveNameDisplay.toString()}})})</script>
                         <button type="button" class="btn btn-primary" id="saveMovieOpacityBtn" style="display: none;">
                             <i class="fa fa-check"></i> 保存
                         </button>
@@ -1066,14 +811,14 @@
                     </div>
                 </div>
                 
-                <!-- 第二行：影视登录背景 -->
+                
                 <div class="form-group">
                     <div class="preview-img-container" style="display: inline-block; width: 50px; height: 40px; border: 1px solid #444; border-radius: 4px; margin-right: 8px; overflow: hidden; vertical-align: middle; position: relative; cursor: pointer; transition: all 0.3s ease;">
-                        <img id="movieBackgroundPreview" src="" alt="预览" style="width: 100%; height: 100%; object-fit: cover;" />
+                        <img id="movieBackgroundPreview" src="" alt="预览" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                     <label for="movieBackground" style="vertical-align: middle;">影视背景：</label>
                     <div class="input-container">
-                        <input type="text" id="movieBackground" placeholder="请输入背景图片URL" />
+                        <input type="text" id="movieBackground" placeholder="请输入背景图片URL">
                     </div>
                     <button type="button" class="btn btn-secondary" id="defaultMovieBackgroundBtn">
                         <i class="fa fa-refresh"></i> 默认
@@ -1085,17 +830,17 @@
                         <i class="fa fa-check"></i> 保存
                     </button>
                 
-                    <input type="file" id="movieBackgroundFile" accept="image/*" style="display: none;" />
+                    <input type="file" id="movieBackgroundFile" accept="image/*" style="display: none;">
                 </div>
                 
-                <!-- 第三行：影视登录LOGO -->
+                
                 <div class="form-group">
                     <div class="preview-img-container" style="display: inline-block; width: 50px; height: 40px; border: 1px solid #444; border-radius: 4px; margin-right: 8px; overflow: hidden; vertical-align: middle; position: relative; cursor: pointer;">
-                        <img id="movieLogoPreview" src="" alt="预览" style="width: 100%; height: 100%; object-fit: cover;" />
+                        <img id="movieLogoPreview" src="" alt="预览" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                     <label for="movieLogo" style="vertical-align: middle;">影视LOGO：</label>
                     <div class="input-container">
-                        <input type="text" id="movieLogo" placeholder="请输入LOGO图片URL" />
+                        <input type="text" id="movieLogo" placeholder="请输入LOGO图片URL">
                     </div>
                     <button type="button" class="btn btn-secondary" id="defaultMovieLogoBtn">
                         <i class="fa fa-refresh"></i> 默认
@@ -1107,1425 +852,55 @@
                         <i class="fa fa-check"></i> 保存
                     </button>
                 
-                    <input type="file" id="movieLogoFile" accept="image/*" style="display: none;" />
+                    <input type="file" id="movieLogoFile" accept="image/*" style="display: none;">
                 </div>
                 
-                <!-- 第三行：影视网页favicon -->
+                
                 <div class="form-group">
                     <div class="preview-img-container" style="display: inline-block; width: 50px; height: 40px; border: 1px solid #444; border-radius: 4px; margin-right: 8px; overflow: hidden; vertical-align: middle; position: relative; cursor: pointer;">
-                        <img id="movieFaviconPreview" src="" alt="预览" style="width: 100%; height: 100%; object-fit: cover;" />
+                        <img id="movieFaviconPreview" src="" alt="预览" style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                     <label for="movieFavicon" style="vertical-align: middle;">影视网页favicon图标：</label>
                     <div class="input-container">
-                        <input type="text" id="movieFavicon" placeholder="请输入favicon图标URL" />
+                        <input type="text" id="movieFavicon" placeholder="请输入favicon图标URL">
                     </div>
                     <button type="button" class="btn btn-secondary" id="defaultMovieFaviconBtn">
                         <i class="fa fa-refresh"></i> 默认
                     </button>
-                    <button type="button" class="btn btn-secondary" id="uploadMovieFaviconBtn" >
+                    <button type="button" class="btn btn-secondary" id="uploadMovieFaviconBtn">
                         <i class="fa fa-upload"></i> 上传
                     </button>
-                    <button type="button" class="btn btn-primary" id="saveMovieFaviconBtn" >
+                    <button type="button" class="btn btn-primary" id="saveMovieFaviconBtn">
                         <i class="fa fa-check"></i> 保存
                     </button>
                 
-                    <input type="file" id="movieFaviconFile" accept="image/x-icon,.ico,.png,.jpg" style="display: none;" />
+                    <input type="file" id="movieFaviconFile" accept="image/x-icon,.ico,.png,.jpg" style="display: none;">
                 </div>
                 </form>
                 </div>
         
-        <!-- 覆盖层用于阻止页面操作 -->
+        
         <div id="overlay" class="overlay"></div>
         
-        <!-- 状态消息弹窗 -->
+        
         <div id="statusMessage" class="status-message"></div>
     </main>
 
-    <script>
-        // 文件上传函数
-        function uploadFile(fileInputId, fieldName, inputElementId) {
-            const fileInput = document.getElementById(fileInputId);
-            const file = fileInput.files[0];
-            
-            if (!file) {
-                showStatusMessage('error', '请选择文件');
-                return;
-            }
-            
-            // 创建带循环动画进度条的状态消息
-            showStatusMessage('info', '文件上传中...', true);
-            
-            const formData = new FormData();
-            formData.append('file', file);
-            
-            // 使用XMLHttpRequest替代fetch以支持上传进度
-            const xhr = new XMLHttpRequest();
-            
-            // 请求完成处理
-            xhr.onload = function() {
-                
-                if (xhr.status === 200) {
-                    try {
-                        const data = JSON.parse(xhr.responseText);
-                        if (data.success) {
-                            // 在输入框中填入上传后的路径
-                            const inputElement = document.getElementById(inputElementId);
-                            inputElement.value = data.path;
-                            
-                            // 上传成功后更新预览图
-                            if (inputElementId === 'movieBackground') updatePreview(data.path, 'movieBackgroundPreview');
-                            else if (inputElementId === 'movieLogo') updatePreview(data.path, 'movieLogoPreview');
-                            else if (inputElementId === 'movieFavicon') updatePreview(data.path, 'movieFaviconPreview');
-                            else if (inputElementId === 'loginBackground') updatePreview(data.path, 'loginBackgroundPreview');
-                            else if (inputElementId === 'loginLogo') updatePreview(data.path, 'loginLogoPreview');
-                            else if (inputElementId === 'deviceLogo') updatePreview(data.path, 'deviceLogoPreview');
-                            else if (inputElementId === 'webFavicon') updatePreview(data.path, 'webFaviconPreview');
-                            else if (inputElementId === 'desktopWallpaper') updatePreview(data.path, 'desktopWallpaperPreview');
-                            // 为外链分享图片字段添加预览更新
-                            else if (inputElementId === 'sharePcLogo' || inputElementId === 'shareMbLogo') updateSharePreview(inputElementId);
-                            
-                            // 自动保存到JSON数据
-                            saveToJson(fieldName, data.path)
-                                .then(() => {
-                                    // 上传成功后显示成功消息，此时会自动隐藏覆盖层
-                                    showStatusMessage('success', '文件上传成功并已自动保存到设置');
-                                })
-                                .catch(() => {
-                                    // 即使保存失败，也要提示上传成功
-                                    showStatusMessage('success', '文件上传成功，但保存设置失败，请手动点击保存');
-                                });
-                        } else {
-                            showStatusMessage('error', data.error || '文件上传失败');
-                        }
-                    } catch (e) {
-                        showStatusMessage('error', '文件上传响应解析失败');
-                    }
-                } else {
-                    showStatusMessage('error', `文件上传失败 (HTTP ${xhr.status})`);
-                }
-            };
-            
-            // 请求错误处理
-            xhr.onerror = function() {
-                console.error('上传错误');
-                showStatusMessage('error', '网络错误，文件上传失败');
-            };
-            
-            // 发送请求
-            xhr.open('POST', `/api/upload/${fieldName}`);
-            xhr.setRequestHeader('x-auth-token', localStorage.getItem('authToken'));
-            xhr.send(formData);
-        }
-        
-            
-        // 注意：文件选择事件已在initFnStyleEvents和initMovieStyleEvents函数中绑定
-        // 这里不再重复绑定，避免事件冲突
-        
-        // 检查登录状态 - 添加30分钟过期机制
-        function checkLoginStatus() {
-            const authToken = localStorage.getItem('authToken');
-            const loginTimestamp = localStorage.getItem('loginTimestamp');
-            const thirtyMinutes = 30 * 60 * 1000; // 30分钟，以毫秒为单位
-            const currentTime = new Date().getTime();
-            
-            // 检查是否已登录且未过期
-            if (!authToken || !loginTimestamp || (currentTime - parseInt(loginTimestamp)) > thirtyMinutes) {
-                // 登录已过期或未登录，清除登录信息并重定向到登录页
-                localStorage.removeItem('authToken');
-                localStorage.removeItem('loginTimestamp');
-                localStorage.removeItem('isLoggedIn');
-                // 记录当前页面URL作为来源页面
-                localStorage.setItem('returnUrl', window.location.href);
-                window.location.href = 'login.html';
-                return false;
-            }
-            
-            // 登录有效，更新登录状态
-            localStorage.setItem('authToken', 'authenticated');
-            localStorage.setItem('loginTimestamp', currentTime.toString());
-            return true;
-        }
-        
-        // 页面加载时检查登录状态
-        document.addEventListener('DOMContentLoaded', function() {
-            if (!checkLoginStatus()) {
-                return;
-            }
-            
-            // 确保所有API请求都包含认证头
-            const originalFetch = window.fetch;
-            window.fetch = function(url, options = {}) {
-                if (url.startsWith('/api/')) {
-                    const authToken = localStorage.getItem('authToken');
-                    if (authToken) {
-                        if (!options.headers) {
-                            options.headers = {};
-                        }
-                        options.headers['X-Auth-Token'] = authToken;
-                    }
-                }
-                
-                // 处理响应
-                return originalFetch(url, options).then(response => {
-                    // 如果响应是401未授权，重定向到登录页面
-                    if (response.status === 401) {
-                        localStorage.removeItem('authToken');
-                        window.location.href = 'login.html';
-                    }
-                    return response;
-                });
-            };
-            
-            // 初始化表单事件
-            initializeFormEvents();
-            
-            // 加载当前设置
-            loadCurrentSettings();
-        });
-        
-        // 初始化表单事件
-        function initializeFormEvents() {
-            // 初始化透明度下拉列表
-            initializeOpacityDropdown();
-            
-            // 飞牛配置相关事件
-            initFnStyleEvents();
-            
-            // 影视配置相关事件
-            initMovieStyleEvents();
-            
-            // 备案信息相关事件
-            initBeianEvents();
-        }
-        
-        // 初始化飞牛配置事件
-        function initFnStyleEvents() {
-            // 飞牛标题相关事件
-            document.getElementById('saveTitleBtn').addEventListener('click', function() {
-                saveAppTitle();
-            });
-            
-            // 飞牛网页favicon图标相关事件
-            document.getElementById('uploadFaviconBtn').addEventListener('click', function() {
-                document.getElementById('faviconFile').click();
-            });
-            
-            document.getElementById('faviconFile').addEventListener('change', function() {
-                uploadFile('faviconFile', 'webFavicon', 'webFavicon');
-            });
-            
-            document.getElementById('saveFaviconBtn').addEventListener('click', function() {
-                saveWebFavicon();
-            });
-            
-            // 登录背景相关事件
-            document.getElementById('uploadBackgroundBtn').addEventListener('click', function() {
-                document.getElementById('backgroundFile').click();
-            });
-            
-            document.getElementById('backgroundFile').addEventListener('change', function() {
-                uploadFile('backgroundFile', 'loginBackground', 'loginBackground');
-            });
-            
-            document.getElementById('saveBackgroundBtn').addEventListener('click', function() {
-                saveLoginBackground();
-            });
-            
-            // 登录LOGO相关事件
-            document.getElementById('uploadLogoBtn').addEventListener('click', function() {
-                document.getElementById('logoFile').click();
-            });
-            
-            document.getElementById('logoFile').addEventListener('change', function() {
-                uploadFile('logoFile', 'loginLogo', 'loginLogo');
-            });
-            
-            document.getElementById('saveLogoBtn').addEventListener('click', function() {
-                saveLoginLogo();
-            });
-            
-            // 设备LOGO相关事件
-            document.getElementById('uploadDeviceLogoBtn').addEventListener('click', function() {
-                document.getElementById('deviceLogoFile').click();
-            });
-            
-            document.getElementById('deviceLogoFile').addEventListener('change', function() {
-                uploadFile('deviceLogoFile', 'deviceLogo', 'deviceLogo');
-            });
-            
-            document.getElementById('saveDeviceLogoBtn').addEventListener('click', function() {
-                saveDeviceLogo();
-            });
-            
-            // 登录框透明度相关事件
-            document.getElementById('saveOpacityBtn').addEventListener('click', function() {
-                saveLoginOpacity();
-            });
-            
-            // 飞牛标题默认按钮事件
-            document.getElementById('defaultTitleBtn').addEventListener('click', function() {
-                document.getElementById('appTitle').value = '飞牛 fnOS';
-            });
-            
-            // 飞牛登录背景默认按钮事件
-            document.getElementById('defaultBackgroundBtn').addEventListener('click', function() {
-                document.getElementById('loginBackground').value = '/static/bg/wallpaper-1.webp';
-            });
-            
-            // 飞牛登录LOGO默认按钮事件
-            document.getElementById('defaultLogoBtn').addEventListener('click', function() {
-                document.getElementById('loginLogo').value = "data:image/svg+xml,%3csvg%20width='80'%20height='62'%20viewBox='0%200%2080%2062'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M71.7976%200C71.7976%200%2075.7039%207.62011%2073.9143%2012.0592C72.9983%2014.3316%2070.3423%2017.0402%2067.4317%2017.0402H29.3047C23.8248%2017.0402%2019.3824%2021.4416%2019.3824%2026.871V54.5285C19.3824%2058.6549%2022.7586%2062%2026.9234%2062H37.302C40.0054%2062%2042.197%2059.8286%2042.197%2057.1501V50.7825H49.3583C52.0618%2050.7825%2054.2534%2048.6111%2054.2534%2045.9326V40.3721C60.4044%2040.3721%2066.2097%2037.5272%2069.9786%2032.666L70.3048%2032.2452H50.9459C48.2425%2032.2452%2046.0509%2034.4166%2046.0509%2037.0951V41.5972C46.0509%2042.1818%2045.577%2042.6556%2044.9925%2042.6556H38.8896C36.1861%2042.6556%2033.9945%2044.827%2033.9945%2047.5055V51.9695C33.9945%2053.0209%2033.1422%2053.8731%2032.0909%2053.8731H29.4885C28.4372%2053.8731%2027.5849%2053.0209%2027.5849%2051.9695V26.871C27.5849%2025.9299%2028.3549%2025.167%2029.3047%2025.167H70.0777C75.5577%2025.167%2080.0001%2020.7656%2080.0001%2015.3362C80.0001%2010.4052%2077.9446%205.69738%2074.3281%202.34542L71.7976%200ZM6.08573%2012.0965C4.29615%207.65745%208.2025%200.0373473%208.2025%200.0373473L5.67199%202.38276C2.05551%205.73472%200%2010.4425%200%2015.3735C0%2020.8029%204.4424%2025.2044%209.92237%2025.2044H12.3468C12.3657%2022.0411%2013.5657%2019.1578%2015.528%2016.9731C9.05215%2016.4551%206.89556%2014.1053%206.08573%2012.0965Z'%20fill='white'/%3e%3c/svg%3e";
-            });
-            
-            // 飞牛设备LOGO默认按钮事件
-            document.getElementById('defaultDeviceLogoBtn').addEventListener('click', function() {
-                document.getElementById('deviceLogo').value = "data:image/png;base64,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";
-            });
-            
-            // 飞牛网页favicon图标默认按钮事件
-            document.getElementById('defaultFaviconBtn').addEventListener('click', function() {
-                document.getElementById('webFavicon').value = '/favicon.ico';
-            });
-            
-            // 桌面默认壁纸相关事件
-            document.getElementById('uploadWallpaperBtn').addEventListener('click', function() {
-                document.getElementById('wallpaperFile').click();
-            });
-            
-            document.getElementById('wallpaperFile').addEventListener('change', function() {
-                uploadFile('wallpaperFile', 'desktopWallpaper', 'desktopWallpaper');
-            });
-            
-            document.getElementById('saveWallpaperBtn').addEventListener('click', function() {
-                saveDesktopWallpaper();
-            });
-            
-            // 桌面默认壁纸默认按钮事件 - 清空输入框
-            document.getElementById('defaultWallpaperBtn').addEventListener('click', function() {
-                document.getElementById('desktopWallpaper').value = '/static/bg/wallpaper-1.webp';
-            });
-        }
-        
-        // 初始化影视配置事件
-        function initMovieStyleEvents() {
-            // 影视标题相关事件
-            document.getElementById('saveMovieTitleBtn').addEventListener('click', function() {
-                saveMovieTitle();
-            });
-            
-            // 影视网页favicon图标相关事件
-            document.getElementById('uploadMovieFaviconBtn').addEventListener('click', function() {
-                document.getElementById('movieFaviconFile').click();
-            });
-            
-            document.getElementById('movieFaviconFile').addEventListener('change', function() {
-                uploadFile('movieFaviconFile', 'movieFavicon', 'movieFavicon');
-            });
-            
-            document.getElementById('saveMovieFaviconBtn').addEventListener('click', function() {
-                saveMovieFavicon();
-            });
-            
-            // 影视背景相关事件
-            document.getElementById('uploadMovieBackgroundBtn').addEventListener('click', function() {
-                document.getElementById('movieBackgroundFile').click();
-            });
-            
-            document.getElementById('movieBackgroundFile').addEventListener('change', function() {
-                uploadFile('movieBackgroundFile', 'movieBackground', 'movieBackground');
-            });
-            
-            document.getElementById('saveMovieBackgroundBtn').addEventListener('click', function() {
-                saveMovieBackground();
-            });
-            
-            // 影视LOGO相关事件
-            document.getElementById('uploadMovieLogoBtn').addEventListener('click', function() {
-                document.getElementById('movieLogoFile').click();
-            });
-            
-            document.getElementById('movieLogoFile').addEventListener('change', function() {
-                uploadFile('movieLogoFile', 'movieLogo', 'movieLogo');
-            });
-            
-            document.getElementById('saveMovieLogoBtn').addEventListener('click', function() {
-                saveMovieLogo();
-            });
-            
-            // 影视内容透明度相关事件
-            document.getElementById('saveMovieOpacityBtn').addEventListener('click', function() {
-                saveMovieOpacity();
-            });
-            
-            // 影视背景默认按钮事件
-            document.getElementById('defaultMovieBackgroundBtn').addEventListener('click', function() {
-                // 动态获取trim.media/static/assets目录中的第一个webp文件
-                fetch('/api/getWebpFiles')
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.files && data.files.length > 0) {
-                            const backgroundUrl = '/v/assets/' + data.files[0];
-                            document.getElementById('movieBackground').value = backgroundUrl;
-                            // 更新预览图
-                           // updatePreview(backgroundUrl, 'movieBackgroundPreview');
-                        } else {
-                            console.error('未找到webp文件');
-                            alert('未找到可用的webp背景文件');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('获取webp文件失败:', error);
-                        alert('获取背景文件失败');
-                    });
-            });
-            
-            // 影视LOGO默认按钮事件
-            document.getElementById('defaultMovieLogoBtn').addEventListener('click', function() {
-                const logoUrl = '/v/static/img/logo.png';
-                document.getElementById('movieLogo').value = logoUrl;
-                // 更新预览图
-              //  updatePreview(logoUrl, 'movieLogoPreview');
-            });
-            
-            // 影视网页favicon图标默认按钮事件
-            document.getElementById('defaultMovieFaviconBtn').addEventListener('click', function() {
-                const faviconUrl = '/v/static/favicon.ico';
-                document.getElementById('movieFavicon').value = faviconUrl;
-                // 更新预览图
-              //  updatePreview(faviconUrl, 'movieFaviconPreview');
-            });
-            
-            // 影视标题默认按钮事件
-                        document.getElementById('defaultMovieTitleBtn').addEventListener('click', function() {
-                            document.getElementById('movieTitle').value = '飞牛影视';
-                        });
-        }
-        
-        // 初始化备案信息事件
-        function initBeianEvents() {
-            // 设置保存按钮事件监听
-            document.getElementById('saveBeianBtn').addEventListener('click', function() {
-                saveBeianInfo();
-            });
-            
-            // 加载现有备案信息
-            loadBeianInfo();
-        }
-        
-        // 加载备案信息
-        function loadBeianInfo() {
-            try {
-                fetch('/api/fnstyle.json')
-                    .then(response => response.json())
-                    .then(data => {
-                        // 设置选择列表状态 - 使用数字1/0，默认0关闭
-                        document.getElementById('beianToggle').value = (data.beian !== undefined) ? data.beian.toString() : '0';
-                        
-                        // 设置输入框值
-                        if (data.beian_Name) document.getElementById('beianName').value = data.beian_Name;
-                        if (data.beian_URL) document.getElementById('beianUrl').value = data.beian_URL;
-                        if (data.beian_NUM) document.getElementById('beianNum').value = data.beian_NUM;
-                    })
-                    .catch(error => {
-                        console.error('加载备案信息失败:', error);
-                        // 发生错误时默认设置为关闭(0)
-                        document.getElementById('beianToggle').value = '0';
-                    });
-            } catch (error) {
-                console.error('加载备案信息失败:', error);
-                // 发生错误时默认设置为关闭(0)
-                document.getElementById('beianToggle').value = '0';
-            }
-        }
-        
-        // 保存备案信息
-        function saveBeianInfo() {
-            const beianToggle = parseInt(document.getElementById('beianToggle').value);
-            const beianName = document.getElementById('beianName').value.trim();
-            const beianUrl = document.getElementById('beianUrl').value.trim();
-            const beianNum = document.getElementById('beianNum').value.trim();
-            
-            // 显示保存中提示
-            showStatusMessage('info', '保存中...');
-            
-            // 构建要发送的数据 - 使用数字1/0表示状态
-            const dataToSend = {
-                beian: beianToggle,
-                beian_Name: beianName,
-                beian_URL: beianUrl,
-                beian_NUM: beianNum
-            };
-            
-            // 发送POST请求到服务器API
-            fetch('/api/fnstyle.json', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(dataToSend)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('网络响应错误');
-                }
-                return response.json();
-            })
-            .then(data => {
-                showStatusMessage('success', '备案信息已保存');
-                console.log('备案信息状态:', beianToggle === 1 ? '开启(1)' : '关闭(0)');
-            })
-            .catch(error => {
-                console.error('保存备案信息失败:', error);
-                showStatusMessage('error', '保存备案信息失败');
-            });
-        }
-        
-        // 处理备案信息状态更新（已改为下拉列表，此函数保留但不再使用）
-        function updateBeianToggle() {
-            const value = document.getElementById('beianToggle').value;
-            console.log('备案信息状态:', value === '1' ? '开启(1)' : '关闭(0)');
-        }
-        
-        // 加载当前设置 - 直接从server.js提供的API读取
-        function loadCurrentSettings() {
-            try {
-                // 从服务器API加载数据 ()
-                fetch('api/fnstyle.json')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('网络响应错误');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        // 设置表单值
-                        // 飞牛配置
-                        if (data.appTitle) document.getElementById('appTitle').value = data.appTitle;
-                        if (data.webFavicon) document.getElementById('webFavicon').value = data.webFavicon;
-                        if (data.loginBackground) document.getElementById('loginBackground').value = data.loginBackground;
-                        if (data.loginLogo) document.getElementById('loginLogo').value = data.loginLogo;
-                        if (data.deviceLogo) document.getElementById('deviceLogo').value = data.deviceLogo;
-                        if (data.desktopWallpaper) document.getElementById('desktopWallpaper').value = data.desktopWallpaper;
-                        if (data.loginOpacity) document.getElementById('loginOpacity').value = data.loginOpacity;
-                        else document.getElementById('loginOpacity').value = '30'; // 默认值改为30
-                        
-                        // 影视配置
-                        if (data.movieTitle) document.getElementById('movieTitle').value = data.movieTitle;
-                        if (data.movieFavicon) document.getElementById('movieFavicon').value = data.movieFavicon;
-                        if (data.movieBackground) document.getElementById('movieBackground').value = data.movieBackground;
-                        if (data.movieLogo) document.getElementById('movieLogo').value = data.movieLogo;
-                        if (data.movieOpacity) document.getElementById('movieOpacity').value = data.movieOpacity;
-                        else document.getElementById('movieOpacity').value = '30'; // 默认值改为30
-                        
-                        // 更新所有预览图
-                        updatePreview(data.loginBackground || '', 'loginBackgroundPreview');
-                        updatePreview(data.loginLogo || '', 'loginLogoPreview');
-                        updatePreview(data.deviceLogo || '', 'deviceLogoPreview');
-                        updatePreview(data.webFavicon || '', 'webFaviconPreview');
-                        updatePreview(data.desktopWallpaper || '', 'desktopWallpaperPreview');
-                        // 更新影视相关预览图
-                        updatePreview(data.movieBackground || '', 'movieBackgroundPreview');
-                        updatePreview(data.movieLogo || '', 'movieLogoPreview');
-                        updatePreview(data.movieFavicon || '', 'movieFaviconPreview');
-                        
-                        showStatusMessage('info', '主题配置加载完成');
-                    })
-                    .catch(error => {
-                        console.error('加载设置失败:', error);
-                        showStatusMessage('error', '加载设置失败');
-                    });
-            } catch (error) {
-                console.error('加载设置失败:', error);
-                showStatusMessage('error', '加载设置失败');
-            }
-        }
-        
-        // 保存设置到服务器API，直接更新fnstyle.json文件
-        function saveToJson(field, value) {
-            // 构建要发送的数据
-            const dataToSend = { [field]: value };
-            
-            // 发送POST请求到服务器API ()
-            return fetch('api/fnstyle.json', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(dataToSend)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('网络响应错误');
-                }
-                return response.json();
-            })
-            .then(result => {
-                console.log(`设置已直接保存到fnstyle.json文件: ${field} = ${value}`);
-                return result.data;
-            })
-            .catch(error => {
-                console.error('保存设置失败:', error);
-                throw new Error('保存设置失败');
-            });
-        }
-        
-        // 保存桌面默认壁纸设置
-        function saveDesktopWallpaper() {
-            const wallpaperUrl = document.getElementById('desktopWallpaper').value.trim();
-            
-            if (!wallpaperUrl) {
-                showStatusMessage('error', '请输入壁纸图片URL或选择文件');
-                return;
-            }
-            
-            // 显示保存中提示和覆盖层
-            showStatusMessage('info', '保存中...', true, 50);
-            
-            saveToJson('desktopWallpaper', wallpaperUrl)
-                .then(() => {
-                    // 如果有文件，这里可以添加上传逻辑
-                    const fileInput = document.getElementById('wallpaperFile');
-                    if (fileInput.files && fileInput.files[0]) {
-                        // 模拟文件上传
-                        console.log('需要上传壁纸文件:', fileInput.files[0]);
-                        // 实际项目中这里应该调用上传API
-                    }
-                    
-                    showStatusMessage('success', '桌面默认壁纸设置已保存');
-                    // 保存成功后更新预览
-                    updatePreview(wallpaperUrl, 'desktopWallpaperPreview');
-                })
-                .catch(error => {
-                    console.error('保存壁纸设置失败:', error);
-                    showStatusMessage('error', '保存壁纸设置失败');
-                });
-        }
-        
-        // 保存登录背景设置
-        function saveLoginBackground() {
-            const backgroundUrl = document.getElementById('loginBackground').value.trim();
-            
-            if (!backgroundUrl) {
-                showStatusMessage('error', '请输入背景图片URL或选择文件');
-                return;
-            }
-            
-            // 显示保存中提示和覆盖层
-            showStatusMessage('info', '保存中...', true, 50);
-            
-            saveToJson('loginBackground', backgroundUrl)
-                .then(() => {
-                    // 如果有文件，这里可以添加上传逻辑
-                    const fileInput = document.getElementById('backgroundFile');
-                    if (fileInput.files && fileInput.files[0]) {
-                        // 模拟文件上传
-                        console.log('需要上传文件:', fileInput.files[0]);
-                        // 实际项目中这里应该调用上传API
-                    }
-                    
-                    showStatusMessage('success', '登录背景设置已保存');
-                    // 保存成功后更新预览
-                    updatePreview(backgroundUrl, 'loginBackgroundPreview');
-                })
-                .catch(error => {
-                    console.error('保存设置失败:', error);
-                    showStatusMessage('error', '保存设置失败');
-                });
-        }
-        
-        // 保存登录LOGO设置
-        function saveLoginLogo() {
-            const logoUrl = document.getElementById('loginLogo').value.trim();
-            
-            if (!logoUrl) {
-                showStatusMessage('error', '请输入LOGO图片URL或选择文件');
-                return;
-            }
-            
-            // 显示保存中提示和覆盖层
-            showStatusMessage('info', '保存中...', true, 50);
-            
-            saveToJson('loginLogo', logoUrl)
-                .then(() => {
-                    // 如果有文件，这里可以添加上传逻辑
-                    const fileInput = document.getElementById('logoFile');
-                    if (fileInput.files && fileInput.files[0]) {
-                        // 模拟文件上传
-                        console.log('需要上传LOGO文件:', fileInput.files[0]);
-                        // 实际项目中这里应该调用上传API
-                    }
-                    
-                    showStatusMessage('success', '登录LOGO设置已保存');
-                    // 保存成功后更新预览
-                    updatePreview(logoUrl, 'loginLogoPreview');
-                })
-                .catch(error => {
-                    console.error('保存LOGO设置失败:', error);
-                    showStatusMessage('error', '保存LOGO设置失败');
-                });
-        }
-        
-        // 保存设备LOGO设置
-        function saveDeviceLogo() {
-            const logoUrl = document.getElementById('deviceLogo').value.trim();
-            
-            if (!logoUrl) {
-                showStatusMessage('error', '请输入设备LOGO图片URL或选择文件');
-                return;
-            }
-            
-            // 显示保存中提示和覆盖层
-            showStatusMessage('info', '保存中...', true, 50);
-            
-            saveToJson('deviceLogo', logoUrl)
-                .then(() => {
-                    // 如果有文件，这里可以添加上传逻辑
-                    const fileInput = document.getElementById('deviceLogoFile');
-                    if (fileInput.files && fileInput.files[0]) {
-                        // 模拟文件上传
-                        console.log('需要上传设备LOGO文件:', fileInput.files[0]);
-                        // 实际项目中这里应该调用上传API
-                    }
-                    
-                    showStatusMessage('success', '设备LOGO设置已保存');
-                    // 保存成功后更新预览
-                    updatePreview(logoUrl, 'deviceLogoPreview');
-                })
-                .catch(error => {
-                    console.error('保存设备LOGO设置失败:', error);
-                    showStatusMessage('error', '保存设备LOGO设置失败');
-                });
-        }
-        
-        // 保存飞牛标题设置
-        function saveAppTitle() {
-            const title = document.getElementById('appTitle').value.trim();
-            
-            if (!title) {
-                showStatusMessage('error', '请输入飞牛标题');
-                return;
-            }
-            
-            // 显示保存中提示和覆盖层
-            showStatusMessage('info', '保存中...', true, 50);
-            
-            saveToJson('appTitle', title)
-                .then(() => {
-                    showStatusMessage('success', '飞牛标题设置已保存');
-                })
-                .catch(error => {
-                    console.error('保存标题设置失败:', error);
-                    showStatusMessage('error', '保存标题设置失败');
-                });
-        }
-        
-        // 保存飞牛网页favicon图标设置
-        function saveWebFavicon() {
-            const faviconUrl = document.getElementById('webFavicon').value.trim();
-            
-            if (!faviconUrl) {
-                showStatusMessage('error', '请输入favicon图标URL或选择文件');
-                return;
-            }
-            
-            // 显示保存中提示和覆盖层
-            showStatusMessage('info', '保存中...', true, 50);
-            
-            saveToJson('webFavicon', faviconUrl)
-                .then(() => {
-                    // 如果有文件，这里可以添加上传逻辑
-                    const fileInput = document.getElementById('faviconFile');
-                    if (fileInput.files && fileInput.files[0]) {
-                        // 模拟文件上传
-                        console.log('需要上传favicon文件:', fileInput.files[0]);
-                        // 实际项目中这里应该调用上传API
-                    }
-                    
-                    showStatusMessage('success', '网页favicon图标设置已保存');
-                    // 保存成功后更新预览
-                    updatePreview(faviconUrl, 'webFaviconPreview');
-                })
-                .catch(error => {
-                    console.error('保存favicon设置失败:', error);
-                    showStatusMessage('error', '保存favicon设置失败');
-                });
-        }
-        
-        // 保存登录框透明度设置
-        function saveLoginOpacity() {
-            const opacity = document.getElementById('loginOpacity').value;
-            const opacityValue = parseFloat(opacity);
-            
-            // 因为是下拉列表，这里可以简化验证
-            if (isNaN(opacityValue) || opacityValue < 0 || opacityValue > 30) {
-                showStatusMessage('error', '无效的透明度值');
-                return;
-            }
-            
-            // 显示保存中提示和覆盖层
-            showStatusMessage('info', '保存中...', true, 50);
-            
-            saveToJson('loginOpacity', opacityValue.toString())
-                .then(() => {
-                    showStatusMessage('success', '登录框透明度设置已保存');
-                })
-                .catch(error => {
-                    console.error('保存透明度设置失败:', error);
-                    showStatusMessage('error', '保存透明度设置失败');
-                });
-        }
-        
-        // 保存影视标题设置
-        function saveMovieTitle() {
-            const title = document.getElementById('movieTitle').value.trim();
-            
-            if (!title) {
-                showStatusMessage('error', '请输入影视标题');
-                return;
-            }
-            
-            // 显示保存中提示和覆盖层
-            showStatusMessage('info', '保存中...', true, 50);
-            
-            saveToJson('movieTitle', title)
-                .then(() => {
-                    // 修改trim.media\static\index.html文件
-                    fetch('/api/update-trim-media-title', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ movieTitle: title })
-                    })
-                    .then(response => response.json())
-                    .then(result => {
-                        if (result.success || !result.error) {
-                            showStatusMessage('success', '影视标题设置已保存');
-                        } else {
-                            console.error('更新trim.media\static\index.html失败:', result.error);
-                            showStatusMessage('warning', '影视标题设置已保存，但更新trim.media\static\index.html失败');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('更新trim.media\static\index.html失败:', error);
-                        showStatusMessage('warning', '影视标题设置已保存，但更新trim.media\static\index.html失败');
-                    });
-                })
-                .catch(error => {
-                    console.error('保存影视标题设置失败:', error);
-                    showStatusMessage('error', '保存影视标题设置失败');
-                });
-        }
-        
-        // 保存影视网页favicon图标设置
-        function saveMovieFavicon() {
-            const faviconUrl = document.getElementById('movieFavicon').value.trim();
-            
-            if (!faviconUrl) {
-                showStatusMessage('error', '请输入favicon图标URL或选择文件');
-                return;
-            }
-            
-            // 显示保存中提示和覆盖层
-            showStatusMessage('info', '保存中...', true, 50);
-            
-            saveToJson('movieFavicon', faviconUrl)
-                    .then(() => {
-                        // 如果有文件，这里可以添加上传逻辑
-                        const fileInput = document.getElementById('movieFaviconFile');
-                        if (fileInput.files && fileInput.files[0]) {
-                            // 模拟文件上传
-                            console.log('需要上传影视favicon文件:', fileInput.files[0]);
-                            // 实际项目中这里应该调用上传API
-                        }
-                        
-                        showStatusMessage('success', '影视网页favicon图标设置已保存');
-                        // 保存成功后更新预览
-                        updatePreview(faviconUrl, 'movieFaviconPreview');
-                    })
-                .catch(error => {
-                    console.error('保存影视favicon设置失败:', error);
-                    showStatusMessage('error', '保存影视favicon设置失败');
-                });
-        }
-        
-        // 保存影视背景设置
-        function saveMovieBackground() {
-            const backgroundUrl = document.getElementById('movieBackground').value.trim();
-            
-            if (!backgroundUrl) {
-                showStatusMessage('error', '请输入背景图片URL或选择文件');
-                return;
-            }
-            
-            // 显示保存中提示和覆盖层
-            showStatusMessage('info', '保存中...', true, 50);
-            
-            saveToJson('movieBackground', backgroundUrl)
-                .then(() => {
-                    // 如果有文件，这里可以添加上传逻辑
-                    const fileInput = document.getElementById('movieBackgroundFile');
-                    if (fileInput.files && fileInput.files[0]) {
-                        // 模拟文件上传
-                        console.log('需要上传影视背景文件:', fileInput.files[0]);
-                        // 实际项目中这里应该调用上传API
-                    }
-                    
-                    showStatusMessage('success', '影视背景设置已保存');
-                    // 保存成功后更新预览
-                    updatePreview(backgroundUrl, 'movieBackgroundPreview');
-                })
-                .catch(error => {
-                    console.error('保存影视背景设置失败:', error);
-                    showStatusMessage('error', '保存影视背景设置失败');
-                });
-        }
-        
-        // 保存影视LOGO设置
-        function saveMovieLogo() {
-            const logoUrl = document.getElementById('movieLogo').value.trim();
-            
-            if (!logoUrl) {
-                showStatusMessage('error', '请输入LOGO图片URL或选择文件');
-                return;
-            }
-            
-            // 显示保存中提示和覆盖层
-            showStatusMessage('info', '保存中...', true, 50);
-            
-            saveToJson('movieLogo', logoUrl)
-                    .then(() => {
-                        // 如果有文件，这里可以添加上传逻辑
-                        const fileInput = document.getElementById('movieLogoFile');
-                        if (fileInput.files && fileInput.files[0]) {
-                            // 模拟文件上传
-                            console.log('需要上传影视LOGO文件:', fileInput.files[0]);
-                            // 实际项目中这里应该调用上传API
-                        }
-                        
-                        showStatusMessage('success', '影视LOGO设置已保存');
-                        // 保存成功后更新预览
-                        updatePreview(logoUrl, 'movieLogoPreview');
-                    })
-                .catch(error => {
-                    console.error('保存影视LOGO设置失败:', error);
-                    showStatusMessage('error', '保存影视LOGO设置失败');
-                });
-        }
-        
-        // 保存影视内容透明度设置
-        function saveMovieOpacity() {
-            const opacity = document.getElementById('movieOpacity').value;
-            const opacityValue = parseFloat(opacity);
-            
-            // 因为是下拉列表，这里可以简化验证
-            if (isNaN(opacityValue) || opacityValue < 0 || opacityValue > 30) {
-                showStatusMessage('error', '无效的透明度值');
-                return;
-            }
-            
-            // 显示保存中提示和覆盖层
-            showStatusMessage('info', '保存中...', true, 50);
-            
-            saveToJson('movieOpacity', opacityValue.toString())
-                .then(() => {
-                    showStatusMessage('success', '内容透明度设置已保存');
-                })
-                .catch(error => {
-                    console.error('保存透明度设置失败:', error);
-                    showStatusMessage('error', '保存透明度设置失败');
-                });
-        }
-        
-        // 显示状态消息，支持循环动画进度条和覆盖层
-        function showStatusMessage(type, message, showProgress = false) {
-            const statusElement = document.getElementById('statusMessage');
-            const overlay = document.getElementById('overlay');
-            
-            // 设置消息内容
-            let content = `<i class="fa fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${message}`;
-            
-            // 如果需要显示进度条，添加循环动画进度条HTML
-            if (showProgress) {
-                content += `
+    <script>function uploadFile(e,o,n){const t=document.getElementById(e);const a=t.files[0];if(!a){showStatusMessage("error","请选择文件");return}showStatusMessage("info","文件上传中...",true);const s=new FormData;s.append("file",a);const i=new XMLHttpRequest;i.onload=function(){if(i.status===200){try{const e=JSON.parse(i.responseText);if(e.success){const t=document.getElementById(n);t.value=e.path;if(n==="movieBackground")updatePreview(e.path,"movieBackgroundPreview");else if(n==="movieLogo")updatePreview(e.path,"movieLogoPreview");else if(n==="movieFavicon")updatePreview(e.path,"movieFaviconPreview");else if(n==="loginBackground")updatePreview(e.path,"loginBackgroundPreview");else if(n==="loginLogo")updatePreview(e.path,"loginLogoPreview");else if(n==="deviceLogo")updatePreview(e.path,"deviceLogoPreview");else if(n==="webFavicon")updatePreview(e.path,"webFaviconPreview");else if(n==="desktopWallpaper")updatePreview(e.path,"desktopWallpaperPreview");else if(n==="sharePcLogo"||n==="shareMbLogo")updateSharePreview(n);saveToJson(o,e.path).then(()=>{showStatusMessage("success","文件上传成功并已自动保存到设置")}).catch(()=>{showStatusMessage("success","文件上传成功，但保存设置失败，请手动点击保存")})}else{showStatusMessage("error",e.error||"文件上传失败")}}catch(e){showStatusMessage("error","文件上传响应解析失败")}}else{showStatusMessage("error",`文件上传失败 (HTTP ${i.status})`)}};i.onerror=function(){console.error("上传错误");showStatusMessage("error","网络错误，文件上传失败")};i.open("POST",`/api/upload/${o}`);i.setRequestHeader("x-auth-token",localStorage.getItem("authToken"));i.send(s)}function checkLoginStatus(){const e=localStorage.getItem("authToken");const t=localStorage.getItem("loginTimestamp");const o=30*60*1e3;const n=(new Date).getTime();if(!e||!t||n-parseInt(t)>o){localStorage.removeItem("authToken");localStorage.removeItem("loginTimestamp");localStorage.removeItem("isLoggedIn");localStorage.setItem("returnUrl",window.location.href);window.location.href="login.html";return false}localStorage.setItem("authToken","authenticated");localStorage.setItem("loginTimestamp",n.toString());return true}document.addEventListener("DOMContentLoaded",function(){if(!checkLoginStatus()){return}const n=window.fetch;window.fetch=function(e,t={}){if(e.startsWith("/api/")){const o=localStorage.getItem("authToken");if(o){if(!t.headers){t.headers={}}t.headers["X-Auth-Token"]=o}}return n(e,t).then(e=>{if(e.status===401){localStorage.removeItem("authToken");window.location.href="login.html"}return e})};initializeFormEvents();loadCurrentSettings()});function initializeFormEvents(){initializeOpacityDropdown();initFnStyleEvents();initMovieStyleEvents();initBeianEvents()}function initFnStyleEvents(){document.getElementById("saveTitleBtn").addEventListener("click",function(){saveAppTitle()});document.getElementById("uploadFaviconBtn").addEventListener("click",function(){document.getElementById("faviconFile").click()});document.getElementById("faviconFile").addEventListener("change",function(){uploadFile("faviconFile","webFavicon","webFavicon")});document.getElementById("saveFaviconBtn").addEventListener("click",function(){saveWebFavicon()});document.getElementById("uploadBackgroundBtn").addEventListener("click",function(){document.getElementById("backgroundFile").click()});document.getElementById("backgroundFile").addEventListener("change",function(){uploadFile("backgroundFile","loginBackground","loginBackground")});document.getElementById("saveBackgroundBtn").addEventListener("click",function(){saveLoginBackground()});document.getElementById("uploadLogoBtn").addEventListener("click",function(){document.getElementById("logoFile").click()});document.getElementById("logoFile").addEventListener("change",function(){uploadFile("logoFile","loginLogo","loginLogo")});document.getElementById("saveLogoBtn").addEventListener("click",function(){saveLoginLogo()});document.getElementById("uploadDeviceLogoBtn").addEventListener("click",function(){document.getElementById("deviceLogoFile").click()});document.getElementById("deviceLogoFile").addEventListener("change",function(){uploadFile("deviceLogoFile","deviceLogo","deviceLogo")});document.getElementById("saveDeviceLogoBtn").addEventListener("click",function(){saveDeviceLogo()});document.getElementById("saveOpacityBtn").addEventListener("click",function(){saveLoginOpacity()});document.getElementById("defaultTitleBtn").addEventListener("click",function(){document.getElementById("appTitle").value="飞牛 fnOS"});document.getElementById("defaultBackgroundBtn").addEventListener("click",function(){document.getElementById("loginBackground").value="/static/bg/wallpaper-1.webp"});document.getElementById("defaultLogoBtn").addEventListener("click",function(){document.getElementById("loginLogo").value="data:image/svg+xml,%3csvg%20width='80'%20height='62'%20viewBox='0%200%2080%2062'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20fill-rule='evenodd'%20clip-rule='evenodd'%20d='M71.7976%200C71.7976%200%2075.7039%207.62011%2073.9143%2012.0592C72.9983%2014.3316%2070.3423%2017.0402%2067.4317%2017.0402H29.3047C23.8248%2017.0402%2019.3824%2021.4416%2019.3824%2026.871V54.5285C19.3824%2058.6549%2022.7586%2062%2026.9234%2062H37.302C40.0054%2062%2042.197%2059.8286%2042.197%2057.1501V50.7825H49.3583C52.0618%2050.7825%2054.2534%2048.6111%2054.2534%2045.9326V40.3721C60.4044%2040.3721%2066.2097%2037.5272%2069.9786%2032.666L70.3048%2032.2452H50.9459C48.2425%2032.2452%2046.0509%2034.4166%2046.0509%2037.0951V41.5972C46.0509%2042.1818%2045.577%2042.6556%2044.9925%2042.6556H38.8896C36.1861%2042.6556%2033.9945%2044.827%2033.9945%2047.5055V51.9695C33.9945%2053.0209%2033.1422%2053.8731%2032.0909%2053.8731H29.4885C28.4372%2053.8731%2027.5849%2053.0209%2027.5849%2051.9695V26.871C27.5849%2025.9299%2028.3549%2025.167%2029.3047%2025.167H70.0777C75.5577%2025.167%2080.0001%2020.7656%2080.0001%2015.3362C80.0001%2010.4052%2077.9446%205.69738%2074.3281%202.34542L71.7976%200ZM6.08573%2012.0965C4.29615%207.65745%208.2025%200.0373473%208.2025%200.0373473L5.67199%202.38276C2.05551%205.73472%200%2010.4425%200%2015.3735C0%2020.8029%204.4424%2025.2044%209.92237%2025.2044H12.3468C12.3657%2022.0411%2013.5657%2019.1578%2015.528%2016.9731C9.05215%2016.4551%206.89556%2014.1053%206.08573%2012.0965Z'%20fill='white'/%3e%3c/svg%3e"});document.getElementById("defaultDeviceLogoBtn").addEventListener("click",function(){document.getElementById("deviceLogo").value="data:image/png;base64,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"});document.getElementById("defaultFaviconBtn").addEventListener("click",function(){document.getElementById("webFavicon").value="/favicon.ico"});document.getElementById("uploadWallpaperBtn").addEventListener("click",function(){document.getElementById("wallpaperFile").click()});document.getElementById("wallpaperFile").addEventListener("change",function(){uploadFile("wallpaperFile","desktopWallpaper","desktopWallpaper")});document.getElementById("saveWallpaperBtn").addEventListener("click",function(){saveDesktopWallpaper()});document.getElementById("defaultWallpaperBtn").addEventListener("click",function(){document.getElementById("desktopWallpaper").value="/static/bg/wallpaper-1.webp"})}function initMovieStyleEvents(){document.getElementById("saveMovieTitleBtn").addEventListener("click",function(){saveMovieTitle()});document.getElementById("uploadMovieFaviconBtn").addEventListener("click",function(){document.getElementById("movieFaviconFile").click()});document.getElementById("movieFaviconFile").addEventListener("change",function(){uploadFile("movieFaviconFile","movieFavicon","movieFavicon")});document.getElementById("saveMovieFaviconBtn").addEventListener("click",function(){saveMovieFavicon()});document.getElementById("uploadMovieBackgroundBtn").addEventListener("click",function(){document.getElementById("movieBackgroundFile").click()});document.getElementById("movieBackgroundFile").addEventListener("change",function(){uploadFile("movieBackgroundFile","movieBackground","movieBackground")});document.getElementById("saveMovieBackgroundBtn").addEventListener("click",function(){saveMovieBackground()});document.getElementById("uploadMovieLogoBtn").addEventListener("click",function(){document.getElementById("movieLogoFile").click()});document.getElementById("movieLogoFile").addEventListener("change",function(){uploadFile("movieLogoFile","movieLogo","movieLogo")});document.getElementById("saveMovieLogoBtn").addEventListener("click",function(){saveMovieLogo()});document.getElementById("saveMovieOpacityBtn").addEventListener("click",function(){saveMovieOpacity()});document.getElementById("defaultMovieBackgroundBtn").addEventListener("click",function(){fetch("/api/getWebpFiles").then(e=>e.json()).then(e=>{if(e.files&&e.files.length>0){const t="/v/assets/"+e.files[0];document.getElementById("movieBackground").value=t}else{console.error("未找到webp文件");alert("未找到可用的webp背景文件")}}).catch(e=>{console.error("获取webp文件失败:",e);alert("获取背景文件失败")})});document.getElementById("defaultMovieLogoBtn").addEventListener("click",function(){const e="/v/static/img/logo.png";document.getElementById("movieLogo").value=e});document.getElementById("defaultMovieFaviconBtn").addEventListener("click",function(){const e="/v/static/favicon.ico";document.getElementById("movieFavicon").value=e});document.getElementById("defaultMovieTitleBtn").addEventListener("click",function(){document.getElementById("movieTitle").value="飞牛影视"})}function initBeianEvents(){document.getElementById("saveBeianBtn").addEventListener("click",function(){saveBeianInfo()});loadBeianInfo()}function loadBeianInfo(){try{fetch("/api/fnstyle.json").then(e=>e.json()).then(e=>{document.getElementById("beianToggle").value=e.beian!==undefined?e.beian.toString():"0";if(e.beian_Name)document.getElementById("beianName").value=e.beian_Name;if(e.beian_URL)document.getElementById("beianUrl").value=e.beian_URL;if(e.beian_NUM)document.getElementById("beianNum").value=e.beian_NUM}).catch(e=>{console.error("加载备案信息失败:",e);document.getElementById("beianToggle").value="0"})}catch(e){console.error("加载备案信息失败:",e);document.getElementById("beianToggle").value="0"}}function saveBeianInfo(){const t=parseInt(document.getElementById("beianToggle").value);const e=document.getElementById("beianName").value.trim();const o=document.getElementById("beianUrl").value.trim();const n=document.getElementById("beianNum").value.trim();showStatusMessage("info","保存中...");const a={beian:t,beian_Name:e,beian_URL:o,beian_NUM:n};fetch("/api/fnstyle.json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(a)}).then(e=>{if(!e.ok){throw new Error("网络响应错误")}return e.json()}).then(e=>{showStatusMessage("success","备案信息已保存");console.log("备案信息状态:",t===1?"开启(1)":"关闭(0)")}).catch(e=>{console.error("保存备案信息失败:",e);showStatusMessage("error","保存备案信息失败")})}function updateBeianToggle(){const e=document.getElementById("beianToggle").value;console.log("备案信息状态:",e==="1"?"开启(1)":"关闭(0)")}function loadCurrentSettings(){try{fetch("api/fnstyle.json").then(e=>{if(!e.ok){throw new Error("网络响应错误")}return e.json()}).then(e=>{if(e.appTitle)document.getElementById("appTitle").value=e.appTitle;if(e.webFavicon)document.getElementById("webFavicon").value=e.webFavicon;if(e.loginBackground)document.getElementById("loginBackground").value=e.loginBackground;if(e.loginLogo)document.getElementById("loginLogo").value=e.loginLogo;if(e.deviceLogo)document.getElementById("deviceLogo").value=e.deviceLogo;if(e.desktopWallpaper)document.getElementById("desktopWallpaper").value=e.desktopWallpaper;if(e.loginOpacity)document.getElementById("loginOpacity").value=e.loginOpacity;else document.getElementById("loginOpacity").value="30";if(e.movieTitle)document.getElementById("movieTitle").value=e.movieTitle;if(e.movieFavicon)document.getElementById("movieFavicon").value=e.movieFavicon;if(e.movieBackground)document.getElementById("movieBackground").value=e.movieBackground;if(e.movieLogo)document.getElementById("movieLogo").value=e.movieLogo;if(e.movieOpacity)document.getElementById("movieOpacity").value=e.movieOpacity;else document.getElementById("movieOpacity").value="30";updatePreview(e.loginBackground||"","loginBackgroundPreview");updatePreview(e.loginLogo||"","loginLogoPreview");updatePreview(e.deviceLogo||"","deviceLogoPreview");updatePreview(e.webFavicon||"","webFaviconPreview");updatePreview(e.desktopWallpaper||"","desktopWallpaperPreview");updatePreview(e.movieBackground||"","movieBackgroundPreview");updatePreview(e.movieLogo||"","movieLogoPreview");updatePreview(e.movieFavicon||"","movieFaviconPreview");showStatusMessage("info","主题配置加载完成")}).catch(e=>{console.error("加载设置失败:",e);showStatusMessage("error","加载设置失败")})}catch(e){console.error("加载设置失败:",e);showStatusMessage("error","加载设置失败")}}function saveToJson(t,o){const e={[t]:o};return fetch("api/fnstyle.json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(e)}).then(e=>{if(!e.ok){throw new Error("网络响应错误")}return e.json()}).then(e=>{console.log(`设置已直接保存到fnstyle.json文件: ${t} = ${o}`);return e.data}).catch(e=>{console.error("保存设置失败:",e);throw new Error("保存设置失败")})}function saveDesktopWallpaper(){const t=document.getElementById("desktopWallpaper").value.trim();if(!t){showStatusMessage("error","请输入壁纸图片URL或选择文件");return}showStatusMessage("info","保存中...",true,50);saveToJson("desktopWallpaper",t).then(()=>{const e=document.getElementById("wallpaperFile");if(e.files&&e.files[0]){console.log("需要上传壁纸文件:",e.files[0])}showStatusMessage("success","桌面默认壁纸设置已保存");updatePreview(t,"desktopWallpaperPreview")}).catch(e=>{console.error("保存壁纸设置失败:",e);showStatusMessage("error","保存壁纸设置失败")})}function saveLoginBackground(){const t=document.getElementById("loginBackground").value.trim();if(!t){showStatusMessage("error","请输入背景图片URL或选择文件");return}showStatusMessage("info","保存中...",true,50);saveToJson("loginBackground",t).then(()=>{const e=document.getElementById("backgroundFile");if(e.files&&e.files[0]){console.log("需要上传文件:",e.files[0])}showStatusMessage("success","登录背景设置已保存");updatePreview(t,"loginBackgroundPreview")}).catch(e=>{console.error("保存设置失败:",e);showStatusMessage("error","保存设置失败")})}function saveLoginLogo(){const t=document.getElementById("loginLogo").value.trim();if(!t){showStatusMessage("error","请输入LOGO图片URL或选择文件");return}showStatusMessage("info","保存中...",true,50);saveToJson("loginLogo",t).then(()=>{const e=document.getElementById("logoFile");if(e.files&&e.files[0]){console.log("需要上传LOGO文件:",e.files[0])}showStatusMessage("success","登录LOGO设置已保存");updatePreview(t,"loginLogoPreview")}).catch(e=>{console.error("保存LOGO设置失败:",e);showStatusMessage("error","保存LOGO设置失败")})}function saveDeviceLogo(){const t=document.getElementById("deviceLogo").value.trim();if(!t){showStatusMessage("error","请输入设备LOGO图片URL或选择文件");return}showStatusMessage("info","保存中...",true,50);saveToJson("deviceLogo",t).then(()=>{const e=document.getElementById("deviceLogoFile");if(e.files&&e.files[0]){console.log("需要上传设备LOGO文件:",e.files[0])}showStatusMessage("success","设备LOGO设置已保存");updatePreview(t,"deviceLogoPreview")}).catch(e=>{console.error("保存设备LOGO设置失败:",e);showStatusMessage("error","保存设备LOGO设置失败")})}function saveAppTitle(){const e=document.getElementById("appTitle").value.trim();if(!e){showStatusMessage("error","请输入飞牛标题");return}showStatusMessage("info","保存中...",true,50);saveToJson("appTitle",e).then(()=>{showStatusMessage("success","飞牛标题设置已保存")}).catch(e=>{console.error("保存标题设置失败:",e);showStatusMessage("error","保存标题设置失败")})}function saveWebFavicon(){const t=document.getElementById("webFavicon").value.trim();if(!t){showStatusMessage("error","请输入favicon图标URL或选择文件");return}showStatusMessage("info","保存中...",true,50);saveToJson("webFavicon",t).then(()=>{const e=document.getElementById("faviconFile");if(e.files&&e.files[0]){console.log("需要上传favicon文件:",e.files[0])}showStatusMessage("success","网页favicon图标设置已保存");updatePreview(t,"webFaviconPreview")}).catch(e=>{console.error("保存favicon设置失败:",e);showStatusMessage("error","保存favicon设置失败")})}function saveLoginOpacity(){const e=document.getElementById("loginOpacity").value;const t=parseFloat(e);if(isNaN(t)||t<0||t>30){showStatusMessage("error","无效的透明度值");return}showStatusMessage("info","保存中...",true,50);saveToJson("loginOpacity",t.toString()).then(()=>{showStatusMessage("success","登录框透明度设置已保存")}).catch(e=>{console.error("保存透明度设置失败:",e);showStatusMessage("error","保存透明度设置失败")})}function saveMovieTitle(){const e=document.getElementById("movieTitle").value.trim();if(!e){showStatusMessage("error","请输入影视标题");return}showStatusMessage("info","保存中...",true,50);saveToJson("movieTitle",e).then(()=>{fetch("/api/update-trim-media-title",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({movieTitle:e})}).then(e=>e.json()).then(e=>{if(e.success||!e.error){showStatusMessage("success","影视标题设置已保存")}else{console.error("更新trim.mediastaticindex.html失败:",e.error);showStatusMessage("warning","影视标题设置已保存，但更新trim.mediastaticindex.html失败")}}).catch(e=>{console.error("更新trim.mediastaticindex.html失败:",e);showStatusMessage("warning","影视标题设置已保存，但更新trim.mediastaticindex.html失败")})}).catch(e=>{console.error("保存影视标题设置失败:",e);showStatusMessage("error","保存影视标题设置失败")})}function saveMovieFavicon(){const t=document.getElementById("movieFavicon").value.trim();if(!t){showStatusMessage("error","请输入favicon图标URL或选择文件");return}showStatusMessage("info","保存中...",true,50);saveToJson("movieFavicon",t).then(()=>{const e=document.getElementById("movieFaviconFile");if(e.files&&e.files[0]){console.log("需要上传影视favicon文件:",e.files[0])}showStatusMessage("success","影视网页favicon图标设置已保存");updatePreview(t,"movieFaviconPreview")}).catch(e=>{console.error("保存影视favicon设置失败:",e);showStatusMessage("error","保存影视favicon设置失败")})}function saveMovieBackground(){const t=document.getElementById("movieBackground").value.trim();if(!t){showStatusMessage("error","请输入背景图片URL或选择文件");return}showStatusMessage("info","保存中...",true,50);saveToJson("movieBackground",t).then(()=>{const e=document.getElementById("movieBackgroundFile");if(e.files&&e.files[0]){console.log("需要上传影视背景文件:",e.files[0])}showStatusMessage("success","影视背景设置已保存");updatePreview(t,"movieBackgroundPreview")}).catch(e=>{console.error("保存影视背景设置失败:",e);showStatusMessage("error","保存影视背景设置失败")})}function saveMovieLogo(){const t=document.getElementById("movieLogo").value.trim();if(!t){showStatusMessage("error","请输入LOGO图片URL或选择文件");return}showStatusMessage("info","保存中...",true,50);saveToJson("movieLogo",t).then(()=>{const e=document.getElementById("movieLogoFile");if(e.files&&e.files[0]){console.log("需要上传影视LOGO文件:",e.files[0])}showStatusMessage("success","影视LOGO设置已保存");updatePreview(t,"movieLogoPreview")}).catch(e=>{console.error("保存影视LOGO设置失败:",e);showStatusMessage("error","保存影视LOGO设置失败")})}function saveMovieOpacity(){const e=document.getElementById("movieOpacity").value;const t=parseFloat(e);if(isNaN(t)||t<0||t>30){showStatusMessage("error","无效的透明度值");return}showStatusMessage("info","保存中...",true,50);saveToJson("movieOpacity",t.toString()).then(()=>{showStatusMessage("success","内容透明度设置已保存")}).catch(e=>{console.error("保存透明度设置失败:",e);showStatusMessage("error","保存透明度设置失败")})}function showStatusMessage(e,t,o=false){const n=document.getElementById("statusMessage");const a=document.getElementById("overlay");let s=`<i class="fa fa-${e==="success"?"check-circle":e==="error"?"exclamation-circle":"info-circle"}"></i> ${t}`;if(o){s+=`
                     <div class="progress-container">
                         <div class="progress-bar looping"></div>
                     </div>
-                `;
-            }
-            
-            statusElement.innerHTML = content;
-            
-            // 移除所有状态类
-            statusElement.classList.remove('success', 'error', 'info');
-            
-            // 添加指定的状态类
-            statusElement.classList.add(type);
-            
-            // 显示消息弹窗和覆盖层
-            statusElement.style.display = 'block';
-            
-            // 根据消息类型决定是否显示覆盖层
-            // 显示进度条的info消息（如上传中）或正在进行的操作需要显示覆盖层
-            if (showProgress || type === 'info') {
-                overlay.style.display = 'block';
-            }
-            
-            // 3秒后自动隐藏消息和覆盖层（不包括info类型的进度条消息）
-            if ((type !== 'info' || !showProgress)) {
-                overlay.style.display = 'none';    
-                setTimeout(() => {
-                    statusElement.style.display = 'none';   
-                }, 3000);
-            }
-        }
-        
-        // 隐藏状态消息和覆盖层（用于手动关闭）
-        function hideStatusMessage() {
-            const statusElement = document.getElementById('statusMessage');
-            const overlay = document.getElementById('overlay');
-            
-            statusElement.style.display = 'none';
-            overlay.style.display = 'none';
-        }
-        
-        // 初始化透明度下拉列表
-        function initializeOpacityDropdown() {
-            // 初始化飞牛登录框透明度
-            initializeOpacitySelect('loginOpacity', 'saveOpacityBtn', 'loginOpacity', '登录框透明度设置已保存', '保存透明度设置失败');
-            
-            // 初始化影视内容透明度
-            initializeOpacitySelect('movieOpacity', 'saveMovieOpacityBtn', 'movieOpacity', '内容透明度设置已保存', '保存透明度设置失败');
-        }
-        
-        // 通用透明度下拉列表初始化函数
-        function initializeOpacitySelect(selectId, btnId, jsonKey, successMsg, errorMsg) {
-            const select = document.getElementById(selectId);
-            
-            // 清空现有选项
-            select.innerHTML = '';
-            
-            // 生成0-30的选项
-            for (let i = 0; i <= 30; i++) {
-                const option = document.createElement('option');
-                option.value = i;
-                option.textContent = i === 0 ? '全透明' : (i === 30 ? '最模糊' : i);
-                select.appendChild(option);
-            }
-            
-            // 添加change事件监听器，选择后自动保存
-            select.addEventListener('change', function() {
-                const opacityValue = this.value;
-                
-                // 显示加载状态
-                const saveBtn = document.getElementById(btnId);
-                const originalText = saveBtn.innerHTML;
-                saveBtn.disabled = true;
-                saveBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> 保存中...';
-                
-                
-                saveToJson(jsonKey, opacityValue)
-                    .then(() => {
-                        showStatusMessage('success', successMsg);
-                    })
-                    .catch(error => {
-                        console.error(errorMsg + ':', error);
-                        showStatusMessage('error', errorMsg);
-                    })
-                    .finally(() => {
-                        // 重置按钮状态
-                        saveBtn.innerHTML = '<i class="fa fa-check"></i> 保存';
-                        saveBtn.disabled = false;
-                    });
-            });
-        }
-        
-        // 加载并显示预设主题
-        function loadThemes() {
-            const themeGrid = document.getElementById('themeGrid');
-            
-            // 模拟主题缩略图（因为实际图片可能不存在）
-            const fallbackThumbnails = {
-                1: 'linear-gradient(45deg, #ff0055, #00ffff)',
-                2: 'linear-gradient(45deg, #00a8ff, #00d2d3)',
-                3: 'linear-gradient(45deg, #9c27b0, #673ab7)',
-                4: 'linear-gradient(45deg, #4caf50, #8bc34a)',
-                5: 'linear-gradient(45deg, #ff9800, #ff5722)',
-                6: 'linear-gradient(45deg, #1976d2, #00bcd4)'
-            };
-            
-            fetch('deskdata/theme.json')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('主题数据加载失败');
-                    }
-                    return response.json();
-                })
-                .then(themes => {
-                    // 清空加载状态
-                    themeGrid.innerHTML = '';
-                    
-                    // 按ID降序排序主题
-                    themes.sort((a, b) => b.ID - a.ID);
-                    
-                    // 创建主题卡片
-                    themes.forEach(theme => {
-                        const themeCard = document.createElement('div');
-                        themeCard.className = 'theme-card';
-                        themeCard.dataset.themeId = theme.ID;
-                        
-                        // 创建缩略图容器
-                        const thumbnailContainer = document.createElement('div');
-                        thumbnailContainer.className = 'theme-thumbnail';
-                        // 使用t0作为背景图片
-                        thumbnailContainer.style.backgroundImage = `url(${theme.t0.replace(/[`']/g, '')})`;
-                        
-                        // 创建叠加的t1图片
-                        const overlayImage = document.createElement('div');
-                        overlayImage.className = 'theme-overlay-image';
-                        overlayImage.style.backgroundImage = `url(${theme.t1.replace(/[`']/g, '')})`;
-                        thumbnailContainer.appendChild(overlayImage);
-                        
-                        // 创建选择按钮（包含标题）
-                        const selectBtn = document.createElement('button');
-                        selectBtn.className = 'btn btn-primary theme-select-btn';
-                        selectBtn.innerHTML = `<div class="theme-btn-content">
-                            <span class="theme-btn-title">${theme.标题}</span>
+                `}n.innerHTML=s;n.classList.remove("success","error","info");n.classList.add(e);n.style.display="block";if(o||e==="info"){a.style.display="block"}if(e!=="info"||!o){a.style.display="none";setTimeout(()=>{n.style.display="none"},3e3)}}function hideStatusMessage(){const e=document.getElementById("statusMessage");const t=document.getElementById("overlay");e.style.display="none";t.style.display="none"}function initializeOpacityDropdown(){initializeOpacitySelect("loginOpacity","saveOpacityBtn","loginOpacity","登录框透明度设置已保存","保存透明度设置失败");initializeOpacitySelect("movieOpacity","saveMovieOpacityBtn","movieOpacity","内容透明度设置已保存","保存透明度设置失败")}function initializeOpacitySelect(e,n,a,s,i){const t=document.getElementById(e);t.innerHTML="";for(let e=0;e<=30;e++){const o=document.createElement("option");o.value=e;o.textContent=e===0?"全透明":e===30?"最模糊":e;t.appendChild(o)}t.addEventListener("change",function(){const e=this.value;const t=document.getElementById(n);const o=t.innerHTML;t.disabled=true;t.innerHTML='<i class="fa fa-spinner fa-spin"></i> 保存中...';saveToJson(a,e).then(()=>{showStatusMessage("success",s)}).catch(e=>{console.error(i+":",e);showStatusMessage("error",i)}).finally(()=>{t.innerHTML='<i class="fa fa-check"></i> 保存';t.disabled=false})})}function loadThemes(){const s=document.getElementById("themeGrid");const e={1:"linear-gradient(45deg, #ff0055, #00ffff)",2:"linear-gradient(45deg, #00a8ff, #00d2d3)",3:"linear-gradient(45deg, #9c27b0, #673ab7)",4:"linear-gradient(45deg, #4caf50, #8bc34a)",5:"linear-gradient(45deg, #ff9800, #ff5722)",6:"linear-gradient(45deg, #1976d2, #00bcd4)"};fetch("deskdata/theme.json").then(e=>{if(!e.ok){throw new Error("主题数据加载失败")}return e.json()}).then(e=>{s.innerHTML="";e.sort((e,t)=>t.ID-e.ID);e.forEach(e=>{const t=document.createElement("div");t.className="theme-card";t.dataset.themeId=e.ID;const o=document.createElement("div");o.className="theme-thumbnail";o.style.backgroundImage=`url(${e.t0.replace(/[`']/g,"")})`;const n=document.createElement("div");n.className="theme-overlay-image";n.style.backgroundImage=`url(${e.t1.replace(/[`']/g,"")})`;o.appendChild(n);const a=document.createElement("button");a.className="btn btn-primary theme-select-btn";a.innerHTML=`<div class="theme-btn-content">
+                            <span class="theme-btn-title">${e.标题}</span>
                             <span class="theme-btn-action"><i class="fa fa-check"></i> 选择</span>
-                        </div>`;
-                        
-                        // 组装卡片
-                        themeCard.appendChild(thumbnailContainer);
-                        themeCard.appendChild(selectBtn);
-                        
-                        // 添加到网格
-                        themeGrid.appendChild(themeCard);
-                });
-                
-                // 初始化主题按钮事件
-                initThemeButtons();
-            })
-            .catch(error => {
-                    console.error('加载主题失败:', error);
-                    themeGrid.innerHTML = `
+                        </div>`;t.appendChild(o);t.appendChild(a);s.appendChild(t)});initThemeButtons()}).catch(e=>{console.error("加载主题失败:",e);s.innerHTML=`
                         <div class="theme-error">
                             <i class="fa fa-exclamation-triangle text-danger"></i>
                             <p>暂无任何主题数据...</p>
                         </div>
-                    `;
-                });
-        }
-        
-        // 显示通知消息
-        function showNotification(message, type = 'info') {
-            // 检查是否已有通知容器
-            let notificationContainer = document.getElementById('notification-container');
-            if (!notificationContainer) {
-                notificationContainer = document.createElement('div');
-                notificationContainer.id = 'notification-container';
-                notificationContainer.style.position = 'fixed';
-                notificationContainer.style.top = '20px';
-                notificationContainer.style.right = '20px';
-                notificationContainer.style.zIndex = '9999';
-                notificationContainer.style.maxWidth = '300px';
-                document.body.appendChild(notificationContainer);
-            }
-            
-            // 创建通知元素
-            const notification = document.createElement('div');
-            notification.className = 'alert';
-            
-            // 设置样式
-            notification.style.padding = '12px 16px';
-            notification.style.marginBottom = '10px';
-            notification.style.borderRadius = '4px';
-            notification.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.15)';
-            notification.style.transition = 'all 0.3s ease';
-            notification.style.opacity = '0';
-            notification.style.transform = 'translateY(-10px)';
-            
-            // 根据类型设置样式
-            switch (type) {
-                case 'success':
-                    notification.style.backgroundColor = '#d4edda';
-                    notification.style.color = '#155724';
-                    notification.style.borderLeft = '4px solid #28a745';
-                    break;
-                case 'error':
-                    notification.style.backgroundColor = '#f8d7da';
-                    notification.style.color = '#721c24';
-                    notification.style.borderLeft = '4px solid #dc3545';
-                    break;
-                case 'warning':
-                    notification.style.backgroundColor = '#fff3cd';
-                    notification.style.color = '#856404';
-                    notification.style.borderLeft = '4px solid #ffc107';
-                    break;
-                default:
-                    notification.style.backgroundColor = '#d1ecf1';
-                    notification.style.color = '#0c5460';
-                    notification.style.borderLeft = '4px solid #17a2b8';
-            }
-            
-            notification.textContent = message;
-            notificationContainer.appendChild(notification);
-            
-            // 显示通知
-            setTimeout(() => {
-                notification.style.opacity = '1';
-                notification.style.transform = 'translateY(0)';
-            }, 10);
-            
-            // 自动关闭
-            setTimeout(() => {
-                notification.style.opacity = '0';
-                notification.style.transform = 'translateY(-10px)';
-                setTimeout(() => {
-                    if (notificationContainer.contains(notification)) {
-                        notificationContainer.removeChild(notification);
-                    }
-                }, 300);
-            }, 3000);
-        }
-        
-        // 下载并更新主题配置文件
-        function updateThemeFile() {
-            // 固定的主题配置文件URL - 用户可以在此修改URL
-            const THEME_CONFIG_URL = 'https://fndesk.imcq.top/?url=theme&at=FnAPP'; // 请修改为实际的主题配置文件URL#########################################################################################################
-            
-            const updateThemeBtn = document.getElementById('updateThemeBtn');
-            const originalText = updateThemeBtn.innerHTML;
-            
-            // 验证URL格式
-            try {
-                new URL(THEME_CONFIG_URL);
-            } catch (e) {
-                showNotification('主题配置URL格式无效，请检查代码中的THEME_CONFIG_URL变量', 'error');
-                return;
-            }
-            
-            // 显示加载状态
-            updateThemeBtn.innerHTML = '<i class="fa fa-circle-o-notch fa-spin"></i> 下载中...';
-            updateThemeBtn.disabled = true;
-            
-            // 调用API下载更新主题文件
-            fetch('/api/update-theme-file', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ themeUrl: THEME_CONFIG_URL })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`服务器响应错误: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(result => {
-                if (result.success) {
-                    showNotification('主题配置文件更新成功！', 'success');
-                    // 重新加载主题
-                    setTimeout(() => {
-                        loadThemes();
-                    }, 500);
-                } else {
-                    showNotification(result.message || '更新失败', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('更新主题文件失败:', error);
-                showNotification('下载更新失败: ' + (error.message || '未知错误'), 'error');
-            })
-            .finally(() => {
-                // 恢复按钮状态
-                updateThemeBtn.innerHTML = originalText;
-                updateThemeBtn.disabled = false;
-            });
-        }
-        
-        // 页面加载完成后初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            // 检查是否存在loadSavedSettings函数
-            if (typeof loadSavedSettings === 'function') {
-                loadSavedSettings();
-            }
-            // 检查是否存在initializeOpacityDropdown函数
-            if (typeof initializeOpacityDropdown === 'function') {
-                initializeOpacityDropdown();
-            }
-            loadThemes(); // 加载预设主题
-            
-            // 连接下载按钮点击事件
-            const updateThemeBtn = document.getElementById('updateThemeBtn');
-            if (updateThemeBtn) {
-                updateThemeBtn.addEventListener('click', updateThemeFile);
-            }
-            
-            // 初始化外链分享设置
-            initializeShareSettings();
-            // 绑定外链分享设置的所有按钮事件
-            bindShareSettingEvents();
-        });
-        
-        // 外链分享设置初始化函数
-        function initializeShareSettings() {
-            fetch('/api/fnstyle.json')
-                .then(response => response.json())
-                .then(data => {
-                    // 设置默认值
-                    const defaultValues = {
-                        sharePcLogo: "data:image/png;base64,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",
-                        shareMbLogo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEYAAABHCAYAAAC6cjEhAAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAUDSURBVHgB7ZxPaBxVHMe/M8RaJcQ1iEgTcKb14D+wQgte1BX8cxG6WA/ipdmjF02TKh4EEXoQaYP1oiebXkTBYAKemoOrXiwKBtT2YpwpJMVDSZe0tGGb7vR9p7vbmclMMm92d+bt7nxg2cnMbObt9/3+vfdmB8gJRYt74uOTllHTURKfeNEB9otdBnoBDUtwUNUcLNR3Yd7+1LTjfWwHHjtmFW85+FhsFtEfVHQHZ5ZnzNntTooUxvjQMrSbOI3+ESRIxbkH5SgL0sN27pu+eESI8if6VxRS5Hc0pq1S2MEtwuydvvheHfVZsVlA/1MQLvPD3ilrMnjA50pUjydiANGhTyyffPRM8++WMI2YQvcZBEsJoypizrPNmNNypUagHVRRSKGhgYsrjDFlTaC/A21cioYoT7jhCqPpOIIcF+1OzQatEVss5LS49xZMXa+hhBwftSGUdEfHIeT4cOooMsYMciYKR8Mzuhh57kdOEENHTiiJhRl/cAjP7dsNVWH7+EpKImF4wc/eegi/LW9AVVaubOKriYfx5J5dSIK0MBTlm3cewaq4sOqc+2/DFSeJ5UgL8+5rBYyPDmHxr+tQnfOXam5bad2ySAnDmPLmgWF3e6UXLObfO67OdsvGQylh3jg43Npev1FHL3H4wLDU+VLCvPrU/eglRu67+/VeeVqu7bGFYXT3XujwQbkeyAKvGGy7TIaKLYxXFFJ+fiRxKkwDZiK2MbgvLrGFGRv1/1MK9ePUHjfiqyYQAy1LimBnyhBbwgurtdD9zFJ8MRif/ec6ji+shQZmNvZlYdoP7O7uKIQdGJWB1jfiJ4zYwrAm4BeO6gXun/1lfYsoNF+3Ah3L1qpW1jalKnWp7vvibDXyGC9K8bxQFLpb1qKQ7doehpQwX/+6ju//uBZ6bPHvrZVwu37eKbZrdxTSg4gPvr2MVWGWLJjGPQH5QsBa6Ofjo8lHt52Abn1KWMppIYwsiVrOi/HFL9/MVvRhL0+EZCqec2pRzqSTws47LxKGTMD10laXusFsOfxYmAvNCXOe+13OpLMin8GLIBcmgmyjYwxGREHIIC6T3Zo1VzsoLQwr6o8OjUqJwgD/+swltIuyrsTiMIkob3/5f+JM5EVZi5F1HxZwx+fXOiIKUVaYsZjFIUsGlvudXrFQPvh6YUBlYHWLN/HOartbSzg9JQzHY+9/dxlpkLkwnOTiTFvQdbKe/MpUmObinQoj8CCZtqj8woiSopBMWyUryrkU18p7ZqyUZLKpHZTLSpxUCs4GsqJNe0k4VWGCmSdsMouTSyrcXpKqMBwUNpc2OGpWNfCSrgkTNexv5y6nNOlal80lDJRXFbmLomvCNGfoZT8TXJvKiq7aNYWhBUyIkn+npRSKwuVdVW5I0sxpy0EKBG8j8UJRmJI7NZfSCVKLhKq4SFzYhTZy/GhY0jVgCTl+HFT5W4KfkeND07Cg1+uYR46P+ibmdftz0xY+VUFOkwo1cfOnyNefIMeFz33ge+t31+Yx6yehUBGDjPAc64T5EjdbFZezibJ4S+fmFTWpNjRwaQlDv3IcHMWAIsJJ2Y23DXw1uj1jzg6iOI6Go/ZJ05edQ58f03j4xSA80qBKQ7BDHrIT/WCdScvQhoQ4/RqQRaBlTPG6j//wDvC5D+4jDvpFIAoiyhP7hFnZ/rSY0IJ0HaXGD9gLPfSzZNsdD4qhD6v8KAsJchtpusc7b1JbeQAAAABJRU5ErkJggg==",
-                        shareMbTitle: "飞牛 fnOS",
-                        shareMbUrl: "https://www.fnnas.com/",
-                        shareMbDesc: "正版免费 兼容x86硬件 智能影视刮削 本地AI相册"
-                    };
-                    
-                    // 设置输入框和预览
-                    document.getElementById('sharePcLogo').value = data.sharePcLogo || defaultValues.sharePcLogo;
-                    document.getElementById('sharePcLogoPreview').src = data.sharePcLogo || defaultValues.sharePcLogo;
-                    
-                    document.getElementById('shareMbLogo').value = data.shareMbLogo || defaultValues.shareMbLogo;
-                    document.getElementById('shareMbLogoPreview').src = data.shareMbLogo || defaultValues.shareMbLogo;
-                    
-                    document.getElementById('shareMbTitle').value = data.shareMbTitle || defaultValues.shareMbTitle;
-                    document.getElementById('shareMbUrl').value = data.shareMbUrl || defaultValues.shareMbUrl;
-                    document.getElementById('shareMbDesc').value = data.shareMbDesc || defaultValues.shareMbDesc;
-                })
-                .catch(error => {
-                    console.error('加载外链分享设置失败:', error);
-                    showStatusMessage('error', '加载外链分享设置失败');
-                });
-        }
-        
-        // 绑定外链分享设置的所有按钮事件
-        function bindShareSettingEvents() {
-            // PC Web端LOGO事件
-            document.getElementById('defaultSharePcLogoBtn').addEventListener('click', () => setDefaultShareValue('sharePcLogo'));
-            document.getElementById('uploadSharePcLogoBtn').addEventListener('click', () => document.getElementById('sharePcLogoFile').click());
-            document.getElementById('saveSharePcLogoBtn').addEventListener('click', () => saveShareValue('sharePcLogo'));
-            document.getElementById('sharePcLogoFile').addEventListener('change', (e) => uploadShareImage(e, 'sharePcLogo'));
-            // 移除输入框实时监听，只在按钮操作后更新预览
-            document.getElementById('sharePcLogoPreview').parentElement.addEventListener('click', () => document.getElementById('sharePcLogoFile').click());
-            
-            // 移动Web端LOGO事件
-            document.getElementById('defaultShareMbLogoBtn').addEventListener('click', () => setDefaultShareValue('shareMbLogo'));
-            document.getElementById('uploadShareMbLogoBtn').addEventListener('click', () => document.getElementById('shareMbLogoFile').click());
-            document.getElementById('saveShareMbLogoBtn').addEventListener('click', () => saveShareValue('shareMbLogo'));
-            document.getElementById('shareMbLogoFile').addEventListener('change', (e) => uploadShareImage(e, 'shareMbLogo'));
-            // 移除输入框实时监听，只在按钮操作后更新预览
-            document.getElementById('shareMbLogoPreview').parentElement.addEventListener('click', () => document.getElementById('shareMbLogoFile').click());
-            
-            // 移动端标题事件
-            document.getElementById('defaultShareMbTitleBtn').addEventListener('click', () => setDefaultShareValue('shareMbTitle'));
-            document.getElementById('saveShareMbTitleBtn').addEventListener('click', () => saveShareValue('shareMbTitle'));
-            
-            // 移动端跳转链接事件
-            document.getElementById('defaultShareMbUrlBtn').addEventListener('click', () => setDefaultShareValue('shareMbUrl'));
-            document.getElementById('saveShareMbUrlBtn').addEventListener('click', () => saveShareValue('shareMbUrl'));
-            
-            // 移动端描述事件
-            document.getElementById('defaultShareMbDescBtn').addEventListener('click', () => setDefaultShareValue('shareMbDesc'));
-            document.getElementById('saveShareMbDescBtn').addEventListener('click', () => saveShareValue('shareMbDesc'));
-        }
-        
-        // 设置外链分享默认值
-        function setDefaultShareValue(field) {
-            const defaultValues = {
-                sharePcLogo: "data:image/png;base64,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",
-                shareMbLogo: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEYAAABHCAYAAAC6cjEhAAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAUDSURBVHgB7ZxPaBxVHMe/M8RaJcQ1iEgTcKb14D+wQgte1BX8cxG6WA/ipdmjF02TKh4EEXoQaYP1oiebXkTBYAKemoOrXiwKBtT2YpwpJMVDSZe0tGGb7vR9p7vbmclMMm92d+bt7nxg2cnMbObt9/3+vfdmB8gJRYt74uOTllHTURKfeNEB9otdBnoBDUtwUNUcLNR3Yd7+1LTjfWwHHjtmFW85+FhsFtEfVHQHZ5ZnzNntTooUxvjQMrSbOI3+ESRIxbkH5SgL0sN27pu+eESI8if6VxRS5Hc0pq1S2MEtwuydvvheHfVZsVlA/1MQLvPD3ilrMnjA50pUjydiANGhTyyffPRM8++WMI2YQvcZBEsJoypizrPNmNNypUagHVRRSKGhgYsrjDFlTaC/A21cioYoT7jhCqPpOIIcF+1OzQatEVss5LS49xZMXa+hhBwftSGUdEfHIeT4cOooMsYMciYKR8Mzuhh57kdOEENHTiiJhRl/cAjP7dsNVWH7+EpKImF4wc/eegi/LW9AVVaubOKriYfx5J5dSIK0MBTlm3cewaq4sOqc+2/DFSeJ5UgL8+5rBYyPDmHxr+tQnfOXam5bad2ySAnDmPLmgWF3e6UXLObfO67OdsvGQylh3jg43Npev1FHL3H4wLDU+VLCvPrU/eglRu67+/VeeVqu7bGFYXT3XujwQbkeyAKvGGy7TIaKLYxXFFJ+fiRxKkwDZiK2MbgvLrGFGRv1/1MK9ePUHjfiqyYQAy1LimBnyhBbwgurtdD9zFJ8MRif/ec6ji+shQZmNvZlYdoP7O7uKIQdGJWB1jfiJ4zYwrAm4BeO6gXun/1lfYsoNF+3Ah3L1qpW1jalKnWp7vvibDXyGC9K8bxQFLpb1qKQ7doehpQwX/+6ju//uBZ6bPHvrZVwu37eKbZrdxTSg4gPvr2MVWGWLJjGPQH5QsBa6Ofjo8lHt52Abn1KWMppIYwsiVrOi/HFL9/MVvRhL0+EZCqec2pRzqSTws47LxKGTMD10laXusFsOfxYmAvNCXOe+13OpLMin8GLIBcmgmyjYwxGREHIIC6T3Zo1VzsoLQwr6o8OjUqJwgD/+swltIuyrsTiMIkob3/5f+JM5EVZi5F1HxZwx+fXOiIKUVaYsZjFIUsGlvudXrFQPvh6YUBlYHWLN/HOartbSzg9JQzHY+9/dxlpkLkwnOTiTFvQdbKe/MpUmObinQoj8CCZtqj8woiSopBMWyUryrkU18p7ZqyUZLKpHZTLSpxUCs4GsqJNe0k4VWGCmSdsMouTSyrcXpKqMBwUNpc2OGpWNfCSrgkTNexv5y6nNOlal80lDJRXFbmLomvCNGfoZT8TXJvKiq7aNYWhBUyIkn+npRSKwuVdVW5I0sxpy0EKBG8j8UJRmJI7NZfSCVKLhKq4SFzYhTZy/GhY0jVgCTl+HFT5W4KfkeND07Cg1+uYR46P+ibmdftz0xY+VUFOkwo1cfOnyNefIMeFz33ge+t31+Yx6yehUBGDjPAc64T5EjdbFZezibJ4S+fmFTWpNjRwaQlDv3IcHMWAIsJJ2Y23DXw1uj1jzg6iOI6Go/ZJ05edQ58f03j4xSA80qBKQ7BDHrIT/WCdScvQhoQ4/RqQRaBlTPG6j//wDvC5D+4jDvpFIAoiyhP7hFnZ/rSY0IJ0HaXGD9gLPfSzZNsdD4qhD6v8KAsJchtpusc7b1JbeQAAAABJRU5ErkJggg==",
-                shareMbTitle: "飞牛 fnOS",
-                shareMbUrl: "https://www.fnnas.com/",
-                shareMbDesc: "正版免费 兼容x86硬件 智能影视刮削 本地AI相册"
-            };
-            
-            document.getElementById(field).value = defaultValues[field];
-            updateSharePreview(field);
-            
-            // 设置默认值后自动调用保存
-            saveShareValue(field);
-            showStatusMessage('success', `已重置为默认${getShareFieldLabel(field)}`);
-            
-            // 设置默认值后自动调用保存
-            saveShareValue(field);
-        }
-        
-        // 上传外链分享图片
-        function uploadShareImage(event, field) {
-            // 获取文件输入框ID（从事件对象中获取）
-            const fileInputId = event.target.id;
-            
-            // 直接调用uploadFile函数
-            uploadFile(fileInputId, field, field);
-            
-            // 重置文件输入框，以便能够再次选择同一个文件
-            event.target.value = '';
-            
-            // 上传完成后更新预览
-            setTimeout(() => {
-                updateSharePreview(field);
-            }, 500);
-        }
-        
-        // 保存外链分享设置值
-        function saveShareValue(field) {
-            const value = document.getElementById(field).value;
-            if (!value) {
-                showStatusMessage('error', `${getShareFieldLabel(field)}不能为空`);
-                return;
-            }
-            
-            saveToJson(field, value)
-                .then(() => {
-                    showStatusMessage('success', `${getShareFieldLabel(field)}保存成功`);
-                    // 保存成功后重新更新预览
-                    updateSharePreview(field);
-                })
-                .catch(error => {
-                    console.error(`保存${getShareFieldLabel(field)}失败:`, error);
-                    showStatusMessage('error', `${getShareFieldLabel(field)}保存失败`);
-                });
-        }
-        
-        // 更新外链分享预览
-        function updateSharePreview(field) {
-            if (field === 'sharePcLogo' || field === 'shareMbLogo') {
-                const preview = document.getElementById(`${field}Preview`);
-                if (preview) {
-                    const value = document.getElementById(field).value;
-                    // 添加时间戳来强制刷新图片预览，避免浏览器缓存
-                    const timestamp = new Date().getTime();
-                    // 如果是图片路径，添加时间戳参数
-                    if (value && !value.startsWith('data:')) {
-                        // 检查URL是否已经有参数
-                        const separator = value.includes('?') ? '&' : '?';
-                        preview.src = `${value}${separator}_t=${timestamp}`;
-                    } else {
-                        preview.src = value;
-                    }
-                    // 确保图片加载后立即刷新
-                    preview.onload = () => {
-                        preview.style.display = 'block';
-                    };
-                }
-            }
-        }
-        
-        // 获取外链分享字段的显示标签
-        function getShareFieldLabel(field) {
-            const labels = {
-                sharePcLogo: 'PC Web端LOGO',
-                shareMbLogo: '移动Web端LOGO',
-                shareMbTitle: '移动端标题',
-                shareMbUrl: '移动端跳转链接',
-                shareMbDesc: '移动端描述'
-            };
-            return labels[field] || field;
-        }
-    </script>
+                    `})}function showNotification(e,t="info"){let o=document.getElementById("notification-container");if(!o){o=document.createElement("div");o.id="notification-container";o.style.position="fixed";o.style.top="20px";o.style.right="20px";o.style.zIndex="9999";o.style.maxWidth="300px";document.body.appendChild(o)}const n=document.createElement("div");n.className="alert";n.style.padding="12px 16px";n.style.marginBottom="10px";n.style.borderRadius="4px";n.style.boxShadow="0 2px 10px rgba(0, 0, 0, 0.15)";n.style.transition="all 0.3s ease";n.style.opacity="0";n.style.transform="translateY(-10px)";switch(t){case"success":n.style.backgroundColor="#d4edda";n.style.color="#155724";n.style.borderLeft="4px solid #28a745";break;case"error":n.style.backgroundColor="#f8d7da";n.style.color="#721c24";n.style.borderLeft="4px solid #dc3545";break;case"warning":n.style.backgroundColor="#fff3cd";n.style.color="#856404";n.style.borderLeft="4px solid #ffc107";break;default:n.style.backgroundColor="#d1ecf1";n.style.color="#0c5460";n.style.borderLeft="4px solid #17a2b8"}n.textContent=e;o.appendChild(n);setTimeout(()=>{n.style.opacity="1";n.style.transform="translateY(0)"},10);setTimeout(()=>{n.style.opacity="0";n.style.transform="translateY(-10px)";setTimeout(()=>{if(o.contains(n)){o.removeChild(n)}},300)},3e3)}function updateThemeFile(){const e="https://fndesk.imcq.top/?url=theme&at=FnAPP";const t=document.getElementById("updateThemeBtn");const o=t.innerHTML;try{new URL(e)}catch(e){showNotification("主题配置URL格式无效，请检查代码中的THEME_CONFIG_URL变量","error");return}t.innerHTML='<i class="fa fa-circle-o-notch fa-spin"></i> 下载中...';t.disabled=true;fetch("/api/update-theme-file",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({themeUrl:e})}).then(e=>{if(!e.ok){throw new Error(`服务器响应错误: ${e.status}`)}return e.json()}).then(e=>{if(e.success){showNotification("主题配置文件更新成功！","success");setTimeout(()=>{loadThemes()},500)}else{showNotification(e.message||"更新失败","error")}}).catch(e=>{console.error("更新主题文件失败:",e);showNotification("下载更新失败: "+(e.message||"未知错误"),"error")}).finally(()=>{t.innerHTML=o;t.disabled=false})}document.addEventListener("DOMContentLoaded",function(){if(typeof loadSavedSettings==="function"){loadSavedSettings()}if(typeof initializeOpacityDropdown==="function"){initializeOpacityDropdown()}loadThemes();const e=document.getElementById("updateThemeBtn");if(e){e.addEventListener("click",updateThemeFile)}initializeShareSettings();bindShareSettingEvents()});function initializeShareSettings(){fetch("/api/fnstyle.json").then(e=>e.json()).then(e=>{const t={sharePcLogo:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUAAAACWCAMAAACYXqEeAAAAflBMVEUAAAAsLCwpKyssLCwhc98hdN8rLCwrKyshc98gct8rLS0hc+AsLS0idOAhc98hc98rLCwrKysrLCwwMDAgc98gcN8hdN8rLCwrLCwhc98ggN8hcuAgdN8sLS0ic90ic98rLCwgMDAic98sLCwrLS0hct4gc90qLCwrLCwhc9+A6jpsAAAAKHRSTlMAQCCA30C/n78g359ggGDv73DPEDAQzzCvrxBwcFCQj38QUJCPgJCQ2lsXxQAABcxJREFUeNrt3dl22jAQgOFBGGzJG2B2moW0aTXv/4JN2oKw5a1QLXbnu2sOSQ//kSzbMgkQQgghhBBCCCGEEEIIIYQQQgghpKcMbJhxGKk0Ayu2Iy34EoAdaTDKgjHGYMcG8zWMTozIwZJohAVjxAhsyXB0BVNE/AK2bBBxXMfBDD+swZoIESMYDx4gYgD2nPDDCUYjxg8HsGeGH/LRTOI3/PQF7NkgjmkSB/hpBs3G8F+ak+EvHCw6jGkIRvgL2BTjeIYgRwcBU/zlGUbgxWHAHEZgi06m8GjmMEd0sIhEOJo5/IaITs4Dx7IOv7h4LxniaA6CEaL941GAF8O/nNviRXAES1JE9HcV2YVXDLrleHUAOzgqGXhnIq8m0A1v2Nku44E/AfffnnaPB1SCDMxR/bwJyOSHxfxbsrs/YI4lwTsHo045/lXAH+Ffm0BfiWr1dG/AAKu28dv6CEYcZxGWzaCDkH8tgb5CecXuDRhjrTyDKp69xIfoEdscq9ZOA6ofvrp7Cs+w1juUHd8jNCAAlwF38urH3QEh6PPGTjkaETsNuNRS3RMwwxocbvEIDZmZD8ig0UpeLOD+gBB1DQweoCEBGA/4KsOmhExehY8E5DlWcTv9MDMZUM3SkHXN4KdHAsK6dQAezfWLwGhAtUwsXlnrj17AQwEhazsyvaApATcdkF2/WyRt17zhgwFhHeCtIygcjVlDD/t5T0IPyG7rz1vOolfzGyv967pvUMa3qGy1E20T8gz+qakWsLjtJxiUsYV8wByqTmoQHmwMwGANhgMWq7Z+kMjHAmp4jDU7PRma8X0DxgJO1RTV+ini0YA6nm3xUwpKhAbkhxmA0YDd/RL5cMD6hs/R9tRyt+txh+dsAwYkKmCPfiBMBNRt8Fbu4Q5GbcDufom0E5DjrS/gMZXkR3c/EBYDer2FVhcwLPVbsdoXU8CqJ3mxn9/2O4OuEBRQM5F19meo8SoVdt+u3H8SMIQ6rPQKCqiqVE07b1AIRgFVwJ79XksvoYB/FH33Rp6kIoACXsmyxQ402l2YxLuAx/WsHRizKPdjDf1EaQB6FjCLUGfrYkbIEpE03XNQmF8BjxF2eQfFSMDuhCy8WUH8CrjFLjEYNJdKr4QC/AqYYpftBgwKZY3Vrjkh8ysgxy6xsX4qoC5kDWvJEvwKmGGH72DWVDZ4re8EngV8wVb5FzBsKZU+h0LfAsbYJuJgWiIv9qE+j4cd0Ojw09/4HiZCG4QDDpinG7CAlR43TUTDIJxMO4Q33zNtNbESMDptwI7yFVpRXVSW2lrzqKnxgHl04mCNGnPF9WxPEechBQyiKH7O1huwaVW+xq3M4wSGFDADB0L9eUn2Vd26p4BdVJolXFzWY8G8D+j+E1xJ7U5R8fX3BPYwIM9SJULnAXel8xglWcg9+BeQR1jiPmBRfuZZYYL5FzDL0beAoNbcHZScwbuAa0T/Aob6KqI7sw63H+Fkrc4PBAx8DLhseN6gAO/uxmToY8BJw3bbnnkX8IDt3sCFomG/bSV2vgXcosaHLfhV/UFQyMXOs4ABtgrAja/1z+8tPosOKmAGlunvvaje53odUMAtOFIs1DmadmgUbCgBtxxcmdddjOwuTYcRME/BnaW8SrQiS18DxumNtw04VMgrUVTv0jz5GtCnxwbn8upbdW2eUMA+716ZVKIWzgNmA3hwVWjPqBaXf7o/jQmO8Fvsb8Ck8lSM+srKfUAM0k8vkRfXbX2esxThcnk5N9x7ENCrC9/2IahbUsC+C3G9nYuAkA8vIFvIOgKcBIyGF7BhEoduAqYDDFi/bzRxE3CTYyf//sJZTcE52A7YfwiCf/SCzFXATYANvP59+Exo5zCOAsI6H9oh8LdkpUIsEnAXENYBtvkOvmLL/UpIKfbLM7gMCPyAzWIYm3sC3v0pzNzrXyVzHza9YvDP8Lf0Oa5KZxsghBBCCCGEEEIIIYQQQgghhBBCCGn0E6aXhqjFXcNIAAAAAElFTkSuQmCC",shareMbLogo:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEYAAABHCAYAAAC6cjEhAAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAUDSURBVHgB7ZxPaBxVHMe/M8RaJcQ1iEgTcKb14D+wQgte1BX8cxG6WA/ipdmjF02TKh4EEXoQaYP1oiebXkTBYAKemoOrXiwKBtT2YpwpJMVDSZe0tGGb7vR9p7vbmclMMm92d+bt7nxg2cnMbObt9/3+vfdmB8gJRYt74uOTllHTURKfeNEB9otdBnoBDUtwUNUcLNR3Yd7+1LTjfWwHHjtmFW85+FhsFtEfVHQHZ5ZnzNntTooUxvjQMrSbOI3+ESRIxbkH5SgL0sN27pu+eESI8if6VxRS5Hc0pq1S2MEtwuydvvheHfVZsVlA/1MQLvPD3ilrMnjA50pUjydiANGhTyyffPRM8++WMI2YQvcZBEsJoypizrPNmNNypUagHVRRSKGhgYsrjDFlTaC/A21cioYoT7jhCqPpOIIcF+1OzQatEVss5LS49xZMXa+hhBwftSGUdEfHIeT4cOooMsYMciYKR8Mzuhh57kdOEENHTiiJhRl/cAjP7dsNVWH7+EpKImF4wc/eegi/LW9AVVaubOKriYfx5J5dSIK0MBTlm3cewaq4sOqc+2/DFSeJ5UgL8+5rBYyPDmHxr+tQnfOXam5bad2ySAnDmPLmgWF3e6UXLObfO67OdsvGQylh3jg43Npev1FHL3H4wLDU+VLCvPrU/eglRu67+/VeeVqu7bGFYXT3XujwQbkeyAKvGGy7TIaKLYxXFFJ+fiRxKkwDZiK2MbgvLrGFGRv1/1MK9ePUHjfiqyYQAy1LimBnyhBbwgurtdD9zFJ8MRif/ec6ji+shQZmNvZlYdoP7O7uKIQdGJWB1jfiJ4zYwrAm4BeO6gXun/1lfYsoNF+3Ah3L1qpW1jalKnWp7vvibDXyGC9K8bxQFLpb1qKQ7doehpQwX/+6ju//uBZ6bPHvrZVwu37eKbZrdxTSg4gPvr2MVWGWLJjGPQH5QsBa6Ofjo8lHt52Abn1KWMppIYwsiVrOi/HFL9/MVvRhL0+EZCqec2pRzqSTws47LxKGTMD10laXusFsOfxYmAvNCXOe+13OpLMin8GLIBcmgmyjYwxGREHIIC6T3Zo1VzsoLQwr6o8OjUqJwgD/+swltIuyrsTiMIkob3/5f+JM5EVZi5F1HxZwx+fXOiIKUVaYsZjFIUsGlvudXrFQPvh6YUBlYHWLN/HOartbSzg9JQzHY+9/dxlpkLkwnOTiTFvQdbKe/MpUmObinQoj8CCZtqj8woiSopBMWyUryrkU18p7ZqyUZLKpHZTLSpxUCs4GsqJNe0k4VWGCmSdsMouTSyrcXpKqMBwUNpc2OGpWNfCSrgkTNexv5y6nNOlal80lDJRXFbmLomvCNGfoZT8TXJvKiq7aNYWhBUyIkn+npRSKwuVdVW5I0sxpy0EKBG8j8UJRmJI7NZfSCVKLhKq4SFzYhTZy/GhY0jVgCTl+HFT5W4KfkeND07Cg1+uYR46P+ibmdftz0xY+VUFOkwo1cfOnyNefIMeFz33ge+t31+Yx6yehUBGDjPAc64T5EjdbFZezibJ4S+fmFTWpNjRwaQlDv3IcHMWAIsJJ2Y23DXw1uj1jzg6iOI6Go/ZJ05edQ58f03j4xSA80qBKQ7BDHrIT/WCdScvQhoQ4/RqQRaBlTPG6j//wDvC5D+4jDvpFIAoiyhP7hFnZ/rSY0IJ0HaXGD9gLPfSzZNsdD4qhD6v8KAsJchtpusc7b1JbeQAAAABJRU5ErkJggg==",shareMbTitle:"飞牛 fnOS",shareMbUrl:"https://www.fnnas.com/",shareMbDesc:"正版免费 兼容x86硬件 智能影视刮削 本地AI相册"};document.getElementById("sharePcLogo").value=e.sharePcLogo||t.sharePcLogo;document.getElementById("sharePcLogoPreview").src=e.sharePcLogo||t.sharePcLogo;document.getElementById("shareMbLogo").value=e.shareMbLogo||t.shareMbLogo;document.getElementById("shareMbLogoPreview").src=e.shareMbLogo||t.shareMbLogo;document.getElementById("shareMbTitle").value=e.shareMbTitle||t.shareMbTitle;document.getElementById("shareMbUrl").value=e.shareMbUrl||t.shareMbUrl;document.getElementById("shareMbDesc").value=e.shareMbDesc||t.shareMbDesc}).catch(e=>{console.error("加载外链分享设置失败:",e);showStatusMessage("error","加载外链分享设置失败")})}function bindShareSettingEvents(){document.getElementById("defaultSharePcLogoBtn").addEventListener("click",()=>setDefaultShareValue("sharePcLogo"));document.getElementById("uploadSharePcLogoBtn").addEventListener("click",()=>document.getElementById("sharePcLogoFile").click());document.getElementById("saveSharePcLogoBtn").addEventListener("click",()=>saveShareValue("sharePcLogo"));document.getElementById("sharePcLogoFile").addEventListener("change",e=>uploadShareImage(e,"sharePcLogo"));document.getElementById("sharePcLogoPreview").parentElement.addEventListener("click",()=>document.getElementById("sharePcLogoFile").click());document.getElementById("defaultShareMbLogoBtn").addEventListener("click",()=>setDefaultShareValue("shareMbLogo"));document.getElementById("uploadShareMbLogoBtn").addEventListener("click",()=>document.getElementById("shareMbLogoFile").click());document.getElementById("saveShareMbLogoBtn").addEventListener("click",()=>saveShareValue("shareMbLogo"));document.getElementById("shareMbLogoFile").addEventListener("change",e=>uploadShareImage(e,"shareMbLogo"));document.getElementById("shareMbLogoPreview").parentElement.addEventListener("click",()=>document.getElementById("shareMbLogoFile").click());document.getElementById("defaultShareMbTitleBtn").addEventListener("click",()=>setDefaultShareValue("shareMbTitle"));document.getElementById("saveShareMbTitleBtn").addEventListener("click",()=>saveShareValue("shareMbTitle"));document.getElementById("defaultShareMbUrlBtn").addEventListener("click",()=>setDefaultShareValue("shareMbUrl"));document.getElementById("saveShareMbUrlBtn").addEventListener("click",()=>saveShareValue("shareMbUrl"));document.getElementById("defaultShareMbDescBtn").addEventListener("click",()=>setDefaultShareValue("shareMbDesc"));document.getElementById("saveShareMbDescBtn").addEventListener("click",()=>saveShareValue("shareMbDesc"))}function setDefaultShareValue(e){const t={sharePcLogo:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUAAAACWCAMAAACYXqEeAAAAflBMVEUAAAAsLCwpKyssLCwhc98hdN8rLCwrKyshc98gct8rLS0hc+AsLS0idOAhc98hc98rLCwrKysrLCwwMDAgc98gcN8hdN8rLCwrLCwhc98ggN8hcuAgdN8sLS0ic90ic98rLCwgMDAic98sLCwrLS0hct4gc90qLCwrLCwhc9+A6jpsAAAAKHRSTlMAQCCA30C/n78g359ggGDv73DPEDAQzzCvrxBwcFCQj38QUJCPgJCQ2lsXxQAABcxJREFUeNrt3dl22jAQgOFBGGzJG2B2moW0aTXv/4JN2oKw5a1QLXbnu2sOSQ//kSzbMgkQQgghhBBCCCGEEEIIIYQQQgghpKcMbJhxGKk0Ayu2Iy34EoAdaTDKgjHGYMcG8zWMTozIwZJohAVjxAhsyXB0BVNE/AK2bBBxXMfBDD+swZoIESMYDx4gYgD2nPDDCUYjxg8HsGeGH/LRTOI3/PQF7NkgjmkSB/hpBs3G8F+ak+EvHCw6jGkIRvgL2BTjeIYgRwcBU/zlGUbgxWHAHEZgi06m8GjmMEd0sIhEOJo5/IaITs4Dx7IOv7h4LxniaA6CEaL941GAF8O/nNviRXAES1JE9HcV2YVXDLrleHUAOzgqGXhnIq8m0A1v2Nku44E/AfffnnaPB1SCDMxR/bwJyOSHxfxbsrs/YI4lwTsHo045/lXAH+Ffm0BfiWr1dG/AAKu28dv6CEYcZxGWzaCDkH8tgb5CecXuDRhjrTyDKp69xIfoEdscq9ZOA6ofvrp7Cs+w1juUHd8jNCAAlwF38urH3QEh6PPGTjkaETsNuNRS3RMwwxocbvEIDZmZD8ig0UpeLOD+gBB1DQweoCEBGA/4KsOmhExehY8E5DlWcTv9MDMZUM3SkHXN4KdHAsK6dQAezfWLwGhAtUwsXlnrj17AQwEhazsyvaApATcdkF2/WyRt17zhgwFhHeCtIygcjVlDD/t5T0IPyG7rz1vOolfzGyv967pvUMa3qGy1E20T8gz+qakWsLjtJxiUsYV8wByqTmoQHmwMwGANhgMWq7Z+kMjHAmp4jDU7PRma8X0DxgJO1RTV+ini0YA6nm3xUwpKhAbkhxmA0YDd/RL5cMD6hs/R9tRyt+txh+dsAwYkKmCPfiBMBNRt8Fbu4Q5GbcDufom0E5DjrS/gMZXkR3c/EBYDer2FVhcwLPVbsdoXU8CqJ3mxn9/2O4OuEBRQM5F19meo8SoVdt+u3H8SMIQ6rPQKCqiqVE07b1AIRgFVwJ79XksvoYB/FH33Rp6kIoACXsmyxQ402l2YxLuAx/WsHRizKPdjDf1EaQB6FjCLUGfrYkbIEpE03XNQmF8BjxF2eQfFSMDuhCy8WUH8CrjFLjEYNJdKr4QC/AqYYpftBgwKZY3Vrjkh8ysgxy6xsX4qoC5kDWvJEvwKmGGH72DWVDZ4re8EngV8wVb5FzBsKZU+h0LfAsbYJuJgWiIv9qE+j4cd0Ojw09/4HiZCG4QDDpinG7CAlR43TUTDIJxMO4Q33zNtNbESMDptwI7yFVpRXVSW2lrzqKnxgHl04mCNGnPF9WxPEechBQyiKH7O1huwaVW+xq3M4wSGFDADB0L9eUn2Vd26p4BdVJolXFzWY8G8D+j+E1xJ7U5R8fX3BPYwIM9SJULnAXel8xglWcg9+BeQR1jiPmBRfuZZYYL5FzDL0beAoNbcHZScwbuAa0T/Aob6KqI7sw63H+Fkrc4PBAx8DLhseN6gAO/uxmToY8BJw3bbnnkX8IDt3sCFomG/bSV2vgXcosaHLfhV/UFQyMXOs4ABtgrAja/1z+8tPosOKmAGlunvvaje53odUMAtOFIs1DmadmgUbCgBtxxcmdddjOwuTYcRME/BnaW8SrQiS18DxumNtw04VMgrUVTv0jz5GtCnxwbn8upbdW2eUMA+716ZVKIWzgNmA3hwVWjPqBaXf7o/jQmO8Fvsb8Ck8lSM+srKfUAM0k8vkRfXbX2esxThcnk5N9x7ENCrC9/2IahbUsC+C3G9nYuAkA8vIFvIOgKcBIyGF7BhEoduAqYDDFi/bzRxE3CTYyf//sJZTcE52A7YfwiCf/SCzFXATYANvP59+Exo5zCOAsI6H9oh8LdkpUIsEnAXENYBtvkOvmLL/UpIKfbLM7gMCPyAzWIYm3sC3v0pzNzrXyVzHza9YvDP8Lf0Oa5KZxsghBBCCCGEEEIIIYQQQgghhBBCCGn0E6aXhqjFXcNIAAAAAElFTkSuQmCC",shareMbLogo:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEYAAABHCAYAAAC6cjEhAAAACXBIWXMAABYlAAAWJQFJUiTwAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAUDSURBVHgB7ZxPaBxVHMe/M8RaJcQ1iEgTcKb14D+wQgte1BX8cxG6WA/ipdmjF02TKh4EEXoQaYP1oiebXkTBYAKemoOrXiwKBtT2YpwpJMVDSZe0tGGb7vR9p7vbmclMMm92d+bt7nxg2cnMbObt9/3+vfdmB8gJRYt74uOTllHTURKfeNEB9otdBnoBDUtwUNUcLNR3Yd7+1LTjfWwHHjtmFW85+FhsFtEfVHQHZ5ZnzNntTooUxvjQMrSbOI3+ESRIxbkH5SgL0sN27pu+eESI8if6VxRS5Hc0pq1S2MEtwuydvvheHfVZsVlA/1MQLvPD3ilrMnjA50pUjydiANGhTyyffPRM8++WMI2YQvcZBEsJoypizrPNmNNypUagHVRRSKGhgYsrjDFlTaC/A21cioYoT7jhCqPpOIIcF+1OzQatEVss5LS49xZMXa+hhBwftSGUdEfHIeT4cOooMsYMciYKR8Mzuhh57kdOEENHTiiJhRl/cAjP7dsNVWH7+EpKImF4wc/eegi/LW9AVVaubOKriYfx5J5dSIK0MBTlm3cewaq4sOqc+2/DFSeJ5UgL8+5rBYyPDmHxr+tQnfOXam5bad2ySAnDmPLmgWF3e6UXLObfO67OdsvGQylh3jg43Npev1FHL3H4wLDU+VLCvPrU/eglRu67+/VeeVqu7bGFYXT3XujwQbkeyAKvGGy7TIaKLYxXFFJ+fiRxKkwDZiK2MbgvLrGFGRv1/1MK9ePUHjfiqyYQAy1LimBnyhBbwgurtdD9zFJ8MRif/ec6ji+shQZmNvZlYdoP7O7uKIQdGJWB1jfiJ4zYwrAm4BeO6gXun/1lfYsoNF+3Ah3L1qpW1jalKnWp7vvibDXyGC9K8bxQFLpb1qKQ7doehpQwX/+6ju//uBZ6bPHvrZVwu37eKbZrdxTSg4gPvr2MVWGWLJjGPQH5QsBa6Ofjo8lHt52Abn1KWMppIYwsiVrOi/HFL9/MVvRhL0+EZCqec2pRzqSTws47LxKGTMD10laXusFsOfxYmAvNCXOe+13OpLMin8GLIBcmgmyjYwxGREHIIC6T3Zo1VzsoLQwr6o8OjUqJwgD/+swltIuyrsTiMIkob3/5f+JM5EVZi5F1HxZwx+fXOiIKUVaYsZjFIUsGlvudXrFQPvh6YUBlYHWLN/HOartbSzg9JQzHY+9/dxlpkLkwnOTiTFvQdbKe/MpUmObinQoj8CCZtqj8woiSopBMWyUryrkU18p7ZqyUZLKpHZTLSpxUCs4GsqJNe0k4VWGCmSdsMouTSyrcXpKqMBwUNpc2OGpWNfCSrgkTNexv5y6nNOlal80lDJRXFbmLomvCNGfoZT8TXJvKiq7aNYWhBUyIkn+npRSKwuVdVW5I0sxpy0EKBG8j8UJRmJI7NZfSCVKLhKq4SFzYhTZy/GhY0jVgCTl+HFT5W4KfkeND07Cg1+uYR46P+ibmdftz0xY+VUFOkwo1cfOnyNefIMeFz33ge+t31+Yx6yehUBGDjPAc64T5EjdbFZezibJ4S+fmFTWpNjRwaQlDv3IcHMWAIsJJ2Y23DXw1uj1jzg6iOI6Go/ZJ05edQ58f03j4xSA80qBKQ7BDHrIT/WCdScvQhoQ4/RqQRaBlTPG6j//wDvC5D+4jDvpFIAoiyhP7hFnZ/rSY0IJ0HaXGD9gLPfSzZNsdD4qhD6v8KAsJchtpusc7b1JbeQAAAABJRU5ErkJggg==",shareMbTitle:"飞牛 fnOS",shareMbUrl:"https://www.fnnas.com/",shareMbDesc:"正版免费 兼容x86硬件 智能影视刮削 本地AI相册"};document.getElementById(e).value=t[e];updateSharePreview(e);saveShareValue(e);showStatusMessage("success",`已重置为默认${getShareFieldLabel(e)}`);saveShareValue(e)}function uploadShareImage(e,t){const o=e.target.id;uploadFile(o,t,t);e.target.value="";setTimeout(()=>{updateSharePreview(t)},500)}function saveShareValue(t){const e=document.getElementById(t).value;if(!e){showStatusMessage("error",`${getShareFieldLabel(t)}不能为空`);return}saveToJson(t,e).then(()=>{showStatusMessage("success",`${getShareFieldLabel(t)}保存成功`);updateSharePreview(t)}).catch(e=>{console.error(`保存${getShareFieldLabel(t)}失败:`,e);showStatusMessage("error",`${getShareFieldLabel(t)}保存失败`)})}function updateSharePreview(e){if(e==="sharePcLogo"||e==="shareMbLogo"){const t=document.getElementById(`${e}Preview`);if(t){const o=document.getElementById(e).value;const n=(new Date).getTime();if(o&&!o.startsWith("data:")){const a=o.includes("?")?"&":"?";t.src=`${o}${a}_t=${n}`}else{t.src=o}t.onload=()=>{t.style.display="block"}}}}function getShareFieldLabel(e){const t={sharePcLogo:"PC Web端LOGO",shareMbLogo:"移动Web端LOGO",shareMbTitle:"移动端标题",shareMbUrl:"移动端跳转链接",shareMbDesc:"移动端描述"};return t[e]||e}</script>
     
-    <!-- 主题卡片样式 -->
+    
     <style>
         .card-header {
             display: flex;

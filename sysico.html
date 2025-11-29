@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>系统图标管理</title>
     <style>
         :root {
@@ -638,16 +638,16 @@
     </style>
 </head>
 <body>
-        <!-- 状态栏消息 -->
+        
         <div id="statusMessage" class="status-message" style="display: none;">
             <span id="statusText"></span>
         </div>
         
-        <!-- 通知提示 -->
+        
         <div id="notification" class="notification" style="display: none;">
             <span id="notificationText"></span>
         </div>
-    <!-- 顶部导航栏 -->
+    
     <header class="navbar">
         <div class="navbar-content" style="display: flex; justify-content: space-between; align-items: center;">
             <div class="navbar-title">
@@ -669,7 +669,7 @@
 
     <div class="container">
 
-        <!-- 隐藏图标配置 -->
+        
         <div class="card mb-4">
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <h2 class="card-title">隐藏图标</h2>
@@ -686,22 +686,14 @@
             </div>
         </div>
 
-        <!-- 系统图标列表 -->
+        
         <div class="card">
             <div class="card-header">
                 <h2 class="card-title">系统图标列表</h2>
-<!--                 <button class="btn btn-primary" onclick="refreshIcons()">
-                    <i class="fa fa-refresh"></i>
-                    刷新
-                </button>
-                <button class="btn btn-success ml-2" onclick="syncAllIcons()">
-                    <i class="fa fa-save"></i>
-                    保存
-                </button>
- -->            </div>
+            </div>
 
             <div id="iconsList" class="icons-grid-container">
-                <!-- 图标列表将通过JavaScript动态生成 -->
+                
                 <div class="loading-state">
                     <i class="fa fa-spinner fa-spin" style="font-size: 2rem; margin-right: 1rem;"></i>
                     加载中...
@@ -710,7 +702,7 @@
         </div>
     </div>
 
-    <!-- 状态消息弹窗 -->
+    
     <div id="overlay" class="overlay hidden"></div>
     <div id="statusMessage" class="status-message hidden">
         <i class="fa fa-info-circle"></i>
@@ -718,7 +710,7 @@
         <button class="btn btn-primary" onclick="hideStatusMessage()">确定</button>
     </div>
 
-    <!-- 应用配置确认模态框 -->
+    
     <div id="applyConfigModal" class="overlay" style="display: none; justify-content: center; align-items: center;">
         <div style="background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 0.8rem; padding: 2rem; max-width: 500px; width: 90%; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);">
             <h3 style="color: var(--primary); margin-bottom: 1rem; text-align: center;">应用配置确认</h3>
@@ -737,239 +729,41 @@
     </div>
 
     <link rel="stylesheet" href="fonts/font-awesome.min.css">
-    <script>
-        // 登录状态检查
-        function checkLoginStatus() {
-            const authToken = localStorage.getItem('authToken');
-            const loginTimestamp = localStorage.getItem('loginTimestamp');
-            const thirtyMinutes = 30 * 60 * 1000; // 30分钟
-            const currentTime = new Date().getTime();
-
-            // 检查是否有认证令牌和登录时间戳，且未过期
-            if (!authToken || !loginTimestamp || (currentTime - parseInt(loginTimestamp)) > thirtyMinutes) {
-                // 清除过期的令牌
-                localStorage.removeItem('authToken');
-                localStorage.removeItem('loginTimestamp');
-                localStorage.removeItem('isLoggedIn');
-                // 记录当前页面URL作为来源页面
-                localStorage.setItem('returnUrl', window.location.href);
-                // 重定向到登录页面
-                window.location.href = 'login.html';
-                return false;
-            }
-
-            // 更新登录时间戳
-            localStorage.setItem('authToken', 'authenticated');
-            localStorage.setItem('loginTimestamp', currentTime.toString());
-            return true;
-        }
-
-        // 显示状态消息
-        function showStatusMessage(type, message) {
-            const statusElement = document.getElementById('statusMessage');
-            const statusText = document.getElementById('statusMessageText');
-            const overlay = document.getElementById('overlay');
-            const icon = statusElement.querySelector('i');
-
-            // 设置消息类型和内容
-            statusElement.className = 'status-message ' + type;
-            statusText.textContent = message;
-
-            // 设置图标
-            if (type === 'success') {
-                icon.className = 'fa fa-check-circle';
-            } else if (type === 'error') {
-                icon.className = 'fa fa-exclamation-circle';
-            } else {
-                icon.className = 'fa fa-info-circle';
-            }
-
-            // 显示消息
-            statusElement.style.display = 'block';
-            overlay.style.display = 'block';
-        }
-
-        // 隐藏状态消息
-        function hideStatusMessage() {
-            const statusElement = document.getElementById('statusMessage');
-            const overlay = document.getElementById('overlay');
-            
-            statusElement.style.display = 'none';
-            overlay.style.display = 'none';
-        }
-
-        // 显示通知
-        function showNotification(message, type = 'info') {
-            // 检查是否已有通知容器
-            let notificationContainer = document.getElementById('notification-container');
-            if (!notificationContainer) {
-                notificationContainer = document.createElement('div');
-                notificationContainer.id = 'notification-container';
-                notificationContainer.style.position = 'fixed';
-                notificationContainer.style.top = '20px';
-                notificationContainer.style.right = '20px';
-                notificationContainer.style.zIndex = '9999';
-                notificationContainer.style.maxWidth = '300px';
-                document.body.appendChild(notificationContainer);
-            }
-
-            // 创建通知元素
-            const notification = document.createElement('div');
-            notification.className = 'notification ' + type;
-
-            // 创建通知内容
-            notification.innerHTML = `
+    <script>function checkLoginStatus(){const e=localStorage.getItem("authToken");const t=localStorage.getItem("loginTimestamp");const n=30*60*1e3;const i=(new Date).getTime();if(!e||!t||i-parseInt(t)>n){localStorage.removeItem("authToken");localStorage.removeItem("loginTimestamp");localStorage.removeItem("isLoggedIn");localStorage.setItem("returnUrl",window.location.href);window.location.href="login.html";return false}localStorage.setItem("authToken","authenticated");localStorage.setItem("loginTimestamp",i.toString());return true}function showStatusMessage(e,t){const n=document.getElementById("statusMessage");const i=document.getElementById("statusMessageText");const o=document.getElementById("overlay");const a=n.querySelector("i");n.className="status-message "+e;i.textContent=t;if(e==="success"){a.className="fa fa-check-circle"}else if(e==="error"){a.className="fa fa-exclamation-circle"}else{a.className="fa fa-info-circle"}n.style.display="block";o.style.display="block"}function hideStatusMessage(){const e=document.getElementById("statusMessage");const t=document.getElementById("overlay");e.style.display="none";t.style.display="none"}function showNotification(e,t="info"){let n=document.getElementById("notification-container");if(!n){n=document.createElement("div");n.id="notification-container";n.style.position="fixed";n.style.top="20px";n.style.right="20px";n.style.zIndex="9999";n.style.maxWidth="300px";document.body.appendChild(n)}const i=document.createElement("div");i.className="notification "+t;i.innerHTML=`
                 <div class="notification-info">
                     <div class="notification-icon">
-                        <i class="fa fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                        <i class="fa fa-${t==="success"?"check-circle":t==="error"?"exclamation-circle":"info-circle"}"></i>
                     </div>
                     <div class="notification-content">
-                        <h4>${type === 'success' ? '成功' : type === 'error' ? '错误' : type === 'warning' ? '警告' : '信息'}</h4>
-                        <p>${message}</p>
+                        <h4>${t==="success"?"成功":t==="error"?"错误":t==="warning"?"警告":"信息"}</h4>
+                        <p>${e}</p>
                     </div>
                 </div>
-            `;
-
-            notificationContainer.appendChild(notification);
-
-            // 3秒后自动消失
-            setTimeout(() => {
-                notification.classList.add('fade-out');
-                setTimeout(() => {
-                    if (notificationContainer.contains(notification)) {
-                        notificationContainer.removeChild(notification);
-                    }
-                }, 300);
-            }, 3000);
-        }
-
-        // 保存设置到JSON文件
-        function saveToJson(key, value) {
-            return new Promise((resolve, reject) => {
-                fetch('/api/save-settings', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-auth-token': 'authenticated'
-                    },
-                    body: JSON.stringify({
-                        key: key,
-                        value: value
-                    })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('保存失败');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        resolve();
-                    } else {
-                        reject(new Error(data.message || '保存失败'));
-                    }
-                })
-                .catch(error => {
-                    reject(error);
-                });
-            });
-        }
-
-        // 加载图标数据
-        async function loadIcons() {
-            const iconsList = document.getElementById('iconsList');
-            iconsList.innerHTML = `
+            `;n.appendChild(i);setTimeout(()=>{i.classList.add("fade-out");setTimeout(()=>{if(n.contains(i)){n.removeChild(i)}},300)},3e3)}function saveToJson(e,i){return new Promise((t,n)=>{fetch("/api/save-settings",{method:"POST",headers:{"Content-Type":"application/json","x-auth-token":"authenticated"},body:JSON.stringify({key:e,value:i})}).then(e=>{if(!e.ok){throw new Error("保存失败")}return e.json()}).then(e=>{if(e.success){t()}else{n(new Error(e.message||"保存失败"))}}).catch(e=>{n(e)})})}async function loadIcons(){const t=document.getElementById("iconsList");t.innerHTML=`
                 <tr>
                     <td colspan="4" style="text-align: center; padding: 2rem;">
                         <i class="fa fa-spinner fa-spin" style="font-size: 2rem; margin-right: 1rem;"></i>
                         加载中...
                     </td>
                 </tr>
-            `;
-
-            try {
-                // 使用API获取/res/tow/static/app/icons目录下的文件夹列表
-                const directories = await scanIconsDirectory();
-                
-                if (directories.length === 0) {
-                    iconsList.innerHTML = `
+            `;try{const e=await scanIconsDirectory();if(e.length===0){t.innerHTML=`
                         <tr>
                             <td colspan="4" style="text-align: center; padding: 2rem;">
                                 <i class="fa fa-exclamation-circle text-warning" style="font-size: 2rem; margin-right: 1rem;"></i>
                                 暂无图标数据
                             </td>
                         </tr>
-                    `;
-                    return;
-                }
-                
-                // 转换目录数据格式
-                const iconsData = directories.map(dir => ({
-                    id: dir.name,
-                    name: dir.title || dir.name, // 使用目录的title字段，如果没有则使用name
-                    previewUrl: `res/tow/static/app/icons/${dir.name}/icon.png`,
-                    customPath: ''
-                }));
-                
-                // 直接显示所有图标，不需要特殊的第一行记录
-                renderIconsList(iconsData);
-            } catch (error) {
-                console.error('扫描图标目录失败:', error);
-                showNotification('扫描图标目录失败', 'error');
-                // 显示空状态
-                iconsList.innerHTML = `
+                    `;return}const n=e.map(e=>({id:e.name,name:e.title||e.name,previewUrl:`res/tow/static/app/icons/${e.name}/icon.png`,customPath:""}));renderIconsList(n)}catch(e){console.error("扫描图标目录失败:",e);showNotification("扫描图标目录失败","error");t.innerHTML=`
                     <div class="empty-state">
                         <i class="fa fa-exclamation-circle" style="font-size: 2rem; margin-right: 1rem;"></i>
                         无法加载图标数据，请刷新页面重试
                     </div>
-                `;
-            }
-        }
-
-        // 扫描图标目录 - 从本地JSON文件读取
-        function scanIconsDirectory() {
-            return new Promise((resolve, reject) => {
-                fetch('/sysico.json')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! Status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    resolve(data);
-                })
-                .catch(error => {
-                    console.error('读取目录配置文件失败:', error);
-                    showNotification('读取目录配置文件失败，请刷新页面重试', 'error');
-                    reject(error);
-                });
-            });
-        }
-
-        // 渲染图标列表
-        function renderIconsList(icons) {
-            const iconsList = document.getElementById('iconsList');
-            iconsList.innerHTML = '';
-
-            if (icons.length === 0) {
-                iconsList.innerHTML = `
+                `}}function scanIconsDirectory(){return new Promise((t,n)=>{fetch("/sysico.json").then(e=>{if(!e.ok){throw new Error(`HTTP error! Status: ${e.status}`)}return e.json()}).then(e=>{t(e)}).catch(e=>{console.error("读取目录配置文件失败:",e);showNotification("读取目录配置文件失败，请刷新页面重试","error");n(e)})})}function renderIconsList(e){const t=document.getElementById("iconsList");t.innerHTML="";if(e.length===0){t.innerHTML=`
                     <div class="empty-state">
                         <i class="fa fa-exclamation-circle text-warning" style="font-size: 2rem; margin-right: 1rem;"></i>
                         暂无图标数据
                     </div>
-                `;
-                return;
-            }
-
-            // 设置为自适应网格布局
-            
-            // 添加颜色变量（从fnstyle.html借鉴的深色科技风格）
-            if (!document.querySelector('#sysico-theme-vars')) {
-                const varsStyle = document.createElement('style');
-            varsStyle.id = 'sysico-theme-vars';
-            varsStyle.textContent = `
+                `;return}if(!document.querySelector("#sysico-theme-vars")){const n=document.createElement("style");n.id="sysico-theme-vars";n.textContent=`
                 :root {
                     --primary: #00a8ff;
                     --secondary: #00d2d3;
@@ -1046,53 +840,25 @@
                         padding: 24px;
                     }
                 }
-            `;
-            document.head.appendChild(varsStyle);
-            }
-            
-            // 创建四列布局的容器
-            const gridContainer = document.createElement('div');
-            gridContainer.className = 'icon-grid';
-            
-            icons.forEach(icon => {
-                const iconCard = document.createElement('div');
-                iconCard.className = 'anime-card';
-                iconCard.dataset.iconId = icon.id;
-                
-                // 检查是否已选择（可以根据需要从localStorage或其他地方获取选择状态）
-                const isSelected = localStorage.getItem(`icon_selected_${icon.id}`) === 'true';
-                
-                iconCard.innerHTML = `
+            `;document.head.appendChild(n)}const i=document.createElement("div");i.className="icon-grid";e.forEach(e=>{const t=document.createElement("div");t.className="anime-card";t.dataset.iconId=e.id;const n=localStorage.getItem(`icon_selected_${e.id}`)==="true";t.innerHTML=`
                     <div class="anime-cover">
-                        <img src="${icon.previewUrl}" alt="${icon.name}" class="anime-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22300%22 viewBox=%220 0 200 300%22%3E%3Crect width=%22200%22 height=%22300%22 fill=%22%232d3748%22/%3E%3Ctext x=%22100%22 y=%22150%22 font-family=%22Arial%22 font-size=%2240%22 fill=%22%23a0aec0%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3E?%3C/text%3E%3C/svg%3E'">
+                        <img src="${e.previewUrl}" alt="${e.name}" class="anime-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22300%22 viewBox=%220 0 200 300%22%3E%3Crect width=%22200%22 height=%22300%22 fill=%22%232d3748%22/%3E%3Ctext x=%22100%22 y=%22150%22 font-family=%22Arial%22 font-size=%2240%22 fill=%22%23a0aec0%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3E?%3C/text%3E%3C/svg%3E'">
                     </div>
                     <div class="anime-info">
-                        <h3 class="anime-title">${icon.name}</h3>
+                        <h3 class="anime-title">${e.name}</h3>
                         <div class="anime-actions">
-                            <button class="anime-default-btn" onclick="resetToDefault('${icon.id}')">
+                            <button class="anime-default-btn" onclick="resetToDefault('${e.id}')">
                                 <i class="fa fa-refresh"></i>
                                 默认
                             </button>
-                            <button class="anime-upload-btn" onclick="triggerFileUpload('${icon.id}')">
+                            <button class="anime-upload-btn" onclick="triggerFileUpload('${e.id}')">
                                 <i class="fa fa-upload"></i>
                                 上传
                             </button>
                         </div>
                     </div>
-                    <input type="file" id="fileInput_${icon.id}" style="display: none;" accept="image/*" onchange="handleFileUpload('${icon.id}', this.files[0])">
-                `;
-                gridContainer.appendChild(iconCard);
-            });
-            
-            // 恢复默认功能和上传功能
-            
-            iconsList.appendChild(gridContainer);
-            
-            // 添加美化的CSS样式
-            if (!document.querySelector('#sysico-icon-grid-styles')) {
-                const style = document.createElement('style');
-                style.id = 'sysico-icon-grid-styles';
-                style.textContent = `
+                    <input type="file" id="fileInput_${e.id}" style="display: none;" accept="image/*" onchange="handleFileUpload('${e.id}', this.files[0])">
+                `;i.appendChild(t)});t.appendChild(i);if(!document.querySelector("#sysico-icon-grid-styles")){const o=document.createElement("style");o.id="sysico-icon-grid-styles";o.textContent=`
                     /* 自适应网格布局 - 按明确的断点和列数要求设置 */
                     .icon-grid {
                         display: grid;
@@ -1348,82 +1114,24 @@
                         border: none;
                         background: transparent;
                     }
-                `;
-                document.head.appendChild(style);
-            }
-        }
-
-        // 状态栏消息函数
-        function showStatusMessage(type, message) {
-            const statusElement = document.getElementById('statusMessage');
-            const textElement = document.getElementById('statusText');
-            
-            // 设置消息文本
-            textElement.textContent = message;
-            
-            // 设置消息类型样式
-            statusElement.className = 'status-message';
-            statusElement.classList.add(`status-${type}`);
-            
-            // 显示消息
-            statusElement.style.display = 'block';
-        }
-        
-        function hideStatusMessage() {
-            const statusElement = document.getElementById('statusMessage');
-            statusElement.style.display = 'none';
-        }
-        
-        // 通知函数
-        function showNotification(message, type = 'info') {
-            const notificationElement = document.getElementById('notification');
-            const textElement = document.getElementById('notificationText');
-            
-            // 设置消息文本
-            textElement.textContent = message;
-            
-            // 设置消息类型样式
-            notificationElement.className = 'notification';
-            notificationElement.classList.add(`notification-${type}`);
-            
-            // 显示消息
-            notificationElement.style.display = 'block';
-            
-            // 3秒后自动隐藏
-            setTimeout(() => {
-                notificationElement.style.display = 'none';
-            }, 3000);
-        }
-
-        // 科技感确认对话框
-        function showCustomConfirm(title, message, onConfirm, iconId) {
-            const confirmDialog = document.createElement('div');
-            confirmDialog.className = 'custom-confirm-overlay';
-            confirmDialog.innerHTML = `
+                `;document.head.appendChild(o)}}function showStatusMessage(e,t){const n=document.getElementById("statusMessage");const i=document.getElementById("statusText");i.textContent=t;n.className="status-message";n.classList.add(`status-${e}`);n.style.display="block"}function hideStatusMessage(){const e=document.getElementById("statusMessage");e.style.display="none"}function showNotification(e,t="info"){const n=document.getElementById("notification");const i=document.getElementById("notificationText");i.textContent=e;n.className="notification";n.classList.add(`notification-${t}`);n.style.display="block";setTimeout(()=>{n.style.display="none"},3e3)}function showCustomConfirm(e,t,n,i){const o=document.createElement("div");o.className="custom-confirm-overlay";o.innerHTML=`
                 <div class="custom-confirm-dialog">
                     <div class="custom-confirm-header">
-                        <h3>${title}</h3>
+                        <h3>${e}</h3>
                         <div class="tech-glow"></div>
                     </div>
                     <div class="custom-confirm-content">
                         <div class="tech-icon">
                             <i class="fa fa-refresh fa-spin"></i>
                         </div>
-                        <p>${message}</p>
+                        <p>${t}</p>
                     </div>
                     <div class="custom-confirm-actions">
                         <button class="custom-btn cancel-btn" onclick="hideCustomConfirm()">取消</button>
-                        <button class="custom-btn confirm-btn" onclick="hideCustomConfirm(true, '${iconId}')">确认</button>
+                        <button class="custom-btn confirm-btn" onclick="hideCustomConfirm(true, '${i}')">确认</button>
                     </div>
                 </div>
-            `;
-            
-            // 保存确认回调
-            window.customConfirmCallback = onConfirm;
-            
-            // 添加样式
-            const style = document.createElement('style');
-            style.textContent = `
+            `;window.customConfirmCallback=n;const a=document.createElement("style");a.textContent=`
                 .custom-confirm-overlay {
                     position: fixed;
                     top: 0;
@@ -1582,329 +1290,6 @@
                     width: 300px;
                     height: 300px;
                 }
-            `;
-            
-            document.head.appendChild(style);
-            document.body.appendChild(confirmDialog);
-        }
-        
-        function hideCustomConfirm(confirmed = false, iconId = null) {
-            const overlay = document.querySelector('.custom-confirm-overlay');
-            const style = document.querySelector('style:has(.custom-confirm-overlay)');
-            
-            if (overlay) {
-                // 添加退出动画
-                overlay.style.opacity = '0';
-                overlay.style.transition = 'opacity 0.3s ease';
-                
-                setTimeout(() => {
-                    if (overlay.parentNode) {
-                        overlay.parentNode.removeChild(overlay);
-                    }
-                    if (style && style.parentNode) {
-                        style.parentNode.removeChild(style);
-                    }
-                    
-                    // 如果确认，执行回调
-                    if (confirmed && window.customConfirmCallback && iconId) {
-                        window.customConfirmCallback(iconId);
-                    }
-                    
-                    // 清理回调
-                    window.customConfirmCallback = null;
-                }, 300);
-            }
-        }
-        
-        // 重置为默认图标
-        function resetToDefault(iconId) {
-            // 使用自定义确认对话框
-            showCustomConfirm(
-                '图标重置确认',
-                '确定要将此图标重置为默认状态吗？',
-                performIconReset,
-                iconId
-            );
-        }
-        
-        // 执行图标重置操作
-        function performIconReset(iconId) {
-                // 显示加载状态
-                showStatusMessage('info', '正在恢复默认图标...');
-                
-                // 调用API恢复默认图标
-                fetch(`/api/restore-default-icon?directory=${iconId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        hideStatusMessage();
-                        if (data.success) {
-                            showNotification('默认图标已恢复', 'success');
-                            // 刷新图标预览
-                            const imgElement = document.querySelector(`div[data-icon-id="${iconId}"] img`);
-                            imgElement.src = `res/tow/static/app/icons/${iconId}/icon.png?${new Date().getTime()}`;
-                            
-                            // 调用API删除deskdata/sysico/目录里的iconId文件
-                            fetch(`/api/delete-sysico-file?iconId=${iconId}`)
-                                .then(response => response.json())
-                                .then(deleteData => {
-                                    if (!deleteData.success && deleteData.message) {
-                                        console.warn('删除sysico文件时出现警告:', deleteData.message);
-                                    }
-                                })
-                                .catch(deleteError => {
-                                    console.warn('删除sysico文件时发生错误:', deleteError);
-                                });
-                        } else {
-                            showNotification(data.message || '恢复默认图标失败', 'error');
-                        }
-                    })
-                    .catch(error => {
-                        hideStatusMessage();
-                        console.error('恢复默认图标失败:', error);
-                        showNotification('恢复默认图标时发生错误', 'error');
-                    });
-        }
-
-        // 触发文件上传
-        function triggerFileUpload(iconId) {
-            document.getElementById(`fileInput_${iconId}`).click();
-        }
-
-        // 处理文件上传
-        function handleFileUpload(iconId, file) {
-            if (!file) return;
-
-            // 显示加载状态
-            showStatusMessage('info', '正在备份当前图标...');
-            
-            // 第一步：备份当前图标
-            fetch(`/api/backup-icon?directory=${iconId}`)
-                .then(response => response.json())
-                .then(backupData => {
-                    if (!backupData.success) {
-                        hideStatusMessage();
-                        showNotification(backupData.message || '备份图标失败', 'error');
-                        return Promise.reject(new Error('备份失败'));
-                    }
-                    
-                    // 备份成功，开始上传新图标
-                    showStatusMessage('info', '上传中...');
-                    
-                    // 创建读取器来获取文件内容
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        // 发送文件数据到服务器
-                        fetch(`/api/upload-icon?directory=${iconId}`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': file.type || 'image/png'
-                            },
-                            body: e.target.result
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            hideStatusMessage();
-                            if (data.success) {
-                                showNotification('图标上传成功', 'success');
-                                // 刷新图标预览
-                                const imgElement = document.querySelector(`div[data-icon-id="${iconId}"] img`);
-                                imgElement.src = `res/tow/static/app/icons/${iconId}/icon.png?${new Date().getTime()}`;
-                            } else {
-                                showNotification(data.message || '图标上传失败', 'error');
-                            }
-                        })
-                        .catch(error => {
-                            hideStatusMessage();
-                            console.error('上传图标失败:', error);
-                            showNotification('图标上传时发生错误', 'error');
-                        });
-                    };
-                    reader.readAsArrayBuffer(file);
-                })
-                .catch(error => {
-                    hideStatusMessage();
-                    console.error('备份图标失败:', error);
-                });
-        }
-
-
-
-        // 同步所有图标到目标目录
-        function syncAllIcons() {
-            showNotification('正在同步图标...', 'info');
-            showStatusMessage('info', '正在同步图标到目标目录，请稍候...');
-            
-            fetch('/api/sync-icons')
-                .then(response => response.json())
-                .then(data => {
-                    hideStatusMessage();
-                    if (data.success) {
-                        showNotification(`图标同步成功，成功: ${data.successFiles.length}, 失败: ${data.failedFiles.length}`, 'success');
-                        // 如果有失败的文件，可以显示详细信息
-                        if (data.failedFiles.length > 0) {
-                            console.warn('部分图标同步失败:', data.failedFiles);
-                        }
-                    } else {
-                        showNotification(data.message || '图标同步失败', 'error');
-                    }
-                })
-                .catch(error => {
-                    hideStatusMessage();
-                    console.error('同步图标失败:', error);
-                    showNotification('图标同步时发生错误', 'error');
-                });
-        }
-
-        // 页面加载时从fnstyle.json读取sysicoDisplay字段
-        document.addEventListener('DOMContentLoaded', function() {
-            fetch('deskdata/fnstyle.json')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.sysicoDisplay) {
-                        document.getElementById('sysicoDisplay').value = data.sysicoDisplay;
-                    }
-                })
-                .catch(error => console.error('读取fnstyle.json失败:', error));
-        });
-
-        // 保存按钮点击事件
-        document.getElementById('saveSysicoDisplayBtn').addEventListener('click', function() {
-            const sysicoDisplayValue = document.getElementById('sysicoDisplay').value;
-            
-            // 数据预处理：去除前后空格和逗号，将中文逗号替换为英文逗号
-            let processedValue = sysicoDisplayValue
-                .trim() // 去除前后空格
-                .replace(/^,|,$/g, '') // 去除前后逗号
-                .replace(/，/g, ',') // 将中文逗号替换为英文逗号
-                .trim(); // 再次去除可能产生的空格
-            
-            // 更新输入框显示处理后的值
-            document.getElementById('sysicoDisplay').value = processedValue;
-            
-            // 显示确认对话框
-            showCustomConfirm(
-                '保存确认', 
-                '确定要保存隐藏图标设置吗？', 
-                function() {
-                    // 保存到fnstyle.json
-                    fetch('api/fnstyle.json', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ sysicoDisplay: processedValue })
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('网络响应错误');
-                        }
-                        return response.json();
-                    })
-                    .then(() => {
-                        showNotification('保存成功！', 'success');
-                    })
-                    .catch(error => {
-                        console.error('保存失败:', error);
-                        showNotification('保存失败，请重试', 'error');
-                    });
-                }, 
-                'saveSysicoDisplay'
-            );
-        });
-
-        // 刷新图标列表
-        function refreshIcons() {
-            showNotification('正在刷新图标列表...', 'info');
-            loadIcons();
-        }
-
-        // 搜索功能已移除
-
-        // 立即生效按钮功能
-        document.addEventListener('DOMContentLoaded', function() {
-            // 检查登录状态
-            if (!checkLoginStatus()) {
-                return;
-            }
-            
-            // 加载图标列表
-            loadIcons();
-            
-            // 立即生效按钮功能
-            const applyBtn = document.getElementById('applyBtn');
-            const applyConfigModal = document.getElementById('applyConfigModal');
-            const cancelApplyBtn = document.getElementById('cancelApplyBtn');
-            const confirmApplyBtn = document.getElementById('confirmApplyBtn');
-            
-            // 显示确认模态框
-            if (applyBtn && applyConfigModal) {
-                applyBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    applyConfigModal.style.display = 'flex';
-                });
-            }
-            
-            // 取消应用配置
-            if (cancelApplyBtn && applyConfigModal) {
-                cancelApplyBtn.addEventListener('click', () => {
-                    applyConfigModal.style.display = 'none';
-                });
-            }
-            
-            // 点击模态框外部关闭
-            if (applyConfigModal) {
-                applyConfigModal.addEventListener('click', (e) => {
-                    if (e.target === applyConfigModal) {
-                        applyConfigModal.style.display = 'none';
-                    }
-                });
-            }
-            
-            // 确认应用配置
-            if (confirmApplyBtn && applyConfigModal) {
-                confirmApplyBtn.addEventListener('click', async () => {
-                    try {
-                        // 关闭模态框
-                        applyConfigModal.style.display = 'none';
-                        
-                        // 修改deskdata/pw.json的enabled为1
-                        const updateResponse = await fetch('/api/update-data', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'x-auth-token': 'authenticated'
-                            },
-                            body: JSON.stringify({
-                                filePath: 'deskdata/pw.json',
-                                update: { enabled: 1 }
-                            })
-                        });
-                        
-                        if (!updateResponse.ok) {
-                            throw new Error('更新配置数据失败');
-                        }
-                        
-                        // 向服务器发送退出请求
-                        const response = await fetch('/api/exit', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'x-auth-token': 'authenticated'
-                            }
-                        });
-                        
-                        if (response.ok) {
-                            showNotification('应用配置成功，程序即将重启...', 'success');
-                        } else {
-                            throw new Error('重启请求失败');
-                        }
-                    } catch (error) {
-                        console.error('应用配置失败:', error);
-                        showNotification('应用配置失败，请重试', 'error');
-                    }
-                });
-            }
-        });
-    </script>
+            `;document.head.appendChild(a);document.body.appendChild(o)}function hideCustomConfirm(e=false,t=null){const n=document.querySelector(".custom-confirm-overlay");const i=document.querySelector("style:has(.custom-confirm-overlay)");if(n){n.style.opacity="0";n.style.transition="opacity 0.3s ease";setTimeout(()=>{if(n.parentNode){n.parentNode.removeChild(n)}if(i&&i.parentNode){i.parentNode.removeChild(i)}if(e&&window.customConfirmCallback&&t){window.customConfirmCallback(t)}window.customConfirmCallback=null},300)}}function resetToDefault(e){showCustomConfirm("图标重置确认","确定要将此图标重置为默认状态吗？",performIconReset,e)}function performIconReset(n){showStatusMessage("info","正在恢复默认图标...");fetch(`/api/restore-default-icon?directory=${n}`).then(e=>e.json()).then(e=>{hideStatusMessage();if(e.success){showNotification("默认图标已恢复","success");const t=document.querySelector(`div[data-icon-id="${n}"] img`);t.src=`res/tow/static/app/icons/${n}/icon.png?${(new Date).getTime()}`;fetch(`/api/delete-sysico-file?iconId=${n}`).then(e=>e.json()).then(e=>{if(!e.success&&e.message){console.warn("删除sysico文件时出现警告:",e.message)}}).catch(e=>{console.warn("删除sysico文件时发生错误:",e)})}else{showNotification(e.message||"恢复默认图标失败","error")}}).catch(e=>{hideStatusMessage();console.error("恢复默认图标失败:",e);showNotification("恢复默认图标时发生错误","error")})}function triggerFileUpload(e){document.getElementById(`fileInput_${e}`).click()}function handleFileUpload(n,i){if(!i)return;showStatusMessage("info","正在备份当前图标...");fetch(`/api/backup-icon?directory=${n}`).then(e=>e.json()).then(e=>{if(!e.success){hideStatusMessage();showNotification(e.message||"备份图标失败","error");return Promise.reject(new Error("备份失败"))}showStatusMessage("info","上传中...");const t=new FileReader;t.onload=function(e){fetch(`/api/upload-icon?directory=${n}`,{method:"POST",headers:{"Content-Type":i.type||"image/png"},body:e.target.result}).then(e=>e.json()).then(e=>{hideStatusMessage();if(e.success){showNotification("图标上传成功","success");const t=document.querySelector(`div[data-icon-id="${n}"] img`);t.src=`res/tow/static/app/icons/${n}/icon.png?${(new Date).getTime()}`}else{showNotification(e.message||"图标上传失败","error")}}).catch(e=>{hideStatusMessage();console.error("上传图标失败:",e);showNotification("图标上传时发生错误","error")})};t.readAsArrayBuffer(i)}).catch(e=>{hideStatusMessage();console.error("备份图标失败:",e)})}function syncAllIcons(){showNotification("正在同步图标...","info");showStatusMessage("info","正在同步图标到目标目录，请稍候...");fetch("/api/sync-icons").then(e=>e.json()).then(e=>{hideStatusMessage();if(e.success){showNotification(`图标同步成功，成功: ${e.successFiles.length}, 失败: ${e.failedFiles.length}`,"success");if(e.failedFiles.length>0){console.warn("部分图标同步失败:",e.failedFiles)}}else{showNotification(e.message||"图标同步失败","error")}}).catch(e=>{hideStatusMessage();console.error("同步图标失败:",e);showNotification("图标同步时发生错误","error")})}document.addEventListener("DOMContentLoaded",function(){fetch("deskdata/fnstyle.json").then(e=>e.json()).then(e=>{if(e.sysicoDisplay){document.getElementById("sysicoDisplay").value=e.sysicoDisplay}}).catch(e=>console.error("读取fnstyle.json失败:",e))});document.getElementById("saveSysicoDisplayBtn").addEventListener("click",function(){const e=document.getElementById("sysicoDisplay").value;let t=e.trim().replace(/^,|,$/g,"").replace(/，/g,",").trim();document.getElementById("sysicoDisplay").value=t;showCustomConfirm("保存确认","确定要保存隐藏图标设置吗？",function(){fetch("api/fnstyle.json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({sysicoDisplay:t})}).then(e=>{if(!e.ok){throw new Error("网络响应错误")}return e.json()}).then(()=>{showNotification("保存成功！","success")}).catch(e=>{console.error("保存失败:",e);showNotification("保存失败，请重试","error")})},"saveSysicoDisplay")});function refreshIcons(){showNotification("正在刷新图标列表...","info");loadIcons()}document.addEventListener("DOMContentLoaded",function(){if(!checkLoginStatus()){return}loadIcons();const e=document.getElementById("applyBtn");const n=document.getElementById("applyConfigModal");const t=document.getElementById("cancelApplyBtn");const i=document.getElementById("confirmApplyBtn");if(e&&n){e.addEventListener("click",e=>{e.preventDefault();n.style.display="flex"})}if(t&&n){t.addEventListener("click",()=>{n.style.display="none"})}if(n){n.addEventListener("click",e=>{if(e.target===n){n.style.display="none"}})}if(i&&n){i.addEventListener("click",async()=>{try{n.style.display="none";const e=await fetch("/api/update-data",{method:"POST",headers:{"Content-Type":"application/json","x-auth-token":"authenticated"},body:JSON.stringify({filePath:"deskdata/pw.json",update:{enabled:1}})});if(!e.ok){throw new Error("更新配置数据失败")}const t=await fetch("/api/exit",{method:"POST",headers:{"Content-Type":"application/json","x-auth-token":"authenticated"}});if(t.ok){showNotification("应用配置成功，程序即将重启...","success")}else{throw new Error("重启请求失败")}}catch(e){console.error("应用配置失败:",e);showNotification("应用配置失败，请重试","error")}})}})</script>
 </body>
 </html>

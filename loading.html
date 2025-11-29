@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>飞牛桌面管理工具 - 加载中</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link href="fonts/font-awesome.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0a192f;
+            --secondary-color: #112240;
+            --accent-color: #00aeff;
+            --text-primary: #e6f1ff;
+            --text-secondary: #e6f1ff;
+            --border-color: #233554;
+            --highlight-color: #4cc9f0;
+            --error-color: #f87171;
+            --success-color: #4ade80;
+            --card-bg: rgba(9, 20, 37, 0.8);
+            --input-bg: rgba(10, 25, 47, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: var(--primary-color);
+            background-image: url('https://t.alcy.cc/fj');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 优化背景效果 */
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(100, 255, 218, 0.05) 0%, rgba(30, 41, 59, 0) 70%);
+            pointer-events: none;
+        }
+
+        .loading-container {
+            background: rgba(7, 0, 102, 0.226);
+            backdrop-filter: blur(3px);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 
+                0 4px 20px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(100, 255, 218, 0.1);
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            transition: all 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .loading-container:hover {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+        }
+
+        .loading-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+        }
+
+        .loading-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 8px 30px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(100, 255, 218, 0.2),
+                0 0 30px rgba(100, 255, 218, 0.1);
+        }
+
+        .loading-header {
+            text-align: center;
+        }
+
+        .loading-title {
+            font-size: 2rem;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
+        }
+
+        .loading-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--accent-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 1rem 0;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-progress {
+            width: 100%;
+            height: 6px;
+            background-color: var(--border-color);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .loading-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-color), var(--highlight-color));
+            border-radius: 3px;
+            width: 0%;
+            animation: progress 2s ease-in-out infinite;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        .loading-text {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .system-info {
+            margin-top: 1rem;
+            text-align: center;
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .loading-container {
+                margin: 1rem;
+                padding: 2rem;
+                width: calc(100% - 2rem);
+            }
+
+            .loading-title {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-container">
+        <div class="loading-header">
+            <h1 class="loading-title">飞牛桌面管理工具</h1>
+            <p id="versionNumber" style="text-align: right; font-size: 0.9rem; margin-top: 0.25rem;margin-right: 1.25rem; color: #e6f1ff;">Ver. 未知</p>
+        </div>
+
+        <div class="loading-spinner"></div>
+        <div class="loading-progress">
+            <div class="loading-bar"></div>
+        </div>
+        <div class="loading-text">
+            正在配置系统环境<br>
+            请稍候...
+        </div>
+        
+        <div class="system-info">
+            by 米恋泥 @小宠瞭望塔
+        </div>
+    </div>
+
+    <script>document.addEventListener("DOMContentLoaded",function(){try{fetch("/api/config").then(e=>e.json()).then(e=>{if(e&&e.version){document.getElementById("versionNumber").textContent="Ver. "+e.version}else{document.getElementById("versionNumber").textContent="未知版本"}}).catch(e=>{console.log("无法获取版本信息:",e);document.getElementById("versionNumber").textContent="未知版本"})}catch(e){document.getElementById("versionNumber").textContent="未知版本"}function n(){fetch("/api/system-status",{method:"GET"}).then(e=>{if(e.ok){return e.json()}throw new Error("系统未就绪")}).then(e=>{if(e.ready){const t=e.targetUrl||"index.html";window.location.href=t}else{setTimeout(n,1e3)}}).catch(e=>{setTimeout(n,1e3)})}n()})</script>
+</body>
+</html>

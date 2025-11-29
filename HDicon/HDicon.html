@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Fndesk图标库</title>
     <style>
         * {
@@ -362,7 +362,7 @@
     <div class="container">
                 <div class="navbar-content">
             <div class="navbar-title">
-                <div></br> </div>
+                <div><br> </div>
                 <div class="navbar-title-main">🎨 Fndesk 图标库</div>
                 <div class="navbar-title-sub">  请到公告下载离线包！图标资源来自于xushier/HD-Icons，经ghfast加速访问，建议下载后使用</div>
             </div>
@@ -382,7 +382,7 @@
                 <div style="display: flex; align-items: center; gap: 8px; color: #00d4ff; font-size: 14px;">
                     <span>CDN加速</span>
                     <label class="switch">
-                        <input type="checkbox" id="cdnToggle" checked>
+                        <input type="checkbox" id="cdnToggle" checked="checked">
                         <span class="slider"></span>
                     </label>
                 </div>
@@ -397,89 +397,24 @@
         </div>
     </div>
 
-    <script>
-        // 防止Webpack相关错误
-        if (typeof __webpack_require__ !== 'undefined') {
-            __webpack_require__.p = '';
-        }
-        
-        let iconsData = [];
-        let filteredIcons = [];
-        let currentPage = 1;
-        const iconsPerPage = 20;
-        const CDN_PREFIX = 'https://ghfast.top/';
-        let useCDN = true; // 默认使用CDN
-
-        // 加载JSON数据
-        async function loadIcons() {
-            try {
-                const response = await fetch('HDicon.json');
-                if (!response.ok) throw new Error('文件加载失败');
-                iconsData = await response.json();
-                filteredIcons = iconsData;
-                updateStats();
-                renderIcons();
-            } catch (error) {
-                console.error('加载错误:', error);
-                document.getElementById('iconGrid').innerHTML = 
-                    `<div class="no-results">
+    <script>if(typeof __webpack_require__!=="undefined"){__webpack_require__.p=""}let iconsData=[];let filteredIcons=[];let currentPage=1;const iconsPerPage=20;const CDN_PREFIX="https://ghfast.top/";let useCDN=true;async function loadIcons(){try{const e=await fetch("HDicon.json");if(!e.ok)throw new Error("文件加载失败");iconsData=await e.json();filteredIcons=iconsData;updateStats();renderIcons()}catch(e){console.error("加载错误:",e);document.getElementById("iconGrid").innerHTML=`<div class="no-results">
                         <p>⚠️ 加载失败</p>
                         <p style="font-size: 14px; margin-top: 10px;">请使用本地服务器打开此页面,例如:</p>
                         <p style="font-size: 14px; color: #667eea; margin-top: 5px;">python -m http.server 8000</p>
                         <p style="font-size: 14px; margin-top: 5px;">然后访问: http://localhost:8000/icon-viewer.html</p>
-                    </div>`;
-            }
-        }
-
-        // 更新统计信息
-        function updateStats() {
-            // 统计信息现在显示在分页栏中
-        }
-
-        // 渲染图标
-        function renderIcons() {
-            const grid = document.getElementById('iconGrid');
-            const start = (currentPage - 1) * iconsPerPage;
-            const end = start + iconsPerPage;
-            const pageIcons = filteredIcons.slice(start, end);
-
-            if (pageIcons.length === 0) {
-                grid.innerHTML = '<div class="no-results">未找到匹配的图标</div>';
-                renderPagination();
-                return;
-            }
-
-            grid.innerHTML = pageIcons.map(icon => {
-                const nameWithoutExt = icon.name.replace(/\.png$/i, '');
-                // 优先使用本地HDicons目录中的图标
-                const localPath = `../deskdata/HDicons/${icon.name}`;
-                const fullUrl = useCDN ? CDN_PREFIX + icon.download_url : icon.download_url;
-                return `
+                    </div>`}}function updateStats(){}function renderIcons(){const e=document.getElementById("iconGrid");const t=(currentPage-1)*iconsPerPage;const n=t+iconsPerPage;const o=filteredIcons.slice(t,n);if(o.length===0){e.innerHTML='<div class="no-results">未找到匹配的图标</div>';renderPagination();return}e.innerHTML=o.map(e=>{const t=e.name.replace(/\.png$/i,"");const n=`../deskdata/HDicons/${e.name}`;const o=useCDN?CDN_PREFIX+e.download_url:e.download_url;return`
                     <div class="icon-card">
                         <img class="icon-image" 
-                             src="${localPath}" 
-                             alt="${nameWithoutExt}"
-                             onerror="this.src='${fullUrl}'; this.onerror=null;">
-                        <div class="icon-name">${nameWithoutExt}</div>
+                             src="${n}" 
+                             alt="${t}"
+                             onerror="this.src='${o}'; this.onerror=null;">
+                        <div class="icon-name">${t}</div>
                         <div class="icon-buttons">
-                            <button class="icon-btn" onclick="downloadIcon('${fullUrl}', '${icon.name}', event);">下载</button>
-                            <button class="icon-btn" onclick="copyUrl('${fullUrl}', event);">复制</button>
+                            <button class="icon-btn" onclick="downloadIcon('${o}', '${e.name}', event);">下载</button>
+                            <button class="icon-btn" onclick="copyUrl('${o}', event);">复制</button>
                         </div>
                     </div>
-                `;
-            }).join('');
-
-            renderPagination();
-        }
-
-        // 渲染分页
-        function renderPagination() {
-            const pagination = document.getElementById('pagination');
-            const totalPages = Math.ceil(filteredIcons.length / iconsPerPage);
-            
-            if (totalPages <= 1) {
-                // 只有一页的情况 - 简化显示
-                const simpleContainerHtml = `
+                `}).join("");renderPagination()}function renderPagination(){const e=document.getElementById("pagination");const t=Math.ceil(filteredIcons.length/iconsPerPage);if(t<=1){const o=`
                     <div style="background: #0e1628; border-radius: 12px; border: 1px solid #16213e; padding: 15px 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
                         <div style="color: #8899aa; font-size: 14px;">
                             共 <span style="color: #00d4ff; font-weight: bold;">${filteredIcons.length}</span> 个图标
@@ -490,13 +425,7 @@
                             第 1 / 1 页
                         </div>
                     </div>
-                `;
-                pagination.innerHTML = simpleContainerHtml;
-                return;
-            }
-            
-            // 统计信息和分页控件容器 - 单行布局
-            const containerHtml = `
+                `;e.innerHTML=o;return}const n=`
                 <div style="background: #0e1628; border-radius: 12px; border: 1px solid #16213e; padding: 15px 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
                     <!-- 左侧统计信息 -->
                     <div style="color: #8899aa; font-size: 14px; white-space: nowrap;">
@@ -507,13 +436,13 @@
                     
                     <!-- 中间分页按钮 -->
                     <div style="display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap;">
-                        <button onclick="changePage(1)" ${currentPage === 1 ? 'disabled' : ''} style="padding: 6px 12px; min-width: 50px;">首页</button>
-                        <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''} style="padding: 6px 12px; min-width: 50px;">上页</button>
+                        <button onclick="changePage(1)" ${currentPage===1?"disabled":""} style="padding: 6px 12px; min-width: 50px;">首页</button>
+                        <button onclick="changePage(${currentPage-1})" ${currentPage===1?"disabled":""} style="padding: 6px 12px; min-width: 50px;">上页</button>
                         <span class="page-info" style="min-width: 100px; text-align: center; padding: 6px 12px;">
-                            ${currentPage} / ${totalPages}
+                            ${currentPage} / ${t}
                         </span>
-                        <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''} style="padding: 6px 12px; min-width: 50px;">下页</button>
-                        <button onclick="changePage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''} style="padding: 6px 12px; min-width: 50px;">末页</button>
+                        <button onclick="changePage(${currentPage+1})" ${currentPage===t?"disabled":""} style="padding: 6px 12px; min-width: 50px;">下页</button>
+                        <button onclick="changePage(${t})" ${currentPage===t?"disabled":""} style="padding: 6px 12px; min-width: 50px;">末页</button>
                     </div>
                     
                     <!-- 右侧页码跳转 -->
@@ -521,11 +450,11 @@
                         跳转:
                         <input type="number" 
                                min="1" 
-                               max="${totalPages}" 
+                               max="${t}" 
                                value="${currentPage}" 
                                style="width: 50px; padding: 6px; background: #16213e; border: 2px solid #00d4ff; border-radius: 6px; color: white; text-align: center;"
-                               onchange="if(this.value >= 1 && this.value <= ${totalPages}) changePage(parseInt(this.value));">
-                        <button onclick="const input = this.previousElementSibling; if(input.value >= 1 && input.value <= ${totalPages}) changePage(parseInt(input.value));" 
+                               onchange="if(this.value >= 1 && this.value <= ${t}) changePage(parseInt(this.value));">
+                        <button onclick="const input = this.previousElementSibling; if(input.value >= 1 && input.value <= ${t}) changePage(parseInt(input.value));" 
                                 style="padding: 6px 12px; border: 2px solid #00d4ff; background: transparent; color: #00d4ff; border-radius: 6px; cursor: pointer; transition: all 0.3s;"
                                 onmouseover="this.style.background='#00d4ff'; this.style.color='#16213e';"
                                 onmouseout="this.style.background='transparent'; this.style.color='#00d4ff';">
@@ -533,110 +462,6 @@
                         </button>
                     </div>
                 </div>
-            `;
-
-            pagination.innerHTML = containerHtml;
-        }
-
-        // 切换页面
-        function changePage(page) {
-            const totalPages = Math.ceil(filteredIcons.length / iconsPerPage);
-            if (page < 1 || page > totalPages) return;
-            currentPage = page;
-            renderIcons();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // 搜索功能
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            const keyword = e.target.value.toLowerCase();
-            filteredIcons = iconsData.filter(icon => 
-                icon.name.toLowerCase().includes(keyword)
-            );
-            currentPage = 1;
-            updateStats();
-            renderIcons();
-        });
-
-        // 显示提示信息
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.style.animation = 'slideIn 0.3s reverse';
-                setTimeout(() => toast.remove(), 300);
-            }, 2000);
-        }
-
-        // 复制URL到剪贴板
-        function copyUrl(url, event) {
-            // 阻止事件冒泡
-            if (event) event.stopPropagation();
-            
-            // 尝试使用现代Clipboard API
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(url).then(() => {
-                    showToast('✓ 链接已复制到剪贴板');
-                }).catch((err) => {
-                    console.error('Clipboard API 失败:', err);
-                    // 降级到传统方法
-                    fallbackCopyTextToClipboard(url);
-                });
-            } else {
-                // 降级到传统方法
-                fallbackCopyTextToClipboard(url);
-            }
-        }
-
-        // 传统复制方法
-        function fallbackCopyTextToClipboard(text) {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            textArea.style.position = 'fixed';
-            textArea.style.left = '-999999px';
-            textArea.style.top = '-999999px';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            try {
-                document.execCommand('copy');
-                showToast('✓ 链接已复制到剪贴板');
-            } catch (err) {
-                console.error('传统复制方法失败:', err);
-                showToast('✗ 复制失败');
-            }
-            document.body.removeChild(textArea);
-        }
-
-        // 下载图标
-        function downloadIcon(url, filename, event) {
-            // 阻止事件冒泡
-            if (event) event.stopPropagation();
-            
-            // 创建临时链接进行下载
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            a.target = '_blank';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            showToast('✓ 开始下载: ' + filename);
-        }
-
-        // CDN开关事件监听
-        document.getElementById('cdnToggle').addEventListener('change', (e) => {
-            useCDN = e.target.checked;
-            renderIcons();
-        });
-
-        // 页面加载时初始化
-        if (window.location.protocol === 'file:') {
-            document.getElementById('warning').style.display = 'block';
-        }
-        loadIcons();
-    </script>
+            `;e.innerHTML=n}function changePage(e){const t=Math.ceil(filteredIcons.length/iconsPerPage);if(e<1||e>t)return;currentPage=e;renderIcons();window.scrollTo({top:0,behavior:"smooth"})}document.getElementById("searchInput").addEventListener("input",e=>{const t=e.target.value.toLowerCase();filteredIcons=iconsData.filter(e=>e.name.toLowerCase().includes(t));currentPage=1;updateStats();renderIcons()});function showToast(e){const t=document.createElement("div");t.className="toast";t.textContent=e;document.body.appendChild(t);setTimeout(()=>{t.style.animation="slideIn 0.3s reverse";setTimeout(()=>t.remove(),300)},2e3)}function copyUrl(t,e){if(e)e.stopPropagation();if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(()=>{showToast("✓ 链接已复制到剪贴板")}).catch(e=>{console.error("Clipboard API 失败:",e);fallbackCopyTextToClipboard(t)})}else{fallbackCopyTextToClipboard(t)}}function fallbackCopyTextToClipboard(e){const t=document.createElement("textarea");t.value=e;t.style.position="fixed";t.style.left="-999999px";t.style.top="-999999px";document.body.appendChild(t);t.focus();t.select();try{document.execCommand("copy");showToast("✓ 链接已复制到剪贴板")}catch(e){console.error("传统复制方法失败:",e);showToast("✗ 复制失败")}document.body.removeChild(t)}function downloadIcon(e,o,t){if(t)t.stopPropagation();t.preventDefault();fetch(e).then(e=>{if(!e.ok){throw new Error("网络响应错误")}return e.blob()}).then(e=>{const t=document.createElement("a");const n=URL.createObjectURL(e);t.href=n;t.download=o;document.body.appendChild(t);t.click();setTimeout(()=>{document.body.removeChild(t);URL.revokeObjectURL(n)},100);showToast("✓ 开始下载: "+o)}).catch(e=>{console.error("下载失败:",e);showToast("✗ 下载失败: "+e.message)})}document.getElementById("cdnToggle").addEventListener("change",e=>{useCDN=e.target.checked;renderIcons()});if(window.location.protocol==="file:"){document.getElementById("warning").style.display="block"}loadIcons()</script>
 </body>
 </html>

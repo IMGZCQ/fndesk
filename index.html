@@ -2,10 +2,72 @@
 <html lang="zh-CN">
 <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
         <title>飞牛桌面管理工具</title>
         <link rel="icon" href="favicon.ico" type="image/x-icon">
         <link href="fonts/font-awesome.min.css" rel="stylesheet">
+        <style>
+            /* 隔离的开关样式 - 只影响开关元素 */
+            .switch-toggle {
+                position: relative;
+                display: inline-flex;
+                align-items: center;
+                cursor: pointer;
+            }
+            
+            .switch-toggle-input {
+                position: absolute;
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+            
+            .switch-toggle-slider {
+                position: relative;
+                display: inline-block;
+                width: 32px;
+                height: 32px;
+                background-color: #f87171; /* bg-rose-400 */
+                border-radius: 50%;
+                outline: none;
+                transition: background-color 0.3s ease;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            
+            .switch-toggle-slider::after {
+                content: '✖️';
+                position: absolute;
+                width: 24px;
+                height: 24px;
+                background-color: #f9fafb; /* bg-gray-50 */
+                border-radius: 50%;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.5s ease;
+                transform: translate(-50%, -50%) rotate(-180deg);
+            }
+            
+            .switch-toggle-input:checked + .switch-toggle-slider {
+                background-color: #10b981; /* bg-emerald-500 */
+            }
+            
+            .switch-toggle-input:checked + .switch-toggle-slider::after {
+                content: '✔️';
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            
+            .switch-toggle:hover .switch-toggle-slider::after {
+                transform: translate(-50%, -50%) scale(0.75) rotate(-180deg);
+            }
+            
+            .switch-toggle:hover .switch-toggle-input:checked + .switch-toggle-slider::after {
+                transform: translate(-50%, -50%) scale(0.75) rotate(0deg);
+            }
+        </style>
         <style>
             /* 最高优先级的按钮样式 */
             .edit-btn {
@@ -968,34 +1030,13 @@
     </style>
 </head>
 <body class="min-h-screen font-sans text-text-primary">
-    <!-- 顶部导航栏 -->
+    
     <header class="navbar">
         <div class="container navbar-content">
             <h1 class="navbar-title">
                 <i class="fa fa-desktop"></i>
                 飞牛桌面管理工具 <span id="versionNumber">加载中...</span>
-                <script>
-                    // 直接通过API获取版本号
-                    document.addEventListener('DOMContentLoaded', function() {
-                        try {
-                            fetch('/api/version')
-                                .then(response => response.json())
-                                .then(data => {
-                                    if (data && data.version) {
-                                        document.getElementById('versionNumber').textContent = data.version;
-                                    } else {
-                                        document.getElementById('versionNumber').textContent = '未知版本';
-                                    }
-                                })
-                                .catch(err => {
-                                    console.log('无法获取版本信息:', err);
-                                    document.getElementById('versionNumber').textContent = '未知版本';
-                                });
-                        } catch (e) {
-                            document.getElementById('versionNumber').textContent = '未知版本';
-                        }
-                    });
-                </script>
+                <script>document.addEventListener("DOMContentLoaded",function(){try{fetch("/api/config").then(e=>e.json()).then(e=>{if(e&&e.version){document.getElementById("versionNumber").textContent="v"+e.version}else{document.getElementById("versionNumber").textContent="未知版本"}}).catch(e=>{console.log("无法获取版本信息:",e);document.getElementById("versionNumber").textContent="未知版本"})}catch(e){document.getElementById("versionNumber").textContent="未知版本"}})</script>
             </h1>
             <div class="navbar-actions">
                 <button id="announcementBtn" class="btn btn-warning mr-2">
@@ -1017,29 +1058,21 @@
                         更多功能
                     </button>
                     
-                    <div id="dropdownMenu" class="dropdown-menu"
-                        style="display: none; position: absolute; right: 0; top: 100%; margin-top: 0.125rem; background-color: #121921; border: 1px solid #4a9eff; border-radius: 8px; box-shadow: 0 0 15px rgba(74, 158, 255, 0.4); min-width: 9rem; padding: 0.4rem 0.3rem; z-index: 9999; overflow: hidden;">
-                        <!--                         <a class="dropdown-item" href="fnstyle.html" id="menuCustomize" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
-                                                <i class="fa fa-paint-brush mr-2" style="color: #4a9eff;"></i>
-                                                个性定制
-                                            </a> -->
-                        <a class="dropdown-item" href="index.html" target="_blank" id="menuNewWindow"
-                            style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                    <div id="dropdownMenu" class="dropdown-menu" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 0.125rem; background-color: #121921; border: 1px solid #4a9eff; border-radius: 8px; box-shadow: 0 0 15px rgba(74, 158, 255, 0.4); min-width: 9rem; padding: 0.4rem 0.3rem; z-index: 9999; overflow: hidden;">
+                        
+                        <a class="dropdown-item" href="index.html" target="_blank" id="menuNewWindow" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
                             <i class="fa fa-window-maximize mr-2" style="color: #4a9eff;"></i>
                             打开新窗口
                         </a>
-                        <a class="dropdown-item" href="HDicon/HDicon.html" id="menuHDicon"
-                            style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                        <a class="dropdown-item" href="HDicon/HDicon.html" id="menuHDicon" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
                             <i class="fa fa-cubes mr-2" style="color: #4a9eff;"></i>
                             打开图标库
                         </a>           
-                        <a class="dropdown-item" href="sysico.html" id="menuSysico"
-                            style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                        <a class="dropdown-item" href="sysico.html" id="menuSysico" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
                             <i class="fa fa-cube mr-2" style="color: #4a9eff;"></i>
                             系统图标
                         </a>
-                        <a class="dropdown-item" href="#" id="menuResetDesktop"
-                            style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                        <a class="dropdown-item" href="#" id="menuResetDesktop" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
                             <i class="fa fa-refresh mr-2" style="color: #4a9eff;"></i>
                             还原桌面
                         </a>
@@ -1052,248 +1085,7 @@
                             退出登录
                         </a>
                     </div>
-                    <script>
-                        // 菜单动画和科技特效
-                        document.addEventListener('DOMContentLoaded', function() {
-                            console.log('初始化下拉菜单...');
-                            
-                            // 备用测试函数（保留但隐藏日志）
-                            window.__testDropdownMenu = function() {
-                                const menu = document.getElementById('dropdownMenu');
-                                if (menu) {
-                                    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-                                    menu.style.opacity = '1';
-                                    menu.style.transform = 'translateY(0)';
-                                    menu.style.position = 'absolute';
-                                    menu.style.zIndex = '9999';
-                                }
-                            };
-                            const dropdownMenu = document.getElementById('dropdownMenu');
-                            const dropdownToggle = document.getElementById('moreActionsBtn'); // 直接使用id获取按钮
-                            let toggleButton = null; // 用于存储可能的新按钮引用
-                            
-                            console.log('Dropdown elements:', { dropdownMenu, dropdownToggle });
-                            
-                            // 自定义展开/收起动画
-                            function toggleDropdown() {
-                                // 确保下拉菜单元素存在
-                                if (!dropdownMenu) {
-                                    return;
-                                }
-                                
-                                // 获取计算后的显示状态（更可靠）
-                                const computedStyle = window.getComputedStyle(dropdownMenu);
-                                const isVisible = computedStyle.display !== 'none';
-                                
-                                if (isVisible) {
-                                    // 收起动画
-                                    dropdownMenu.style.opacity = '0';
-                                    dropdownMenu.style.transform = 'translateY(-10px)';
-                                    setTimeout(() => {
-                                        dropdownMenu.style.display = 'none';
-                                    }, 300);
-                                } else {
-                                    // 确保所有样式属性正确设置
-                                    dropdownMenu.style.display = 'block';
-                                    dropdownMenu.style.opacity = '0';
-                                    dropdownMenu.style.transform = 'translateY(-10px)';
-                                    dropdownMenu.style.position = 'absolute';
-                                    dropdownMenu.style.zIndex = '9999';
-                                    
-                                    // 强制重绘以确保动画正常工作
-                                    void dropdownMenu.offsetWidth;
-                                    
-                                    setTimeout(() => {
-                                        dropdownMenu.style.opacity = '1';
-                                        dropdownMenu.style.transform = 'translateY(0)';
-                                    }, 10);
-                                }
-                            }
-                            
-                            // 绑定点击事件 - 可靠的实现
-                            if (dropdownToggle) {
-                                // 重置按钮的onclick属性，确保没有冲突
-                                dropdownToggle.onclick = null;
-                                
-                                // 移除所有可能存在的事件监听器
-                                try {
-                                    // 使用克隆元素的方式完全清除事件监听器
-                                    const newToggle = dropdownToggle.cloneNode(true);
-                                    dropdownToggle.parentNode.replaceChild(newToggle, dropdownToggle);
-                                    // 不尝试重新赋值const变量，而是直接使用newToggle
-                                    toggleButton = newToggle;
-                                } catch (err) {
-                                    console.error('Error resetting dropdown toggle:', err);
-                                    // 出错时回退到使用原始按钮
-                                    toggleButton = dropdownToggle;
-                                }
-                                 
-                                // 定义点击处理函数
-                                function handleToggleClick(e) {
-                                    e.preventDefault();
-                                    e.stopPropagation(); // 阻止事件冒泡
-                                    
-                                    // 确保事件完全停止传播，防止document点击事件立即触发
-                                    e.cancelBubble = true;
-                                    if (e.stopImmediatePropagation) {
-                                        e.stopImmediatePropagation();
-                                    }
-                                    
-                                    // 直接处理菜单显示/隐藏，不使用toggleDropdown函数以避免可能的冲突
-                                    if (dropdownMenu) {
-                                        const computedStyle = window.getComputedStyle(dropdownMenu);
-                                        const isVisible = computedStyle.display !== 'none';
-                                        
-                                        if (!isVisible) {
-                                            // 确保所有样式属性正确设置
-                                            dropdownMenu.style.display = 'block';
-                                            dropdownMenu.style.opacity = '0';
-                                            dropdownMenu.style.transform = 'translateY(-10px)';
-                                            dropdownMenu.style.position = 'absolute';
-                                            dropdownMenu.style.zIndex = '9999';
-                                            
-                                            // 强制重绘以确保动画正常工作
-                                            void dropdownMenu.offsetWidth;
-                                            
-                                            setTimeout(() => {
-                                                dropdownMenu.style.opacity = '1';
-                                                dropdownMenu.style.transform = 'translateY(0)';
-                                            }, 10);
-                                        } else {
-                                            // 收起动画
-                                            dropdownMenu.style.opacity = '0';
-                                            dropdownMenu.style.transform = 'translateY(-10px)';
-                                            setTimeout(() => {
-                                                dropdownMenu.style.display = 'none';
-                                            }, 300);
-                                        }
-                                    }
-                                }
-                                 
-                                // 确保toggleButton变量已定义
-                                const actualButton = toggleButton || dropdownToggle;
-                                
-                                // 双重绑定 - 同时使用onclick和addEventListener确保兼容性
-                                actualButton.onclick = handleToggleClick;
-                                actualButton.addEventListener('click', handleToggleClick);
-                                 
-                                // 额外添加触摸事件支持
-                                actualButton.addEventListener('touchstart', function(e) {
-                                    e.preventDefault();
-                                    handleToggleClick(e);
-                                });
-                                 
-                                // 确保按钮样式不会阻止点击
-                                actualButton.style.pointerEvents = 'auto';
-                                actualButton.style.cursor = 'pointer';
-                            }
-                            
-                            // 点击页面其他区域关闭下拉菜单 - 优化检测逻辑
-                            // 使用变量标记按钮是否刚刚被点击，防止菜单闪烁
-                            let buttonJustClicked = false;
-                            
-                            document.addEventListener('click', function(e) {
-                                if (!dropdownMenu || !dropdownToggle) return;
-                                
-                                // 使用实际的按钮引用
-                                const actualButton = toggleButton || dropdownToggle;
-                                  
-                                // 检查是否是按钮点击后的快速事件，如果是则忽略本次关闭
-                                if (buttonJustClicked) {
-                                    // 重置标记，但设置一个短暂延迟以确保菜单有时间显示
-                                    setTimeout(() => {
-                                        buttonJustClicked = false;
-                                    }, 100);
-                                    return;
-                                }
-                                
-                                // 使用计算样式检查菜单是否可见（更可靠）
-                                const isMenuVisible = window.getComputedStyle(dropdownMenu).display !== 'none';
-                                
-                                // 检查点击目标是否在菜单或按钮内
-                                const isClickInsideMenu = dropdownMenu.contains(e.target);
-                                const isClickOnToggle = actualButton.contains(e.target); // 使用实际按钮检查点击目标
-                                
-                                // 只有当菜单可见且点击在菜单外部、不在切换按钮上时才关闭
-                                if (isMenuVisible && !isClickInsideMenu && !isClickOnToggle) {
-                                    // 收起动画
-                                    dropdownMenu.style.opacity = '0';
-                                    dropdownMenu.style.transform = 'translateY(-10px)';
-                                    setTimeout(() => {
-                                        dropdownMenu.style.display = 'none';
-                                    }, 300);
-                                }
-                            });
-                            
-                            // 修改按钮点击处理函数，在点击时设置标记
-                            const originalHandleToggleClick = handleToggleClick;
-                            handleToggleClick = function(e) {
-                                buttonJustClicked = true;
-                                originalHandleToggleClick(e);
-                            };
-                            
-
-                            
-                            // 菜单项悬停特效
-                            const menuItems = dropdownMenu.querySelectorAll('.dropdown-item');
-                            menuItems.forEach(item => {
-                                // 添加发光效果和渐变背景
-                                item.addEventListener('mouseenter', function() {
-                                    this.style.background = 'linear-gradient(90deg, rgba(74, 158, 255, 0.2) 0%, rgba(74, 158, 255, 0.1) 100%)';
-                                    this.style.boxShadow = 'inset 0 0 10px rgba(74, 158, 255, 0.3)';
-                                    this.style.transform = 'translateX(5px)';
-                                    this.querySelector('i').style.textShadow = '0 0 8px #4a9eff';
-                                });
-                                
-                                item.addEventListener('mouseleave', function() {
-                                    this.style.background = 'linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%)';
-                                    this.style.boxShadow = 'none';
-                                    this.style.transform = 'translateX(0)';
-                                    this.querySelector('i').style.textShadow = 'none';
-                                });
-                                
-                                // 点击波纹效果
-                                item.addEventListener('click', function(e) {
-                                    if (this.getAttribute('href') === '#') {
-                                        e.preventDefault();
-                                    }
-                                    
-                                    const ripple = document.createElement('span');
-                                    const rect = this.getBoundingClientRect();
-                                    const size = Math.max(rect.width, rect.height);
-                                    const x = e.clientX - rect.left - size / 2;
-                                    const y = e.clientY - rect.top - size / 2;
-                                    
-                                    ripple.style.width = ripple.style.height = size + 'px';
-                                    ripple.style.left = x + 'px';
-                                    ripple.style.top = y + 'px';
-                                    ripple.style.position = 'absolute';
-                                    ripple.style.borderRadius = '50%';
-                                    ripple.style.background = 'rgba(74, 158, 255, 0.4)';
-                                    ripple.style.transform = 'scale(0)';
-                                    ripple.style.animation = 'ripple 0.6s ease-out';
-                                    ripple.style.pointerEvents = 'none';
-                                    
-                                    this.appendChild(ripple);
-                                    
-                                    setTimeout(() => {
-                                        ripple.remove();
-                                        
-                                        // 在波纹动画结束后关闭菜单
-                                        if (dropdownMenu) {
-                                            dropdownMenu.style.opacity = '0';
-                                            dropdownMenu.style.transform = 'translateY(-10px)';
-                                            setTimeout(() => {
-                                                dropdownMenu.style.display = 'none';
-                                            }, 300);
-                                        }
-                                    }, 600);
-                                });
-                            });
-                            
-                            // 添加全局样式
-                            const style = document.createElement('style');
-                            style.textContent = `
+                    <script>document.addEventListener("DOMContentLoaded",function(){console.log("初始化下拉菜单...");window.__testDropdownMenu=function(){const t=document.getElementById("dropdownMenu");if(t){t.style.display=t.style.display==="block"?"none":"block";t.style.opacity="1";t.style.transform="translateY(0)";t.style.position="absolute";t.style.zIndex="9999"}};const a=document.getElementById("dropdownMenu");const l=document.getElementById("moreActionsBtn");let i=null;console.log("Dropdown elements:",{dropdownMenu:a,dropdownToggle:l});function t(){if(!a){return}const t=window.getComputedStyle(a);const e=t.display!=="none";if(e){a.style.opacity="0";a.style.transform="translateY(-10px)";setTimeout(()=>{a.style.display="none"},300)}else{a.style.display="block";a.style.opacity="0";a.style.transform="translateY(-10px)";a.style.position="absolute";a.style.zIndex="9999";void a.offsetWidth;setTimeout(()=>{a.style.opacity="1";a.style.transform="translateY(0)"},10)}}if(l){l.onclick=null;try{const c=l.cloneNode(true);l.parentNode.replaceChild(c,l);i=c}catch(t){console.error("Error resetting dropdown toggle:",t);i=l}function e(t){t.preventDefault();t.stopPropagation();t.cancelBubble=true;if(t.stopImmediatePropagation){t.stopImmediatePropagation()}if(a){const e=window.getComputedStyle(a);const n=e.display!=="none";if(!n){a.style.display="block";a.style.opacity="0";a.style.transform="translateY(-10px)";a.style.position="absolute";a.style.zIndex="9999";void a.offsetWidth;setTimeout(()=>{a.style.opacity="1";a.style.transform="translateY(0)"},10)}else{a.style.opacity="0";a.style.transform="translateY(-10px)";setTimeout(()=>{a.style.display="none"},300)}}}const d=i||l;d.onclick=e;d.addEventListener("click",e);d.addEventListener("touchstart",function(t){t.preventDefault();e(t)});d.style.pointerEvents="auto";d.style.cursor="pointer"}let r=false;document.addEventListener("click",function(t){if(!a||!l)return;const e=i||l;if(r){setTimeout(()=>{r=false},100);return}const n=window.getComputedStyle(a).display!=="none";const o=a.contains(t.target);const s=e.contains(t.target);if(n&&!o&&!s){a.style.opacity="0";a.style.transform="translateY(-10px)";setTimeout(()=>{a.style.display="none"},300)}});const n=e;e=function(t){r=true;n(t)};const o=a.querySelectorAll(".dropdown-item");o.forEach(t=>{t.addEventListener("mouseenter",function(){this.style.background="linear-gradient(90deg, rgba(74, 158, 255, 0.2) 0%, rgba(74, 158, 255, 0.1) 100%)";this.style.boxShadow="inset 0 0 10px rgba(74, 158, 255, 0.3)";this.style.transform="translateX(5px)";this.querySelector("i").style.textShadow="0 0 8px #4a9eff"});t.addEventListener("mouseleave",function(){this.style.background="linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%)";this.style.boxShadow="none";this.style.transform="translateX(0)";this.querySelector("i").style.textShadow="none"});t.addEventListener("click",function(t){if(this.getAttribute("href")==="#"){t.preventDefault()}const e=document.createElement("span");const n=this.getBoundingClientRect();const o=Math.max(n.width,n.height);const s=t.clientX-n.left-o/2;const l=t.clientY-n.top-o/2;e.style.width=e.style.height=o+"px";e.style.left=s+"px";e.style.top=l+"px";e.style.position="absolute";e.style.borderRadius="50%";e.style.background="rgba(74, 158, 255, 0.4)";e.style.transform="scale(0)";e.style.animation="ripple 0.6s ease-out";e.style.pointerEvents="none";this.appendChild(e);setTimeout(()=>{e.remove();if(a){a.style.opacity="0";a.style.transform="translateY(-10px)";setTimeout(()=>{a.style.display="none"},300)}},600)})});const s=document.createElement("style");s.textContent=`
                                 @keyframes ripple {
                                     to {
                                         transform: scale(4);
@@ -1311,91 +1103,83 @@
                                         box-shadow: 0 0 20px rgba(74, 158, 255, 0.6);
                                     }
                                 }
-                            `;
-                            document.head.appendChild(style);
-                        });
-                    </script>
+                            `;document.head.appendChild(s)})</script>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- 主内容区域 -->
+    
     <main class="container py-6">
-        <!-- 筛选区域 -->
+        
         <div class="filter-section bg-card p-3 rounded-lg shadow-sm">
-            <!-- 主要筛选行 - 桌面端 -->
+            
             <div class="filter-primary flex flex-wrap items-center gap-4" style="margin: 8px;">
-                <!-- 按照要求的顺序重新组织元素：添加按钮,图标排序,类型,归属,搜索,筛选按钮,重置按钮 -->
                 
-                <!-- 添加按钮 -->
-                <button title="-- 添加新图标/文件夹 --"
-                    id="addBtn" 
-                    class="btn btn-primary py-1.5 px-3 rounded transition-all hover:shadow-lg flex items-center justify-center"
-                >
+                
+                
+                <button title="-- 添加新图标/文件夹 --" id="addBtn" class="btn btn-primary py-1.5 px-3 rounded transition-all hover:shadow-lg flex items-center justify-center">
                     <i class="fa fa-plus fa-lg mr-1"></i>
                     <span class="sm:inline hidden">添加</span>
                 </button>
                 
-                <!-- 第一行：图标排序、类型、归属 -->
+                
+                <div class="filter-item flex items-center min-w-[120px]">
+                    <select id="uiStyleSelect" title="-- 选择飞牛桌面页內窗口或文件夹ui风格 --" class="py-1.5 px-3 border border-border rounded bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
+                        <option value="cqfndesk_L.js">明亮模式</option>
+                        <option value="cqfndesk_D.js">暗黑模式</option>
+                        <option value="cqfndesk_CQ.js">原创经典</option>
+                    </select>
+                </div>
+                
+                
                 <div class="filter-row-1">
-                    <!-- 图标排序 -->
-                    <div class="flex items-center min-w-[180px] sm:min-w-0 sm:flex-shrink-0">
-                        <span class="mr-2 text-text-secondary whitespace-nowrap hidden sm:inline">桌面图标：</span>
+                    
+                    <div class="flex items-center min-w-[80px] sm:min-w-0 sm:flex-shrink-0">
+                        <span class="mr-2 text-text-secondary whitespace-nowrap hidden sm:inline"></span>
                         <select id="iconSortSelect" title="-- 这里是指飞牛桌面里的图标加载顺序! --" class="py-1.5 px-3 border border-border rounded bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
                             <option value="1">默认顺序</option>
                             <option value="2">反向顺序</option>
                         </select>
                     </div>
                     
-                    <!-- 类型筛选 -->
-                    <div class="filter-item flex items-center min-w-[140px]">
+                    
+                    <div class="filter-item flex items-center min-w-[80px]">
                         <label for="filterType" class="mr-2 text-text-secondary whitespace-nowrap font-medium"></label>
                         <select id="filterType" title="-- 筛选图标类型 --" class="py-1.5 px-3 border border-border rounded bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
                             <option value="">全类型</option>
-                            <!-- 类型选项将动态生成 -->
+                            
                         </select>
                     </div>
                     
-                    <!-- 归属筛选 -->
-                    <div class="filter-item flex items-center min-w-[140px]">
+                    
+                    <div class="filter-item flex items-center min-w-[80px]">
                         <label for="filterOwner" class="mr-2 text-text-secondary whitespace-nowrap font-medium"></label>
                         <select id="filterOwner" title="-- 筛选图标归属 --" class="py-1.5 px-3 border border-border rounded bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
                             <option value="">全归属</option>
-                            <!-- 归属选项将动态生成 -->
+                            
                         </select>
                     </div>
                 </div>
                 
-                <!-- 关键词搜索 - 占据剩余空间 -->
+                
                 <div class="filter-item flex-grow flex items-center min-w-[250px] w-full sm:w-auto">
                     <label for="filterKeyword" class="mr-2 text-text-secondary whitespace-nowrap font-medium">搜：</label>
                     <div class="relative w-full">
-                        <input 
-                            type="text" 
-                            id="filterKeyword" 
-                            placeholder="搜索 任意关键字..." 
-                            class="w-full py-1.5 px-3 border border-border rounded bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                        >
+                        <input type="text" id="filterKeyword" placeholder="搜索 任意关键字..." class="w-full py-1.5 px-3 border border-border rounded bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
                     </div>
                 </div>
                 
-                <!-- 第二行：筛选、重置按钮 -->
+                
                 <div class="filter-row-2">
-                    <!-- 筛选按钮 -->
-                    <button 
-                        id="filterBtn"  title="-- 筛选按钮 --"
-                        class="btn btn-primary py-1.5 px-3 rounded transition-all hover:shadow-lg flex items-center justify-center"
-                    >
+                    
+                    <button id="filterBtn" title="-- 筛选按钮 --" class="btn btn-primary py-1.5 px-3 rounded transition-all hover:shadow-lg flex items-center justify-center">
                         <i class="fa fa-filter mr-1"></i>
                         <span class="sm:inline hidden">筛选</span>
                     </button>
                     
-                    <!-- 重置按钮 -->
-                    <button 
-                        id="resetFilterBtn"  title="-- 重置筛选条件 --"
-                        class="btn btn-secondary py-1.5 px-3 rounded transition-all hover:shadow-lg flex items-center justify-center"
-                    >
+                    
+                    <button id="resetFilterBtn" title="-- 重置筛选条件 --" class="btn btn-secondary py-1.5 px-3 rounded transition-all hover:shadow-lg flex items-center justify-center">
                         <i class="fa fa-refresh mr-1"></i>
                         <span class="sm:inline hidden">重置</span>
                     </button>
@@ -1403,7 +1187,7 @@
             </div>
             </div>
             
-            <!-- 移动端专用样式 -->
+            
             <style>
                 /* 响应式布局优化 - 470px宽度布局 */
                 @media (max-width: 470px) {
@@ -1545,38 +1329,38 @@
                 
                 /* 表格列响应式隐藏规则 */
                 /* 宽度小于800px隐藏URL列 */
-                @media (max-width: 859px) {
-                    table th:nth-child(4),
-                    table td:nth-child(4) {
+                @media (max-width: 1060px) {
+                    table th:nth-child(6),
+                    table td:nth-child(6) {
                         display: none;
                     }
                 }
-                 @media (max-width: 779px) {
-                    table th:nth-child(5),
-                    table td:nth-child(5) {
+                 @media (max-width: 979px) {
+                    table th:nth-child(9),
+                    table td:nth-child(9) {
                         display: none;
                     }
                 } 
                 
                 /* 宽度小于680px隐藏归属列 */
-                @media (max-width: 679px) {
-                    table th:nth-child(8),
-                    table td:nth-child(8) {
+                @media (max-width: 879px) {
+                    table th:nth-child(10),
+                    table td:nth-child(10) {
                         display: none;
                     }
                 }
                 
                 /* 宽度小于600px隐藏类型列 */
-                @media (max-width: 599px) {
+                @media (max-width: 789px) {
                     table th:nth-child(7),
                     table td:nth-child(7) {
                         display: none;
                     }
                 }
                  /* 宽度小于600px隐藏图标列 */
-                @media (max-width: 480px) {
-                    table th:nth-child(6),
-                    table td:nth-child(6) {
+                @media (max-width: 689px) {
+                    table th:nth-child(8),
+                    table td:nth-child(8) {
                         display: none;
                     }
                 }
@@ -1654,71 +1438,28 @@
                     color: #ffffff !important;
                 }
             </style>
-        </div>
+        
 
-        <!-- 桌面图标排序独立区域 -->
+        
         <div class="mt-4">
             <div class="flex items-center gap-2">
-<!-- ////////////////////////////////////////////////////排序原来位置 -->
+
 
             </div>
         </div>
 
-        <!-- 初始化图标排序设置 -->
-        <script>
-            // 页面加载时从fnstyle.json读取iconSort字段并设置下拉框默认值
-            document.addEventListener('DOMContentLoaded', function() {
-                fetch('deskdata/fnstyle.json')
-                    .then(response => response.json())
-                    .then(data => {
-                        const iconSortSelect = document.getElementById('iconSortSelect');
-                        if (data.iconSort && (data.iconSort === 1 || data.iconSort === 2)) {
-                            iconSortSelect.value = data.iconSort.toString();
-                        }
-                    })
-                    .catch(error => console.error('读取fnstyle.json失败:', error));
-                
-                // 监听下拉框变化，更新fnstyle.json的iconSort字段
-                const iconSortSelect = document.getElementById('iconSortSelect');
-                iconSortSelect.addEventListener('change', function() {
-                    const selectedValue = parseInt(this.value);
-                    
-                    fetch('api/fnstyle.json', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ iconSort: selectedValue })
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('网络响应错误');
-                        }
-                        return response.json();
-                    })
-                    .then(() => {
-                        // 显示操作成功的通知
-                        if (typeof showNotification === 'function') {
-                            showNotification('图标排序设置已保存', 'success');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('保存图标排序设置失败:', error);
-                        if (typeof showNotification === 'function') {
-                            showNotification('保存失败，请重试', 'error');
-                        }
-                    });
-                });
-            });
-        </script>
         
-        <!-- 数据表格 -->
+        <script>document.addEventListener("DOMContentLoaded",function(){fetch("deskdata/fnstyle.json").then(t=>t.json()).then(t=>{const o=document.getElementById("iconSortSelect");if(t.iconSort&&(t.iconSort===1||t.iconSort===2)){o.value=t.iconSort.toString()}const e=document.getElementById("uiStyleSelect");if(t.ui_style){e.value=t.ui_style}}).catch(t=>console.error("读取fnstyle.json失败:",t));const t=document.getElementById("iconSortSelect");t.addEventListener("change",function(){const t=parseInt(this.value);fetch("api/fnstyle.json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({iconSort:t})}).then(t=>{if(!t.ok){throw new Error("网络响应错误")}return t.json()}).then(()=>{if(typeof showNotification==="function"){showNotification("图标排序设置已保存","success")}}).catch(t=>{console.error("保存图标排序设置失败:",t);if(typeof showNotification==="function"){showNotification("保存失败，请重试","error")}})});const o=document.getElementById("uiStyleSelect");o.addEventListener("change",function(){const t=this.value;fetch("api/fnstyle.json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({ui_style:t})}).then(t=>{if(!t.ok){throw new Error("网络响应错误")}return t.json()}).then(()=>{if(typeof showNotification==="function"){showNotification("UI样式设置已保存，请执行 立即生效 应用新样式...","success")}}).catch(t=>{console.error("保存UI样式设置失败:",t);if(typeof showNotification==="function"){showNotification("保存失败，请重试","error")}})})})</script>
+        
+        
         <div class="table-container">
             <div class="overflow-x-auto">
                 <table class="w-full">
                     <thead>
                         <tr>
                             <th id="sortable-order" class="cursor-pointer hover:bg-card-hover">拖动排序 <i class="fa fa-sort ml-1"></i></th>
+                            <th class="text-center">原创图标</th>
+                            <th class="text-center">即将开放</th>
                             <th class="hidden">ID</th>
                             <th>标 题</th>
                             <th>URL</th>
@@ -1730,20 +1471,20 @@
                         </tr>
                     </thead>
                     <tbody id="dataTableBody">
-                        <!-- 数据将通过JavaScript动态加载 -->
+                        
                     </tbody>
                 </table>
             </div>
-            <!-- 分页 -->
+            
             <div class="pagination flex items-center justify-between py-4 px-2">
                 <div class="text-sm text-text-secondary">
                     本页 <span id="startItem">0</span> 到 <span id="endItem">0</span> 条，共 <span id="totalItems">0</span> 条
                 </div>
                 <div class="flex gap-4">
-                    <button id="prevPage" class="pagination-btn px-4 py-2 border rounded transition-all hover:bg-card-hover disabled:opacity-50" disabled>
+                    <button id="prevPage" class="pagination-btn px-4 py-2 border rounded transition-all hover:bg-card-hover disabled:opacity-50" disabled="disabled">
                         上一页
                     </button>
-                    <button id="nextPage" class="pagination-btn px-4 py-2 border rounded transition-all hover:bg-card-hover disabled:opacity-50" disabled>
+                    <button id="nextPage" class="pagination-btn px-4 py-2 border rounded transition-all hover:bg-card-hover disabled:opacity-50" disabled="disabled">
                         下一页
                     </button>
                 </div>
@@ -1751,7 +1492,7 @@
         </div>
     </main>
 
-    <!-- 添加/编辑模态框 -->
+    
     <div id="editModal" class="modal-overlay hidden">
         <div class="modal">
             <div class="modal-header">
@@ -1764,7 +1505,7 @@
                 <form id="editForm">
                     <input type="hidden" id="recordId">
                     
-                    <!-- 第一行：序号，类型，归属，打开方式 -->
+                    
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                         <div class="input-group">
                             <label for="edit序号">序号（越大靠前）</label>
@@ -1780,7 +1521,7 @@
                         <div class="input-group">
                             <label for="edit归属">归属文件夹</label>
                             <select id="edit归属" required>
-                                <!-- 归属选项将动态生成 -->
+                                
                             </select>
                         </div>
                         <div class="input-group">
@@ -1792,247 +1533,63 @@
                         </div>
                     </div>
                     
-                    <script>
-                    // 添加类型选择事件监听器，控制URL字段的显示/隐藏
-                    function toggleUrlFieldsByType() {
-                        const typeSelect = document.getElementById('edit类型');
-                        if (!typeSelect) return;
-                        
-                        const isFolder = typeSelect.value === '1';
-                        const publicUrlField = document.getElementById('publicUrlField');
-                        const urlFieldsRow1 = document.getElementById('urlFieldsRow1');
-                        const urlFieldsRow2 = document.getElementById('urlFieldsRow2');
-                        const titleInput = document.getElementById('edit标题');
-                        const openInPageField = document.querySelector('.input-group:has(#editOpenInPage)');
-                        
-                        // 当类型为文件夹时隐藏URL相关字段，确保显示时使用正确的display值
-                        if (publicUrlField) {
-                            // 移除内联样式恢复默认显示
-                            if (isFolder) {
-                                publicUrlField.style.display = 'none';
-                            } else {
-                                publicUrlField.style.display = '';
-                            }
-                        }
-                        if (urlFieldsRow1) urlFieldsRow1.style.display = isFolder ? 'none' : 'grid';
-                        if (urlFieldsRow2) urlFieldsRow2.style.display = isFolder ? 'none' : 'grid';
-                        
-                        // 当类型为文件夹时隐藏打开方式字段，当类型为图标时显示
-                        if (openInPageField) {
-                            // 使用flex而不是block以保持原始布局结构
-                            openInPageField.style.display = isFolder ? 'none' : 'flex';
-                        }
-                        
-                        // 获取当前记录ID，判断是否为新增记录
-                        const recordId = document.getElementById('recordId').value;
-                        // 如果是新增记录（没有recordId），每次切换类型都更新标题
-                        if (titleInput && !recordId) {
-                            titleInput.value = isFolder ? '新建文件夹' : '一个新图标';
-                        }
-                    }
+                    <script>function toggleUrlFieldsByType(){const e=document.getElementById("edit类型");if(!e)return;const n=e.value==="1";const t=document.getElementById("publicUrlField");const o=document.getElementById("urlFieldsRow1");const i=document.getElementById("urlFieldsRow2");const d=document.getElementById("edit标题");const l=document.querySelector(".input-group:has(#editOpenInPage)");if(t){if(n){t.style.display="none"}else{t.style.display=""}}if(o)o.style.display=n?"none":"grid";if(i)i.style.display=n?"none":"grid";if(l){l.style.display=n?"none":"flex"}const w=document.getElementById("recordId").value;if(d&&!w){d.value=n?"新建文件夹":"一个新图标"}}window.addEventListener("DOMContentLoaded",function(){window.waiwangURL="";window.neiwangURL="";fetch("/api/config").then(e=>{if(!e.ok){throw new Error("获取配置失败")}return e.json()}).then(e=>{window.waiwangURL=e.wizard_wan_url||"";window.neiwangURL=e.wizard_lan_url||"";console.log("从API获取的外网URL:",window.waiwangURL);console.log("从API获取的内网URL:",window.neiwangURL)}).catch(e=>{window.waiwangURL="";window.neiwangURL="";console.error("获取配置信息失败:",e)});const e=document.getElementById("edit类型");if(e){e.addEventListener("change",toggleUrlFieldsByType)}const t=window.openEditModal;if(t){window.openEditModal=function(e){t(e);const n=document.getElementById("edit类型");if(e&&n&&e.type!==undefined){n.value=e.type}setTimeout(toggleUrlFieldsByType,100)}}})</script>
                     
-                    // 添加窗口加载完成后的初始化
-                    window.addEventListener('DOMContentLoaded', function() {
-                        // 定义全局变量存储URL和IP地址
-                        window.waiwangURL = '';
-                        window.neiwangURL = '';
-                        
-                        // 获取当前浏览器访问地址的协议和主机名部分（不包含端口号）
-                        window.waiwangURL = window.location.protocol + '//' + window.location.hostname;
-                        console.log('当前浏览器协议和主机名（外网）:', window.waiwangURL);
-                        
-                        // 获取内网IP地址的方法（使用WebRTC获取当前使用的网卡IPv4地址）
-                        function getLocalIP() {
-                            return new Promise((resolve, reject) => {
-                                try {
-                                    const peerConnection = new RTCPeerConnection({ iceServers: [] });
-                                    const noop = () => {};
-                                    
-                                    peerConnection.createDataChannel('');
-                                    
-                                    // 监听ICE候选事件
-                                    peerConnection.onicecandidate = event => {
-                                        if (event.candidate) {
-                                            // 从候选地址中提取IP
-                                            const ipRegex = /ip=([0-9\.]+)/;
-                                            const candidateStr = event.candidate.candidate;
-                                            const match = candidateStr.match(ipRegex);
-                                            
-                                            if (match && match[1]) {
-                                                const ip = match[1];
-                                                // 检查是否为内网IP
-                                                if (/^(10\.|172\.(1[6-9]|2[0-9]|3[01])\.|192\.168\.)/.test(ip)) {
-                                                    peerConnection.close();
-                                                    resolve(ip);
-                                                }
-                                            }
-                                        }
-                                    };
-                                    
-                                    // 创建offer以触发ICE收集
-                                    peerConnection.createOffer({
-                                        offerToReceiveAudio: false,
-                                        offerToReceiveVideo: false
-                                    })
-                                    .then(offer => peerConnection.setLocalDescription(offer))
-                                    .catch(reject);
-                                    
-                                    // 设置超时
-                                    setTimeout(() => {
-                                        peerConnection.close();
-                                        reject(new Error('获取IP地址超时'));
-                                    }, 3000);
-                                } catch (error) {
-                                    reject(error);
-                                }
-                            });
-                        }
-                        
-                        // 调用方法获取内网IP并更新全局变量
-                        getLocalIP().then(ip => {
-                            window.neiwangURL = ip;
-                            console.log('当前浏览器协议和主机名（内网）:', window.neiwangURL);
-                        }).catch(error => {
-                            console.error('获取内网IP地址失败:', error);
-                            window.neiwangURL = '127.0.0.1'; // 默认本地地址
-                        });
-                        
-                        // 添加类型切换事件，实时更新标题默认值
-                        // 添加类型切换事件，实时更新标题默认值
-                        const typeSelect = document.getElementById('edit类型');
-                        if (typeSelect) {
-                            // 只保留一个事件监听器
-                            typeSelect.addEventListener('change', toggleUrlFieldsByType);
-                        }
-                        
-                        // 查找打开编辑窗口的函数并修改，确保在打开时调用toggleUrlFieldsByType
-                        const originalOpenEditModal = window.openEditModal;
-                        if (originalOpenEditModal) {
-                            window.openEditModal = function(record) {
-                                // 调用原始函数
-                                originalOpenEditModal(record);
-                                
-                                const typeSelect = document.getElementById('edit类型');
-                                
-                                // 立即根据记录类型更新下拉框的值
-                                if (record && typeSelect && record.type !== undefined) {
-                                    typeSelect.value = record.type;
-                                }
-                                
-                                // 延迟执行以确保DOM已完全更新
-                                setTimeout(toggleUrlFieldsByType, 100);
-                            };
-                        }
-                    });
-                    </script>
                     
-                    <!-- 第二行：标题、公网地址 -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div class="input-group">
                             <label for="edit标题">* 标题（必须填写！）</label>
-                            <input type="text" id="edit标题" value="一个新图标" required onfocus="this.select();">
+                            <input type="text" id="edit标题" value="一个新图标" required onfocus="this.select()">
                         </div>
                         <div id="publicUrlField" class="input-group">
                             <label for="edit外网跳转URL">公网地址：（完整的URL地址）</label>
-                            <input type="text" id="edit外网跳转URL" placeholder="http:// or https://" value="" onfocus="if(this.value=='') this.value=window.waiwangURL; this.select();">
+                            <input type="text" id="edit外网跳转URL" placeholder="http:// or https://" value="" onfocus='if(this.value=="")this.value=window.waiwangURL;this.select()'>
                         </div>
                     </div>
                     
-                    <!-- 第三行：内网地址、备用URL1 -->
+                    
                     <div id="urlFieldsRow1" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div class="input-group">
                             <label for="edit内网跳转URL">内网地址：（识别到内网将跳转到此地址）</label>
-                            <input type="text" id="edit内网跳转URL" placeholder="识别到内网将跳转到此地址" value="" onfocus="if(this.value=='') this.value='http://' + window.neiwangURL; this.select();">
+                            <input type="text" id="edit内网跳转URL" placeholder="识别到内网将跳转到此地址" value="" onfocus='if(this.value=="")this.value=window.neiwangURL;this.select()'>
                         </div>
                         <div class="input-group">
                             <label for="edit备用URL1">备用URL1（桌面图标右键菜单可选）</label>
-                            <input type="text" id="edit备用URL1" placeholder="http:// or https://" onfocus="this.select();">
+                            <input type="text" id="edit备用URL1" placeholder="http:// or https://" onfocus="this.select()">
                         </div>
                     </div>
                     
-                    <!-- 第四行：备用URL2、备用URL3 -->
+                    
                     <div id="urlFieldsRow2" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div class="input-group">
                             <label for="edit备用URL2">备用URL2（桌面图标右键菜单可选）</label>
-                            <input type="text" id="edit备用URL2" placeholder="http:// or https://" onfocus="this.select();">
+                            <input type="text" id="edit备用URL2" placeholder="http:// or https://" onfocus="this.select()">
                         </div>
                         <div class="input-group">
                             <label for="edit备用URL3">备用URL3（桌面图标右键菜单可选）</label>
-                            <input type="text" id="edit备用URL3" placeholder="http:// or https://" onfocus="this.select();">
+                            <input type="text" id="edit备用URL3" placeholder="http:// or https://" onfocus="this.select()">
                         </div>
                     </div>
                     
-                    <!-- 第五行：网络图片URL、本地图片URL -->
+                    
                     <div class="grid grid-cols-1 gap-6 mb-6">
                         <div class="input-group" style="display: flex; flex-direction: column; gap: 0.5rem;">
                             <label for="edit网络图片URL" style="display: none;">网络图片URL（若不填则尝试从URL中获取）</label>
-                            <input type="text" id="edit网络图片URL" placeholder="不填则尝试从URL中获取" class="flex-1" onfocus="this.select();" style="display: none;">
+                            <input type="text" id="edit网络图片URL" placeholder="不填则尝试从URL中获取" class="flex-1" onfocus="this.select()" style="display: none;">
                             <label for="edit本地图片URL">图标图片（若手动请别用中文，把图片放到deskdata/img/目录下）</label>
                             <div class="flex gap-2 items-center" style="width: 100%;">
-                                <!-- 图片预览区域 -->
+                                
                                 <div id="imagePreview" style="width: 50px; height: 50px; border: 1px solid var(--border-color); border-radius: 4px; background-color: rgba(15, 23, 42, 0.3); display: flex; align-items: center; justify-content: center; overflow: hidden;">
                                     <i class="fa fa-picture-o text-text-secondary" style="font-size: 20px;"></i>
                                 </div>
                                 
-                                <input type="text" id="edit本地图片URL" placeholder="1上传/2填入网络图片url/3点击获取/4手动" class="flex-1 flex-grow min-w-0" onfocus="this.select();" oninput="updateImagePreview(this.value)" style="flex: 1 1 auto; width: 0;">
+                                <input type="text" id="edit本地图片URL" placeholder="1上传/2填入网络图片url/3点击获取/4手动" class="flex-1 flex-grow min-w-0" onfocus="this.select()" oninput="updateImagePreview(this.value)" style="flex: 1 1 auto; width: 0;">
                                 <button id="autoFetchBtn" type="button" class="btn btn-primary whitespace-nowrap">获取</button>
                                 <button id="uploadLocalImgBtn" type="button" class="btn btn-primary whitespace-nowrap">上传</button>
                                 <input type="file" id="localImgFileInput" accept="image/*" style="display: none;">
                             </div>
                             
-                            <script>
-                            // 更新图片预览 - 设为全局函数以便在打开编辑模态框时调用
-                            window.updateImagePreview = function(url) {
-                                const previewContainer = document.getElementById('imagePreview');
-                                
-                                // 清除现有内容
-                                previewContainer.innerHTML = '';
-                                
-                                if (!url) {
-                                    // 如果URL为空，显示图标
-                                    const icon = document.createElement('i');
-                                    icon.className = 'fa fa-picture-o text-text-secondary';
-                                    icon.style.fontSize = '20px';
-                                    previewContainer.appendChild(icon);
-                                    return;
-                                }
-                                
-                                try {
-                                    // 创建图片元素
-                                    const img = document.createElement('img');
-                                    img.style.width = '100%';
-                                    img.style.height = '100%';
-                                    img.style.objectFit = 'cover';
-                                    img.style.transition = 'opacity 0.3s ease';
-                                    img.style.opacity = '0';
-                                    
-                                    // 设置图片加载成功处理
-                                    img.onload = function() {
-                                        img.style.opacity = '1';
-                                    };
-                                    
-                                    // 设置图片加载失败处理
-                                    img.onerror = function() {
-                                        const icon = document.createElement('i');
-                                        icon.className = 'fa fa-exclamation-circle text-warning';
-                                        icon.style.fontSize = '20px';
-                                        previewContainer.innerHTML = '';
-                                        previewContainer.appendChild(icon);
-                                    };
-                                    
-                                    // 设置图片URL
-                                    img.src = url + `?v=${Date.now()}`;  
-                                    previewContainer.appendChild(img);
-                                } catch (error) {
-                                    // 出错时显示警告图标
-                                    const icon = document.createElement('i');
-                                    icon.className = 'fa fa-exclamation-circle text-warning';
-                                    icon.style.fontSize = '20px';
-                                    previewContainer.innerHTML = '';
-                                    previewContainer.appendChild(icon);
-                                }
-                            }
-                            </script>
+                            <script>window.updateImagePreview=function(e){const t=document.getElementById("imagePreview");t.innerHTML="";if(!e){const n=document.createElement("i");n.className="fa fa-picture-o text-text-secondary";n.style.fontSize="20px";t.appendChild(n);return}try{const a=document.createElement("img");a.style.width="100%";a.style.height="100%";a.style.objectFit="cover";a.style.transition="opacity 0.3s ease";a.style.opacity="0";a.onload=function(){a.style.opacity="1"};a.onerror=function(){const e=document.createElement("i");e.className="fa fa-exclamation-circle text-warning";e.style.fontSize="20px";t.innerHTML="";t.appendChild(e)};a.src=e+`?v=${Date.now()}`;t.appendChild(a)}catch(e){const n=document.createElement("i");n.className="fa fa-exclamation-circle text-warning";n.style.fontSize="20px";t.innerHTML="";t.appendChild(n)}}</script>
                         </div>
                     </div>
                 </form>
@@ -2051,7 +1608,7 @@
         </div>
     </div>
 
-    <!-- 删除确认模态框 -->
+    
     <div id="deleteModal" class="modal-overlay hidden">
         <div class="modal max-w-md">
             <div class="modal-header">
@@ -2073,7 +1630,7 @@
         </div>
     </div>
     
-    <!-- 应用配置确认模态框 -->
+    
     <div id="applyConfigModal" class="modal-overlay hidden">
         <div class="modal max-w-md">
             <div class="modal-header">
@@ -2081,7 +1638,7 @@
             </div>
             <div class="modal-body">
                 <p class="text-text-primary">确定要立即应用当前配置吗？（飞牛也是牛，请不要频繁点击此按钮）</p>
-                <p class="text-text-secondary text-sm mt-2">应用后若没效果请清空浏览器缓存/浏览器按F12在网络里禁用缓存/使用无痕模式浏览</p></br>
+                <p class="text-text-secondary text-sm mt-2">应用后若没效果请清空浏览器缓存/浏览器按F12在网络里禁用缓存/使用无痕模式浏览</p><br>
             </div>
             <div class="modal-footer">
                 <button id="cancelApplyBtn" class="btn btn-secondary">
@@ -2094,7 +1651,7 @@
         </div>
     </div>
     
-    <!-- 还原桌面确认模态框 -->
+    
     <div id="resetDesktopModal" class="modal-overlay hidden">
         <div class="modal max-w-md">
             <div class="modal-header">
@@ -2102,7 +1659,7 @@
             </div>
             <div class="modal-body">
                 <p class="text-text-primary">这将彻底还原成使用本工具之前状态。</p>
-                <p class="text-text-secondary text-sm mt-2">⚠ 还原后请稍等片刻刷新桌面！</p></br>
+                <p class="text-text-secondary text-sm mt-2">⚠ 还原后请稍等片刻刷新桌面！</p><br>
             </div>
             <div class="modal-footer">
                 <button id="cancelResetBtn" class="btn btn-secondary">
@@ -2115,7 +1672,7 @@
         </div>
     </div>
     
-    <!-- 退出登录确认模态框 -->
+    
     <div id="logoutModal" class="modal-overlay hidden">
         <div class="modal max-w-md">
             <div class="modal-header">
@@ -2123,7 +1680,7 @@
             </div>
             <div class="modal-body">
                 <p class="text-text-primary">确定要退出当前登录吗？</p>
-                <p class="text-text-secondary text-sm mt-2">退出后需要重新登录才能管理桌面配置。</p></br>
+                <p class="text-text-secondary text-sm mt-2">退出后需要重新登录才能管理桌面配置。</p><br>
             </div>
             <div class="modal-footer">
                 <button id="cancelLogoutBtn" class="btn btn-secondary">
@@ -2136,7 +1693,7 @@
         </div>
     </div>
     
-    <!-- 公告说明模态框 -->
+    
     <div id="announcementModal" class="modal-overlay hidden">
         <div class="modal max-w-2xl">
             <div class="modal-header">
@@ -2147,19 +1704,19 @@
             </div>
             <div class="modal-body">
                 <div id="announcementContent">
-                    <!-- 加载状态 -->
+                    
                     <div id="announcementLoading" class="text-center py-10">
                         <i class="fa fa-circle-o-notch fa-spin fa-3x text-primary mb-3"></i>
                         <p>加载公告中...</p>
                     </div>
-                    <!-- 错误状态 -->
+                    
                     <div id="announcementError" class="hidden text-center py-10">
                         <i class="fa fa-exclamation-circle fa-3x text-danger mb-3"></i>
                         <p>加载公告失败，请稍后重试</p>
                     </div>
-                    <!-- 公告内容容器 -->
+                    
                     <div id="announcementText" class="hidden">
-                        <!-- 内容将动态加载 -->
+                        
                     </div>
                 </div>
             </div>
@@ -2171,61 +1728,10 @@
         </div>
     </div>
 
-    <script>
-    // 获取公告内容函数
-    async function fetchAnnouncementContent() {
-        const loadingEl = document.getElementById('announcementLoading');
-        const errorEl = document.getElementById('announcementError');
-        const contentEl = document.getElementById('announcementText');
-        
-        // 显示加载状态
-        loadingEl.classList.remove('hidden');
-        errorEl.classList.add('hidden');
-        contentEl.classList.add('hidden');
-        
-        try {
-                // 从指定URL获取公告内容，添加CORS和缓存控制选项
-                //const response = await fetch('https:// 通过本地代理API获取公告内容，避免CORS问题
-                const remoteUrl = '';  //直接server.js地址
-                const proxyUrl = `/api/announcement?url=${encodeURIComponent(remoteUrl)}`;
-                
-                const response = await fetch(proxyUrl, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8'
-                    },
-                    cache: 'no-cache'
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP错误! 状态码: ${response.status} - ${response.statusText}`);
-                }
-                
-                const content = await response.text();
-                contentEl.innerHTML = content;
-                loadingEl.classList.add('hidden');
-                contentEl.classList.remove('hidden');
-                errorEl.classList.add('hidden');
-            } catch (error) {
-                console.error('获取公告内容失败:', error.message);
-                // 显示错误状态和详细信息
-                loadingEl.classList.add('hidden');
-                errorEl.classList.remove('hidden');
-                
-                // 添加错误信息到错误元素
-                let errorMsg = `加载失败: ${error.message}`;
-                if (error.message.includes('CORS')) {
-                    errorMsg += ' (可能是跨域访问限制)';
-                } else if (error.message.includes('NetworkError') || error.message.includes('网络')) {
-                    errorMsg += ' (可能是网络连接问题)';
-                }
-                errorEl.innerHTML = `
+    <script>async function fetchAnnouncementContent(){const t=document.getElementById("announcementLoading");const c=document.getElementById("announcementError");const i=document.getElementById("announcementText");t.classList.remove("hidden");c.classList.add("hidden");i.classList.add("hidden");try{const n="";const e=`/api/announcement?url=${encodeURIComponent(n)}`;const o=await fetch(e,{method:"GET",headers:{Accept:"text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8"},cache:"no-cache"});if(!o.ok){throw new Error(`HTTP错误! 状态码: ${o.status} - ${o.statusText}`)}const a=await o.text();i.innerHTML=a;t.classList.add("hidden");i.classList.remove("hidden");c.classList.add("hidden")}catch(n){console.error("获取公告内容失败:",n.message);t.classList.add("hidden");c.classList.remove("hidden");let e=`加载失败: ${n.message}`;if(n.message.includes("CORS")){e+=" (可能是跨域访问限制)"}else if(n.message.includes("NetworkError")||n.message.includes("网络")){e+=" (可能是网络连接问题)"}c.innerHTML=`
                     <i class="fa fa-exclamation-circle fa-3x text-danger mb-3"></i>
-                    <p>${errorMsg}</p>
-                `;
-                
-                // 显示默认公告内容作为备选方案
-                contentEl.innerHTML = `
+                    <p>${e}</p>
+                `;i.innerHTML=`
                 <br/>
                     <h3>无法加载最新公告</h3>
                     <h3>  默认公告：</h3>
@@ -2236,65 +1742,26 @@
                         <li>GitHub：IMGZCQ/fndesk</li>
                         <li>酷安：米恋泥</li>
                     </ul>
-                `;
-                contentEl.classList.remove('hidden');
-            }
-    }
-    
-    // 修改公告按钮点击事件，在打开模态框时加载内容
-    document.addEventListener('DOMContentLoaded', function() {
-        const announcementBtn = document.getElementById('announcementBtn');
-        if (announcementBtn) {
-            // 保存原始点击事件
-            const originalClickHandler = announcementBtn.onclick || announcementBtn.getAttribute('onclick');
-            
-            // 移除原始事件处理器
-            announcementBtn.onclick = null;
-            announcementBtn.removeAttribute('onclick');
-            
-            // 添加新的点击事件处理器
-            announcementBtn.addEventListener('click', function() {
-                // 调用原始逻辑
-                if (typeof originalClickHandler === 'function') {
-                    originalClickHandler.call(this);
-                } else {
-                    // 如果原始是字符串，则直接执行
-                    if (typeof originalClickHandler === 'string') {
-                        eval(originalClickHandler);
-                    } else {
-                        // 默认行为：显示模态框
-                        const announcementModal = document.getElementById('announcementModal');
-                        if (announcementModal) {
-                            announcementModal.classList.remove('hidden');
-                        }
-                    }
-                }
-                
-                // 加载公告内容
-                fetchAnnouncementContent();
-            });
-        }
-    });
-    </script>
+                `;i.classList.remove("hidden")}}document.addEventListener("DOMContentLoaded",function(){const announcementBtn=document.getElementById("announcementBtn");if(announcementBtn){const originalClickHandler=announcementBtn.onclick||announcementBtn.getAttribute("onclick");announcementBtn.onclick=null;announcementBtn.removeAttribute("onclick");announcementBtn.addEventListener("click",function(){if(typeof originalClickHandler==="function"){originalClickHandler.call(this)}else{if(typeof originalClickHandler==="string"){eval(originalClickHandler)}else{const announcementModal=document.getElementById("announcementModal");if(announcementModal){announcementModal.classList.remove("hidden")}}}fetchAnnouncementContent()})}})</script>
 
 
 
     <script src="index.js"></script>
     
-    <!-- 页脚 -->
-    <!-- 在线升级确认模态框 -->
+    
+    
     <div id="updateModal" class="modal-overlay hidden">
         <div class="modal max-w-md">
             <div class="modal-header">
                 <h2 class="modal-title">在线升级</h2>
             </div>
             <div class="modal-body">
-                <p class="text-text-primary">在线升级功能开发中...手动升级步骤： </p></br>
-                <p class="text-text-primary">应用中心升级：</br>下载最新安装包直接安装（<a target="_blank" href="https://fndesk.imcq.top/?url=dl&at=FnAPP" style="color: #60a5fa;font-size:16px; font-weight: bold; text-decoration: none;">fpk下载链接</a>）</p></br>
+                <p class="text-text-primary">在线升级功能开发中...手动升级步骤： </p><br>
+                <p class="text-text-primary">应用中心升级：<br>下载最新安装包直接安装（<a target="_blank" href="https://fndesk.imcq.top/?url=dl&at=FnAPP" style="color: #60a5fa;font-size:16px; font-weight: bold; text-decoration: none;">fpk下载链接</a>）</p><br>
                 <p class="text-text-primary">Docker Compose升级步骤：</p>
                 <p class="text-text-secondary text-sm mt-2">1.打开Docker>Compose>fndesk项目>右边三个点>清理</p>
                 <p class="text-text-secondary text-sm mt-2">2.打开Docker>本地镜像>把imgzcq/fndesk镜像删除</p>
-                <p class="text-text-secondary text-sm mt-2">3.回到Docker>Compose>fndesk项目>右边三个点>构建</p></br>
+                <p class="text-text-secondary text-sm mt-2">3.回到Docker>Compose>fndesk项目>右边三个点>构建</p><br>
             </div>
             <div class="modal-footer">
                 <button id="cancelUpdateBtn" class="btn btn-secondary">
@@ -2310,62 +1777,10 @@
     <footer class="bg-card py-6 border-t">
         <div class="container text-center text-text-secondary">
             <p class="mb-1" style="font-size: 12px;">飞牛桌面管理工具 by 米恋泥</p>
-            <p style="font-size: 11px;">组织机构 @小宠瞭望塔</p></br>
+            <p style="font-size: 11px;">组织机构 @小宠瞭望塔</p><br>
         </div>
     </footer>
 
-    <script>
-        // 在线升级模态框逻辑
-        document.addEventListener('DOMContentLoaded', function() {
-            const updateModal = document.getElementById('updateModal');
-            const menuUpdateDesktop = document.getElementById('menuUpdateDesktop');
-            const cancelUpdateBtn = document.getElementById('cancelUpdateBtn');
-            const confirmUpdateBtn = document.getElementById('confirmUpdateBtn');
-            const dropdownMenu = document.getElementById('dropdownMenu');
-            
-            // 打开模态框
-            function openUpdateModal() {
-                if (updateModal) {
-                    updateModal.classList.remove('hidden');
-                }
-                // 关闭下拉菜单
-                if (dropdownMenu) {
-                    dropdownMenu.style.display = 'none';
-                }
-            }
-            
-            // 关闭模态框
-            function closeUpdateModal() {
-                if (updateModal) {
-                    updateModal.classList.add('hidden');
-                }
-            }
-            
-            // 为在线升级菜单项添加点击事件
-            if (menuUpdateDesktop) {
-                menuUpdateDesktop.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    openUpdateModal();
-                });
-            }
-            
-            // 为按钮添加点击事件
-            if (cancelUpdateBtn) {
-                cancelUpdateBtn.addEventListener('click', closeUpdateModal);
-            }
-            
-            if (confirmUpdateBtn) {
-                confirmUpdateBtn.addEventListener('click', closeUpdateModal);
-            }
-            
-            // 添加ESC键关闭模态框功能
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && updateModal && !updateModal.classList.contains('hidden')) {
-                    closeUpdateModal();
-                }
-            });
-        });
-    </script>
+    <script>document.addEventListener("DOMContentLoaded",function(){const n=document.getElementById("updateModal");const e=document.getElementById("menuUpdateDesktop");const t=document.getElementById("cancelUpdateBtn");const d=document.getElementById("confirmUpdateBtn");const c=document.getElementById("dropdownMenu");function o(){if(n){n.classList.remove("hidden")}if(c){c.style.display="none"}}function i(){if(n){n.classList.add("hidden")}}if(e){e.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();o()})}if(t){t.addEventListener("click",i)}if(d){d.addEventListener("click",i)}document.addEventListener("keydown",e=>{if(e.key==="Escape"&&n&&!n.classList.contains("hidden")){i()}})})</script>
 </body>
 </html>

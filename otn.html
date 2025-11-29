@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>飞牛桌面管理 - 数据合并</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href="fonts/font-awesome.min.css" rel="stylesheet">
@@ -259,7 +259,7 @@
     </style>
 </head>
 <body>
-    <!-- 顶部导航栏 -->
+    
     <header class="navbar">
         <div class="navbar-content">
             <div class="navbar-title">
@@ -274,7 +274,7 @@
         </div>
     </header>
 
-    <!-- 主内容区域 -->
+    
     <main class="container">
         <div class="content-card">
             <h2><i class="fa fa-info-circle"></i> 合并说明</h2>
@@ -301,122 +301,6 @@
         </div>
     </main>
 
-    <script>
-        // 检查登录状态 - 添加30分钟过期机制
-        function checkLoginStatus() {
-            const authToken = localStorage.getItem('authToken');
-            const loginTimestamp = localStorage.getItem('loginTimestamp');
-            const thirtyMinutes = 30 * 60 * 1000; // 30分钟，以毫秒为单位
-            const currentTime = new Date().getTime();
-            
-            // 检查是否已登录且未过期
-            if (!authToken || !loginTimestamp || (currentTime - parseInt(loginTimestamp)) > thirtyMinutes) {
-                // 登录已过期或未登录，清除登录信息并重定向到登录页
-                localStorage.removeItem('authToken');
-                localStorage.removeItem('loginTimestamp');
-                localStorage.removeItem('isLoggedIn');
-                // 记录当前页面URL作为来源页面
-                localStorage.setItem('returnUrl', window.location.href);
-                window.location.href = 'login.html';
-                return false;
-            }
-            
-            // 登录有效，更新登录状态
-            localStorage.setItem('authToken', 'authenticated');
-            localStorage.setItem('loginTimestamp', currentTime.toString());
-            return true;
-        }
-        
-        // 页面加载时检查登录状态
-        document.addEventListener('DOMContentLoaded', function() {
-            if (!checkLoginStatus()) {
-                return;
-            }
-            
-            // 确保所有API请求都包含认证头
-            const originalFetch = window.fetch;
-            window.fetch = function(url, options = {}) {
-                if (url.startsWith('/api/')) {
-                    const authToken = localStorage.getItem('authToken');
-                    if (authToken) {
-                        if (!options.headers) {
-                            options.headers = {};
-                        }
-                        options.headers['X-Auth-Token'] = authToken;
-                    }
-                }
-                
-                // 处理响应
-                return originalFetch(url, options).then(response => {
-                    // 如果响应是401未授权，重定向到登录页面
-                    if (response.status === 401) {
-                        localStorage.removeItem('authToken');
-                        window.location.href = 'login.html';
-                    }
-                    return response;
-                });
-            };
-        });
-        
-        // 合并按钮点击事件 - 完全重写为只显示确认弹窗
-        document.getElementById('mergeBtn').addEventListener('click', function() {
-            // 点击按钮时，只显示确认弹窗，不执行任何其他操作
-            if (confirm('确认要执行数据合并操作吗？\n\n此操作不可逆！\n请勿多次点击！')) {
-                // 只有用户在弹窗中点击确认后，才执行实际的合并操作
-                executeMergeData();
-            }
-            // 用户点击取消时，直接返回，不执行任何操作
-        });
-        
-        // 独立的合并数据执行函数
-        async function executeMergeData() {
-            // 获取DOM元素
-            const mergeBtn = document.getElementById('mergeBtn');
-            const statusMessage = document.getElementById('statusMessage');
-            
-            // 更新按钮状态和显示加载提示
-            mergeBtn.disabled = true;
-            mergeBtn.innerHTML = '<div class="loading-indicator">正在合并</div>';
-            statusMessage.className = 'status-message info';
-            statusMessage.innerHTML = '<i class="fa fa-circle-o-notch fa-spin"></i> 正在执行数据合并，请稍候...';
-            
-            try {
-                // 调用合并API，发送确认标志
-                const response = await fetch('/api/merge-data', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ confirm: true }) // 发送确认标志
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    // 显示成功消息
-                    statusMessage.className = 'status-message success';
-                    statusMessage.innerHTML = `<i class="fa fa-check-circle"></i> 合并成功！共处理 ${result.processedCount} 条记录。`;
-                    mergeBtn.innerHTML = '<i class="fa fa-check"></i> 合并完成';
-                    
-                    // 延迟返回主页
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 3000);
-                } else {
-                    // 显示错误消息
-                    statusMessage.className = 'status-message error';
-                    statusMessage.innerHTML = `<i class="fa fa-exclamation-circle"></i> 合并失败：${result.message || '未知错误'}`;
-                    mergeBtn.disabled = false;
-                    mergeBtn.innerHTML = '<i class="fa fa-exchange"></i> 确认合并数据';
-                }
-            } catch (error) {
-                // 显示异常消息
-                statusMessage.className = 'status-message error';
-                statusMessage.innerHTML = `<i class="fa fa-exclamation-circle"></i> 操作异常：${error.message}`;
-                mergeBtn.disabled = false;
-                mergeBtn.innerHTML = '<i class="fa fa-exchange"></i> 确认合并数据';
-            }
-        }
-    </script>
+    <script>function checkLoginStatus(){const e=localStorage.getItem("authToken");const t=localStorage.getItem("loginTimestamp");const a=30*60*1e3;const n=(new Date).getTime();if(!e||!t||n-parseInt(t)>a){localStorage.removeItem("authToken");localStorage.removeItem("loginTimestamp");localStorage.removeItem("isLoggedIn");localStorage.setItem("returnUrl",window.location.href);window.location.href="login.html";return false}localStorage.setItem("authToken","authenticated");localStorage.setItem("loginTimestamp",n.toString());return true}document.addEventListener("DOMContentLoaded",function(){if(!checkLoginStatus()){return}const n=window.fetch;window.fetch=function(e,t={}){if(e.startsWith("/api/")){const a=localStorage.getItem("authToken");if(a){if(!t.headers){t.headers={}}t.headers["X-Auth-Token"]=a}}return n(e,t).then(e=>{if(e.status===401){localStorage.removeItem("authToken");window.location.href="login.html"}return e})}});document.getElementById("mergeBtn").addEventListener("click",function(){if(confirm("确认要执行数据合并操作吗？\n\n此操作不可逆！\n请勿多次点击！")){executeMergeData()}});async function executeMergeData(){const t=document.getElementById("mergeBtn");const a=document.getElementById("statusMessage");t.disabled=true;t.innerHTML='<div class="loading-indicator">正在合并</div>';a.className="status-message info";a.innerHTML='<i class="fa fa-circle-o-notch fa-spin"></i> 正在执行数据合并，请稍候...';try{const e=await fetch("/api/merge-data",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({confirm:true})});const n=await e.json();if(n.success){a.className="status-message success";a.innerHTML=`<i class="fa fa-check-circle"></i> 合并成功！共处理 ${n.processedCount} 条记录。`;t.innerHTML='<i class="fa fa-check"></i> 合并完成';setTimeout(()=>{window.location.href="index.html"},3e3)}else{a.className="status-message error";a.innerHTML=`<i class="fa fa-exclamation-circle"></i> 合并失败：${n.message||"未知错误"}`;t.disabled=false;t.innerHTML='<i class="fa fa-exchange"></i> 确认合并数据'}}catch(e){a.className="status-message error";a.innerHTML=`<i class="fa fa-exclamation-circle"></i> 操作异常：${e.message}`;t.disabled=false;t.innerHTML='<i class="fa fa-exchange"></i> 确认合并数据'}}</script>
 </body>
 </html>
