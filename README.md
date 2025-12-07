@@ -34,34 +34,13 @@
 * 🧀 启用HTTPS?
   把证书放在deskdata/ssl目录(server.crt和server.key) 然后重启程序即可
 
-## <span style="color:#118ab2">使用方法(2选1)</span>
+## <span style="color:#118ab2">使用方法</span>
 
 <div style="background-color: #e6f7ff; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
    <h4 style="margin-top: 0;">1.新手推荐:下载飞牛应用安装包,到应用中心左下角手动安装：</h4>
   
   [fpk下载链接](https://fndesk.imcq.top/?url=dl&at=GitHUb "点击我没错了")
   
-  <h4 style="margin-top: 0;">2.玩家可用:在飞牛Docker compose粘贴以下代码：</h4>
-  
-  <div style="background-color: #1e293b; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto;">
-    <pre><code>services:
-  fndesk:                    #Compose项目名称
-    container_name: fndesk        #docker容器名称
-    image: imgzcq/fndesk:latest    #镜像名称
-    ports:
-     - 9990:9990              #冒号左边修改自定义端口
-     - 9991:9991              # HTTPS端口 
-    volumes:
-     - /usr/trim/www:/fnw        #不能改！
-     - /usr/trim/share/.restore:/res #不能改！
-     - /usr/local/apps/@appcenter/trim.media:/trim.media
-      # ↑ v0.73起开放影视个性化需加入此项
-     - ./deskdata:/deskdata       #冒号左边的可以改但不建议     
-    restart: always             #容器自动启动应用配置  </code></pre>
-    跑码完成访问9990端口即可
-  </div>
-</div>
-
 ## <span style="color:#06d6a0">更新日志</span>
 #### 2025.12.07 v0.88  
 - ✅ 支持自定义访问端口(应用设置里)
