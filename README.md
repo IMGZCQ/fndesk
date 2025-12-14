@@ -161,11 +161,11 @@
 
 **识别内外网连接，3个自定义连接，支持多层文件夹**
 
-<img src="https://github.com/user-attachments/assets/b4d8395f-1f2e-493c-a214-ccafdbcdbdc1" alt="fn-icon界面展示4" style="width: 480px; height: auto;">
+<img src="https://github.com/user-attachments/assets/b4d8395f-1f2e-493c-a214-ccafdbcdbdc1" alt="fn-icon界面展示4" style="width: 480px; height: auto;">  
 
-**效果预览**
+![3](https://github.com/user-attachments/assets/fae8289e-e1b5-48a7-9806-63dfdf77c712)
 <img width="1679" height="865" alt="98c1d486d22f1fddc5f8ef51bf1f7768" src="https://github.com/user-attachments/assets/4ce0ed0a-abe4-43da-8dbc-4f6841f4bf81" />
-<img width="933" height="1057" alt="image" src="https://github.com/user-attachments/assets/0bb969ab-f0e1-4eda-8ec0-3cda466117bf" />
+![5](https://github.com/user-attachments/assets/ea55bb71-b838-4c79-a17f-5b6107d421ad)
 <img width="1061" height="1040" alt="11112" src="https://github.com/user-attachments/assets/ae18d97e-33bf-4c50-8527-77237e61bdf5" />
 ![H)E}P%(Q1 )4ZKZ{01E35H6](https://github.com/user-attachments/assets/b13f5dfc-1989-413f-b3c1-3c6ccbfba8e1)
 <img width="1270" height="992" alt="ScreenShot_2025-10-30_111530_261" src="https://github.com/user-attachments/assets/f84ebfa8-e060-468c-9749-8feac117302b" />
