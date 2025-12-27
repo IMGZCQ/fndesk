@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>飞牛桌面管理工具 - 加载中</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <link href="fonts/font-awesome.min.css" rel="stylesheet">
+    <link href="./fonts/font-awesome.min.css" rel="stylesheet">
     <style>
         :root {
             --primary-color: #0a192f;
@@ -189,7 +189,6 @@
     <div class="loading-container">
         <div class="loading-header">
             <h1 class="loading-title">飞牛桌面管理工具</h1>
-            <p id="versionNumber" style="text-align: right; font-size: 0.9rem; margin-top: 0.25rem;margin-right: 1.25rem; color: #e6f1ff;">Ver. 未知</p>
         </div>
 
         <div class="loading-spinner"></div>
@@ -197,7 +196,7 @@
             <div class="loading-bar"></div>
         </div>
         <div class="loading-text">
-            正在配置系统环境<br>
+            正在初始化/配置/升级系统<br>
             请稍候...
         </div>
         
@@ -206,6 +205,6 @@
         </div>
     </div>
 
-    <script>document.addEventListener("DOMContentLoaded",function(){try{fetch("/api/config").then(e=>e.json()).then(e=>{if(e&&e.version){document.getElementById("versionNumber").textContent="Ver. "+e.version}else{document.getElementById("versionNumber").textContent="未知版本"}}).catch(e=>{console.log("无法获取版本信息:",e);document.getElementById("versionNumber").textContent="未知版本"})}catch(e){document.getElementById("versionNumber").textContent="未知版本"}function n(){fetch("/api/system-status",{method:"GET"}).then(e=>{if(e.ok){return e.json()}throw new Error("系统未就绪")}).then(e=>{if(e.ready){const t=e.targetUrl||"index.html";window.location.href=t}else{setTimeout(n,1e3)}}).catch(e=>{setTimeout(n,1e3)})}n()})</script>
+    <script>document.addEventListener("DOMContentLoaded",function(){function n(){fetch("./api/system-status",{method:"GET"}).then(t=>{if(t.ok){return t.json()}throw new Error("系统未就绪")}).then(t=>{if(t.ready){const e=t.targetUrl||"index.html";window.parent.location.href=e}else{setTimeout(n,1e3)}}).catch(t=>{setTimeout(n,1e3)})}n()})</script>
 </body>
 </html>

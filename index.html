@@ -7,65 +7,86 @@
         <link rel="icon" href="favicon.ico" type="image/x-icon">
         <link href="fonts/font-awesome.min.css" rel="stylesheet">
         <style>
-            /* 隔离的开关样式 - 只影响开关元素 */
-            .switch-toggle {
-                position: relative;
-                display: inline-flex;
-                align-items: center;
-                cursor: pointer;
+            /* From Uiverse.io by gharsh11032000 */ 
+            /* The switch - the box around the slider */ 
+            .switch {
+              font-size: 12px;
+              position: relative;
+              display: inline-block;
+              width: 3.8em;
+              height: 1.9em;
             }
             
-            .switch-toggle-input {
-                position: absolute;
-                opacity: 0;
-                width: 0;
-                height: 0;
+            /* Hide default HTML checkbox */ 
+            .switch input {
+              opacity: 0;
+              width: 0;
+              height: 0;
             }
             
-            .switch-toggle-slider {
-                position: relative;
-                display: inline-block;
-                width: 32px;
-                height: 32px;
-                background-color: #f87171; /* bg-rose-400 */
-                border-radius: 50%;
-                outline: none;
-                transition: background-color 0.3s ease;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            /* The slider */ 
+            .slider {
+              position: absolute;
+              cursor: pointer;
+              inset: 0;
+              background: #9fccfa;
+              border-radius: 50px;
+              transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             }
             
-            .switch-toggle-slider::after {
-                content: '✖️';
-                position: absolute;
-                width: 24px;
-                height: 24px;
-                background-color: #f9fafb; /* bg-gray-50 */
-                border-radius: 50%;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: all 0.5s ease;
-                transform: translate(-50%, -50%) rotate(-180deg);
+            .slider:before {
+              position: absolute;
+              content: "";
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              height: 2em;
+              width: 2em;
+              inset: 0;
+              background-color: white;
+              border-radius: 50px;
+              box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+              transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             }
             
-            .switch-toggle-input:checked + .switch-toggle-slider {
-                background-color: #10b981; /* bg-emerald-500 */
+            /* 确保开关容器垂直居中 */
+            .switch-container {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              height: 100%;
             }
             
-            .switch-toggle-input:checked + .switch-toggle-slider::after {
-                content: '✔️';
-                transform: translate(-50%, -50%) rotate(0deg);
+            /* 第一个开关 - 科技绿 */
+            .switch-green .slider {
+              background: #6b8d86; /* 科技绿未选中状态 */
             }
             
-            .switch-toggle:hover .switch-toggle-slider::after {
-                transform: translate(-50%, -50%) scale(0.75) rotate(-180deg);
+            .switch-green input:checked + .slider {
+              background: #06d474; /* 科技绿选中状态 */
             }
             
-            .switch-toggle:hover .switch-toggle-input:checked + .switch-toggle-slider::after {
-                transform: translate(-50%, -50%) scale(0.75) rotate(0deg);
+            .switch-green input:focus + .slider {
+              box-shadow: 0 0 1px #06d474;
+            }
+            
+            /* 第二个开关 - 科技蓝 */
+            .switch-blue .slider {
+              background: #69798a; /* 科技蓝未选中状态 */
+            }
+            
+            .switch-blue input:checked + .slider {
+              background: #0974f1; /* 科技蓝选中状态 */
+            }
+            
+            .switch-blue input:focus + .slider {
+              box-shadow: 0 0 1px #0974f1;
+            }
+            
+            /* 通用选中状态动画 */
+            .switch input:checked + .slider:before {
+              transform: translateX(1.6em);
             }
         </style>
         <style>
@@ -347,6 +368,24 @@
             box-shadow: 0 6px 20px rgba(238, 90, 36, 0.4);
         }
         
+        .btn-help {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 2px 8px;
+            font-size: 14px;
+            line-height: 1;
+            height: auto;
+            min-height: auto;
+        }
+        
+        .btn-help:hover {
+            background: var(--primary);
+            color: white;
+            box-shadow: var(--glow-primary);
+            transform: none;
+        }
+        
         /* 科技黄按钮 - 用于公告说明 */
         .btn-warning {
             background: linear-gradient(135deg, var(--warning), #ffd166);
@@ -550,6 +589,26 @@
             transition: box-shadow 0.3s ease;
         }
         
+        /* 公告提示行样式 */
+        .announcement-row {
+            background: linear-gradient(135deg, var(--danger), #ff6b35);
+            color: white;
+            font-weight: 500;
+            text-align: center;
+            padding: 0.75rem;
+            animation: pulse 2s infinite;
+            transform: translateZ(0); /* 添加硬件加速 */
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(238, 90, 36, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(238, 90, 36, 0);
+            }
+        }
+        
         .table-container:hover {
             box-shadow: 0 8px 25px var(--shadow-color);
         }
@@ -657,6 +716,7 @@
             overflow-y: auto;
             animation: modalSlideIn 0.3s ease-out;
             position: relative;
+            transform: translateZ(0); /* 添加硬件加速 */
         }
         
         @keyframes modalSlideIn {
@@ -711,6 +771,7 @@
             animation: slideInRight 0.5s ease-out;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(10px);
+            transform: translateZ(0); /* 添加硬件加速 */
         }
         
         @keyframes slideInRight {
@@ -756,10 +817,62 @@
             border-top-color: var(--primary);
             animation: spin 1s ease-in-out infinite;
             margin: 2rem auto;
+            transform: translateZ(0); /* 添加硬件加速 */
         }
         
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+        
+        /* 移动端优化 - 禁用高频动画 */
+        @media (max-width: 768px) {
+            /* 禁用无限循环动画 */
+            .announcement-row {
+                animation: none;
+            }
+            
+            .loader {
+                animation: none;
+            }
+            
+            /* 简化发光效果 */
+            .navbar-title,
+            .modal-title {
+                text-shadow: none;
+            }
+            
+            .card:hover,
+            .btn-secondary:hover,
+            .btn-help:hover,
+            .pagination-btn:hover:not(:disabled),
+            .pagination-btn.active {
+                box-shadow: none;
+            }
+            
+            /* 禁用所有backdrop-filter: blur效果 */
+            .notification,
+            .navbar,
+            .btn,
+            input,
+            select,
+            .modal-overlay {
+                backdrop-filter: none;
+            }
+            
+            /* 简化复杂背景叠加为纯色 */
+            body {
+                background-image: none;
+                background-color: var(--dark-bg);
+            }
+            
+            body::before {
+                display: none;
+            }
+            
+            .navbar,
+            .modal-header {
+                background: var(--card-bg);
+            }
         }
         
         /* 响应式设计 - 920px以下修改导航栏按钮文字 */
@@ -788,7 +901,7 @@
             }
             
             #applyBtn::after {
-                content: '应用';
+                content: '生效';
                 font-size: 0.9rem;
                 display: inline-block;
             }
@@ -886,6 +999,23 @@
             
             table {
                 min-width: 300px;
+            }
+        }
+        
+        /* 版本更新指示动画 */
+        .version-update-indicator {
+            animation: versionFlash 1.5s infinite;
+            transform: translateZ(0); /* 添加硬件加速 */
+        }
+        
+        @keyframes versionFlash {
+            0%, 50% {
+                opacity: 1;
+                color: var(--primary);
+            }
+            51%, 100% {
+                opacity: 0.7;
+                color: var(--warning);
             }
         }
         
@@ -1030,13 +1160,16 @@
     </style>
 </head>
 <body class="min-h-screen font-sans text-text-primary">
+
+    
+    <script>let hasNewVersion=false;async function checkVersion(){try{let e="0";let t=null;try{const c=await fetch("./api/config");t=await c.json();if(t&&t.version){e=t.version;document.getElementById("versionNumber").textContent="v"+t.version}else{console.error("获取当前版本号失败：未返回有效的版本数据");return}}catch(e){console.error("获取当前版本号失败:",e);return}const r=(new Date).toDateString();const s=localStorage.getItem("lastVersionCheckDate");const a=localStorage.getItem("cachedLatestVersion");let o;if(s!==r||!a){try{const i=await fetch("./api/latest-version",{method:"GET",cache:"no-cache",headers:{Accept:"text/plain"}});if(i.ok){o=await i.text();localStorage.setItem("lastVersionCheckDate",r);localStorage.setItem("cachedLatestVersion",o)}else{o=a||"0";console.error("获取最新版本号失败，状态码:",i.status)}}catch(e){o=a||"0";console.error("获取最新版本号网络错误:",e)}}else{o=a}function n(e,t){const o=e.toString().split(".").map(Number);const n=t.toString().split(".").map(Number);const r=Math.max(o.length,n.length);for(let e=0;e<r;e++){const s=o[e]||0;const a=n[e]||0;if(s>a)return 1;if(s<a)return-1}return 0}if(n(o,e)>0){hasNewVersion=true;const l=document.getElementById("versionNumber");l.classList.add("version-update-indicator")}else{hasNewVersion=false}}catch(e){console.error("版本检查失败:",e)}}document.addEventListener("DOMContentLoaded",checkVersion)</script>
+    
     
     <header class="navbar">
         <div class="container navbar-content">
             <h1 class="navbar-title">
                 <i class="fa fa-desktop"></i>
-                飞牛桌面管理工具 <span id="versionNumber">加载中...</span>
-                <script>document.addEventListener("DOMContentLoaded",function(){try{fetch("/api/config").then(e=>e.json()).then(e=>{if(e&&e.version){document.getElementById("versionNumber").textContent="v"+e.version}else{document.getElementById("versionNumber").textContent="未知版本"}}).catch(e=>{console.log("无法获取版本信息:",e);document.getElementById("versionNumber").textContent="未知版本"})}catch(e){document.getElementById("versionNumber").textContent="未知版本"}})</script>
+                飞牛桌面管理工具 <span style="margin-top: 0.3em;font-size: 0.8em;color: #4accff;" id="versionNumber">加载中...</span>
             </h1>
             <div class="navbar-actions">
                 <button id="announcementBtn" class="btn btn-warning mr-2">
@@ -1049,28 +1182,28 @@
                 </button>
                 <a href="fnstyle.html" id="themeBtn" class="btn btn-info mr-2">
                     <i class="fa fa-paint-brush"></i>
-                    个性定制
+                    个性主题
                 </a>
 
                 <div class="dropdown" style="position: relative; display: inline-block;">
                     <button id="moreActionsBtn" class="btn btn-danger mr-2 dropdown-toggle">
                         <i class="fa fa-bars"></i>
-                        更多功能
+                        更多选项
                     </button>
                     
                     <div id="dropdownMenu" class="dropdown-menu" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 0.125rem; background-color: #121921; border: 1px solid #4a9eff; border-radius: 8px; box-shadow: 0 0 15px rgba(74, 158, 255, 0.4); min-width: 9rem; padding: 0.4rem 0.3rem; z-index: 9999; overflow: hidden;">
                         
                         <a class="dropdown-item" href="index.html" target="_blank" id="menuNewWindow" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
                             <i class="fa fa-window-maximize mr-2" style="color: #4a9eff;"></i>
-                            打开新窗口
+                            在新窗打开
                         </a>
-                        <a class="dropdown-item" href="HDicon/HDicon.html" id="menuHDicon" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
+                        <a class="dropdown-item" target="_blank" href="HDicon/HDicon.html" id="menuHDicon" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
                             <i class="fa fa-cubes mr-2" style="color: #4a9eff;"></i>
                             打开图标库
                         </a>           
                         <a class="dropdown-item" href="sysico.html" id="menuSysico" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
-                            <i class="fa fa-cube mr-2" style="color: #4a9eff;"></i>
-                            系统图标
+                            <i class="fa fa-cogs mr-2" style="color: #4a9eff;"></i>
+                            尊享功能
                         </a>
                         <a class="dropdown-item" href="#" id="menuResetDesktop" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
                             <i class="fa fa-refresh mr-2" style="color: #4a9eff;"></i>
@@ -1085,7 +1218,7 @@
                             退出登录
                         </a>
                     </div>
-                    <script>document.addEventListener("DOMContentLoaded",function(){console.log("初始化下拉菜单...");window.__testDropdownMenu=function(){const t=document.getElementById("dropdownMenu");if(t){t.style.display=t.style.display==="block"?"none":"block";t.style.opacity="1";t.style.transform="translateY(0)";t.style.position="absolute";t.style.zIndex="9999"}};const a=document.getElementById("dropdownMenu");const l=document.getElementById("moreActionsBtn");let i=null;console.log("Dropdown elements:",{dropdownMenu:a,dropdownToggle:l});function t(){if(!a){return}const t=window.getComputedStyle(a);const e=t.display!=="none";if(e){a.style.opacity="0";a.style.transform="translateY(-10px)";setTimeout(()=>{a.style.display="none"},300)}else{a.style.display="block";a.style.opacity="0";a.style.transform="translateY(-10px)";a.style.position="absolute";a.style.zIndex="9999";void a.offsetWidth;setTimeout(()=>{a.style.opacity="1";a.style.transform="translateY(0)"},10)}}if(l){l.onclick=null;try{const c=l.cloneNode(true);l.parentNode.replaceChild(c,l);i=c}catch(t){console.error("Error resetting dropdown toggle:",t);i=l}function e(t){t.preventDefault();t.stopPropagation();t.cancelBubble=true;if(t.stopImmediatePropagation){t.stopImmediatePropagation()}if(a){const e=window.getComputedStyle(a);const n=e.display!=="none";if(!n){a.style.display="block";a.style.opacity="0";a.style.transform="translateY(-10px)";a.style.position="absolute";a.style.zIndex="9999";void a.offsetWidth;setTimeout(()=>{a.style.opacity="1";a.style.transform="translateY(0)"},10)}else{a.style.opacity="0";a.style.transform="translateY(-10px)";setTimeout(()=>{a.style.display="none"},300)}}}const d=i||l;d.onclick=e;d.addEventListener("click",e);d.addEventListener("touchstart",function(t){t.preventDefault();e(t)});d.style.pointerEvents="auto";d.style.cursor="pointer"}let r=false;document.addEventListener("click",function(t){if(!a||!l)return;const e=i||l;if(r){setTimeout(()=>{r=false},100);return}const n=window.getComputedStyle(a).display!=="none";const o=a.contains(t.target);const s=e.contains(t.target);if(n&&!o&&!s){a.style.opacity="0";a.style.transform="translateY(-10px)";setTimeout(()=>{a.style.display="none"},300)}});const n=e;e=function(t){r=true;n(t)};const o=a.querySelectorAll(".dropdown-item");o.forEach(t=>{t.addEventListener("mouseenter",function(){this.style.background="linear-gradient(90deg, rgba(74, 158, 255, 0.2) 0%, rgba(74, 158, 255, 0.1) 100%)";this.style.boxShadow="inset 0 0 10px rgba(74, 158, 255, 0.3)";this.style.transform="translateX(5px)";this.querySelector("i").style.textShadow="0 0 8px #4a9eff"});t.addEventListener("mouseleave",function(){this.style.background="linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%)";this.style.boxShadow="none";this.style.transform="translateX(0)";this.querySelector("i").style.textShadow="none"});t.addEventListener("click",function(t){if(this.getAttribute("href")==="#"){t.preventDefault()}const e=document.createElement("span");const n=this.getBoundingClientRect();const o=Math.max(n.width,n.height);const s=t.clientX-n.left-o/2;const l=t.clientY-n.top-o/2;e.style.width=e.style.height=o+"px";e.style.left=s+"px";e.style.top=l+"px";e.style.position="absolute";e.style.borderRadius="50%";e.style.background="rgba(74, 158, 255, 0.4)";e.style.transform="scale(0)";e.style.animation="ripple 0.6s ease-out";e.style.pointerEvents="none";this.appendChild(e);setTimeout(()=>{e.remove();if(a){a.style.opacity="0";a.style.transform="translateY(-10px)";setTimeout(()=>{a.style.display="none"},300)}},600)})});const s=document.createElement("style");s.textContent=`
+                    <script>document.addEventListener("DOMContentLoaded",function(){window.__testDropdownMenu=function(){const t=document.getElementById("dropdownMenu");if(t){t.style.display=t.style.display==="block"?"none":"block";t.style.opacity="1";t.style.transform="translateY(0)";t.style.position="absolute";t.style.zIndex="9999"}};const a=document.getElementById("dropdownMenu");const l=document.getElementById("moreActionsBtn");let i=null;function t(){if(!a){return}const t=window.getComputedStyle(a);const e=t.display!=="none";if(e){a.style.opacity="0";a.style.transform="translateY(-10px)";setTimeout(()=>{a.style.display="none"},300)}else{a.style.display="block";a.style.opacity="0";a.style.transform="translateY(-10px)";a.style.position="absolute";a.style.zIndex="9999";void a.offsetWidth;setTimeout(()=>{a.style.opacity="1";a.style.transform="translateY(0)"},10)}}if(l){l.onclick=null;try{const c=l.cloneNode(true);l.parentNode.replaceChild(c,l);i=c}catch(t){console.error("Error resetting dropdown toggle:",t);i=l}function e(t){t.preventDefault();t.stopPropagation();t.cancelBubble=true;if(t.stopImmediatePropagation){t.stopImmediatePropagation()}if(a){const e=window.getComputedStyle(a);const n=e.display!=="none";if(!n){a.style.display="block";a.style.opacity="0";a.style.transform="translateY(-10px)";a.style.position="absolute";a.style.zIndex="9999";void a.offsetWidth;setTimeout(()=>{a.style.opacity="1";a.style.transform="translateY(0)"},10)}else{a.style.opacity="0";a.style.transform="translateY(-10px)";setTimeout(()=>{a.style.display="none"},300)}}}const d=i||l;d.onclick=e;d.addEventListener("click",e);d.addEventListener("touchstart",function(t){t.preventDefault();e(t)});d.style.pointerEvents="auto";d.style.cursor="pointer"}let r=false;document.addEventListener("click",function(t){if(!a||!l)return;const e=i||l;if(r){setTimeout(()=>{r=false},100);return}const n=window.getComputedStyle(a).display!=="none";const o=a.contains(t.target);const s=e.contains(t.target);if(n&&!o&&!s){a.style.opacity="0";a.style.transform="translateY(-10px)";setTimeout(()=>{a.style.display="none"},300)}});const n=e;e=function(t){r=true;n(t)};const o=a.querySelectorAll(".dropdown-item");o.forEach(t=>{t.addEventListener("mouseenter",function(){this.style.background="linear-gradient(90deg, rgba(74, 158, 255, 0.2) 0%, rgba(74, 158, 255, 0.1) 100%)";this.style.boxShadow="inset 0 0 10px rgba(74, 158, 255, 0.3)";this.style.transform="translateX(5px)";this.querySelector("i").style.textShadow="0 0 8px #4a9eff"});t.addEventListener("mouseleave",function(){this.style.background="linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%)";this.style.boxShadow="none";this.style.transform="translateX(0)";this.querySelector("i").style.textShadow="none"});t.addEventListener("click",function(t){if(this.getAttribute("href")==="#"){t.preventDefault()}const e=document.createElement("span");const n=this.getBoundingClientRect();const o=Math.max(n.width,n.height);const s=t.clientX-n.left-o/2;const l=t.clientY-n.top-o/2;e.style.width=e.style.height=o+"px";e.style.left=s+"px";e.style.top=l+"px";e.style.position="absolute";e.style.borderRadius="50%";e.style.background="rgba(74, 158, 255, 0.4)";e.style.transform="scale(0)";e.style.animation="ripple 0.6s ease-out";e.style.pointerEvents="none";this.appendChild(e);setTimeout(()=>{e.remove();if(a){a.style.opacity="0";a.style.transform="translateY(-10px)";setTimeout(()=>{a.style.display="none"},300)}},600)})});const s=document.createElement("style");s.textContent=`
                                 @keyframes ripple {
                                     to {
                                         transform: scale(4);
@@ -1130,6 +1263,8 @@
                         <option value="cqfndesk_D.js">暗黑模式</option>
                         <option value="cqfndesk_CQ.js">原创经典</option>
                     </select>
+                            <a href="https://fndesk.imcq.top/images/3种ui风格.jpg" target="_blank" class="btn btn-secondary" style="margin-bottom: 0.2rem; padding: 0.2rem 0.4rem; font-size: 0.85rem; text-decoration: none !important;">
+        <i class="fa fa-file-image-o"></i>图示</a>
                 </div>
                 
                 
@@ -1330,37 +1465,37 @@
                 /* 表格列响应式隐藏规则 */
                 /* 宽度小于800px隐藏URL列 */
                 @media (max-width: 1060px) {
-                    table th:nth-child(6),
-                    table td:nth-child(6) {
+                    table th:nth-child(5),
+                    table td:nth-child(5) {
                         display: none;
                     }
                 }
                  @media (max-width: 979px) {
-                    table th:nth-child(9),
-                    table td:nth-child(9) {
+                    table th:nth-child(8),
+                    table td:nth-child(8) {
                         display: none;
                     }
                 } 
                 
                 /* 宽度小于680px隐藏归属列 */
                 @media (max-width: 879px) {
-                    table th:nth-child(10),
-                    table td:nth-child(10) {
+                    table th:nth-child(9),
+                    table td:nth-child(9) {
                         display: none;
                     }
                 }
                 
                 /* 宽度小于600px隐藏类型列 */
                 @media (max-width: 789px) {
-                    table th:nth-child(7),
-                    table td:nth-child(7) {
+                    table th:nth-child(6),
+                    table td:nth-child(6) {
                         display: none;
                     }
                 }
                  /* 宽度小于600px隐藏图标列 */
                 @media (max-width: 689px) {
-                    table th:nth-child(8),
-                    table td:nth-child(8) {
+                    table th:nth-child(7),
+                    table td:nth-child(7) {
                         display: none;
                     }
                 }
@@ -1449,7 +1584,7 @@
         </div>
 
         
-        <script>document.addEventListener("DOMContentLoaded",function(){fetch("deskdata/fnstyle.json").then(t=>t.json()).then(t=>{const o=document.getElementById("iconSortSelect");if(t.iconSort&&(t.iconSort===1||t.iconSort===2)){o.value=t.iconSort.toString()}const e=document.getElementById("uiStyleSelect");if(t.ui_style){e.value=t.ui_style}}).catch(t=>console.error("读取fnstyle.json失败:",t));const t=document.getElementById("iconSortSelect");t.addEventListener("change",function(){const t=parseInt(this.value);fetch("api/fnstyle.json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({iconSort:t})}).then(t=>{if(!t.ok){throw new Error("网络响应错误")}return t.json()}).then(()=>{if(typeof showNotification==="function"){showNotification("图标排序设置已保存","success")}}).catch(t=>{console.error("保存图标排序设置失败:",t);if(typeof showNotification==="function"){showNotification("保存失败，请重试","error")}})});const o=document.getElementById("uiStyleSelect");o.addEventListener("change",function(){const t=this.value;fetch("api/fnstyle.json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({ui_style:t})}).then(t=>{if(!t.ok){throw new Error("网络响应错误")}return t.json()}).then(()=>{if(typeof showNotification==="function"){showNotification("UI样式设置已保存，请执行 立即生效 应用新样式...","success")}}).catch(t=>{console.error("保存UI样式设置失败:",t);if(typeof showNotification==="function"){showNotification("保存失败，请重试","error")}})})})</script>
+        <script>document.addEventListener("DOMContentLoaded",function(){fetch("deskdata/fnstyle.json?v="+(new Date).getTime()).then(t=>t.json()).then(t=>{const o=document.getElementById("iconSortSelect");if(t.iconSort&&(t.iconSort===1||t.iconSort===2)){o.value=t.iconSort.toString()}const e=document.getElementById("uiStyleSelect");if(t.ui_style){e.value=t.ui_style}}).catch(t=>console.error("读取fnstyle.json失败:",t));const t=document.getElementById("iconSortSelect");t.addEventListener("change",function(){const t=parseInt(this.value);fetch("api/fnstyle.json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({iconSort:t})}).then(t=>{if(!t.ok){throw new Error("网络响应错误")}return t.json()}).then(()=>{if(typeof showNotification==="function"){showNotification("图标排序设置已保存","success")}}).catch(t=>{console.error("保存图标排序设置失败:",t);if(typeof showNotification==="function"){showNotification("保存失败，请重试","error")}})});const o=document.getElementById("uiStyleSelect");o.addEventListener("change",function(){const t=this.value;fetch("api/fnstyle.json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({ui_style:t})}).then(t=>{if(!t.ok){throw new Error("网络响应错误")}return t.json()}).then(()=>{if(typeof showNotification==="function"){showNotification("UI样式设置已保存，请执行 立即生效 应用新样式...","success")}}).catch(t=>{console.error("保存UI样式设置失败:",t);if(typeof showNotification==="function"){showNotification("保存失败，请重试","error")}})})})</script>
         
         
         <div class="table-container">
@@ -1458,8 +1593,7 @@
                     <thead>
                         <tr>
                             <th id="sortable-order" class="cursor-pointer hover:bg-card-hover">拖动排序 <i class="fa fa-sort ml-1"></i></th>
-                            <th class="text-center">原创图标</th>
-                            <th class="text-center">即将开放</th>
+                            <th class="text-center">开关 <button id="helpBtn" class="btn btn-help ml-1" title="使用说明"><i class="fa fa-question-circle"></i></button></th>
                             <th class="hidden">ID</th>
                             <th>标 题</th>
                             <th>URL</th>
@@ -1470,6 +1604,14 @@
                             <th class="text-center">操 作</th>
                         </tr>
                     </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="10" class="announcement-row">
+                                
+                                提示：飞牛原生图标已完美适配APP完美显示，新建原生图标请到>更多选项>尊享功能！<br>此页将废除蓝色开关，主要新建原创图标和文件夹，若要删除之前创建的原生图标，可以到应用中心把fndesk服务卸载
+                            </td>
+                        </tr>
+                    </tbody>
                     <tbody id="dataTableBody">
                         
                     </tbody>
@@ -1496,7 +1638,12 @@
     <div id="editModal" class="modal-overlay hidden">
         <div class="modal">
             <div class="modal-header">
+                                           <span> <a href="https://fndesk.imcq.top/images/3种ui风格.jpg" target="_blank" class="btn btn-secondary" style="margin-bottom: 0.2rem; padding: 0.2rem 0.4rem; font-size: 0.85rem; text-decoration: none !important;">
+        <i class="fa fa-file-image-o"></i>图示1</a>
+        <a href="https://fndesk.imcq.top/images/窗口文件夹说明.jpg" target="_blank" class="btn btn-secondary" style="margin-bottom: 0.2rem; padding: 0.2rem 0.4rem; font-size: 0.85rem; text-decoration: none !important;">
+        <i class="fa fa-file-image-o"></i>图示2</a></span>
                 <h2 id="modalTitle" class="modal-title">添加图标</h2>
+
                 <button id="closeModal">
                     <i class="fa fa-times"></i>
                 </button>
@@ -1508,19 +1655,19 @@
                     
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                         <div class="input-group">
-                            <label for="edit序号">序号（越大靠前）</label>
-                            <input type="number" id="edit序号" required>
+                            <label for="editfndata_Sort">序号（越大靠前）</label>
+                            <input type="number" id="editfndata_Sort" required>
                         </div>
                         <div class="input-group">
-                            <label for="edit类型">图标类型</label>
-                            <select id="edit类型" required>
+                            <label for="editfndata_Type">图标类型</label>
+                            <select id="editfndata_Type" required>
                                 <option value="0">图标</option>
                                 <option value="1">文件夹</option>
                             </select>
                         </div>
                         <div class="input-group">
-                            <label for="edit归属">归属文件夹</label>
-                            <select id="edit归属" required>
+                            <label for="editfndata_For">归属文件夹</label>
+                            <select id="editfndata_For" required>
                                 
                             </select>
                         </div>
@@ -1533,57 +1680,57 @@
                         </div>
                     </div>
                     
-                    <script>function toggleUrlFieldsByType(){const e=document.getElementById("edit类型");if(!e)return;const n=e.value==="1";const t=document.getElementById("publicUrlField");const o=document.getElementById("urlFieldsRow1");const i=document.getElementById("urlFieldsRow2");const d=document.getElementById("edit标题");const l=document.querySelector(".input-group:has(#editOpenInPage)");if(t){if(n){t.style.display="none"}else{t.style.display=""}}if(o)o.style.display=n?"none":"grid";if(i)i.style.display=n?"none":"grid";if(l){l.style.display=n?"none":"flex"}const w=document.getElementById("recordId").value;if(d&&!w){d.value=n?"新建文件夹":"一个新图标"}}window.addEventListener("DOMContentLoaded",function(){window.waiwangURL="";window.neiwangURL="";fetch("/api/config").then(e=>{if(!e.ok){throw new Error("获取配置失败")}return e.json()}).then(e=>{window.waiwangURL=e.wizard_wan_url||"";window.neiwangURL=e.wizard_lan_url||"";console.log("从API获取的外网URL:",window.waiwangURL);console.log("从API获取的内网URL:",window.neiwangURL)}).catch(e=>{window.waiwangURL="";window.neiwangURL="";console.error("获取配置信息失败:",e)});const e=document.getElementById("edit类型");if(e){e.addEventListener("change",toggleUrlFieldsByType)}const t=window.openEditModal;if(t){window.openEditModal=function(e){t(e);const n=document.getElementById("edit类型");if(e&&n&&e.type!==undefined){n.value=e.type}setTimeout(toggleUrlFieldsByType,100)}}})</script>
+                    <script>window.toggleUrlFieldsByType=function(){const e=document.getElementById("editfndata_Type");if(!e)return;const t=e.value==="1";const n=document.getElementById("publicUrlField");const o=document.getElementById("urlFieldsRow1");const i=document.getElementById("urlFieldsRow2");const d=document.getElementById("editfndata_Title");const l=document.querySelector(".input-group:has(#editOpenInPage)");if(n){n.style.display="";const c=n.querySelector("label");const r=n.querySelector("input");if(c&&r){if(t){c.textContent="装载系统图标：(系统图标需要另外隐藏)";r.placeholder="例如:文件管理,应用中心,Docker (用逗号分隔)";r.onfocus=function(){if(this.value==""){this.value=""}this.select()}}else{c.textContent="公网地址：";r.placeholder="URL均可直接填端口号/xxx";r.onfocus=function(){if(this.value==""){this.value=window.waiwangURL}this.select()}}}}if(o)o.style.display=t?"none":"grid";if(i)i.style.display=t?"none":"grid";if(l){l.style.display=t?"none":"flex"}const a=document.getElementById("recordId").value;if(d&&!a){d.value=t?"新建文件夹":"一个新图标"}};window.addEventListener("DOMContentLoaded",function(){window.waiwangURL="";window.neiwangURL="";fetch("./api/config").then(e=>{if(!e.ok){throw new Error("获取配置失败")}return e.json()}).then(e=>{window.waiwangURL=e.wizard_wan_url||"";window.neiwangURL=e.wizard_lan_url||"";console.log("从API获取的外网URL:",window.waiwangURL);console.log("从API获取的内网URL:",window.neiwangURL)}).catch(e=>{window.waiwangURL="";window.neiwangURL="";console.error("获取配置信息失败:",e)});const e=document.getElementById("edit类型");if(e){e.addEventListener("change",toggleUrlFieldsByType)}const n=window.openEditModal;if(n){window.openEditModal=function(e){n(e);const t=document.getElementById("edit类型");if(e&&t&&e.type!==undefined){t.value=e.type}setTimeout(()=>{toggleUrlFieldsByType();o();setTimeout(()=>{const e=document.getElementById("dockerContainerSelect");if(e){e.value=""}},200)},100)}}function o(){const n=document.getElementById("dockerContainerSelect");if(!n)return;n.innerHTML='<option value="" selected>一键添加Docker应用</option>';fetch("./api/docker/containers").then(e=>{if(!e.ok){throw new Error("获取Docker容器失败")}return e.json()}).then(e=>{e.forEach(e=>{const t=document.createElement("option");t.value=JSON.stringify({name:e.name,port:e.port});t.textContent=e.name;n.appendChild(t)});n.value=""}).catch(e=>{console.error("获取Docker容器失败:",e);n.value=""})}const t=document.getElementById("dockerContainerSelect");if(t){t.addEventListener("change",function(){if(this.value){const e=JSON.parse(this.value);document.getElementById("editfndata_Title").value=e.name;document.getElementById("editfndata_Lan").value=e.port;setTimeout(()=>{if(window.autoFetchImage){window.autoFetchImage()}},100)}})}o()})</script>
                     
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div class="input-group">
-                            <label for="edit标题">* 标题（必须填写！）</label>
-                            <input type="text" id="edit标题" value="一个新图标" required onfocus="this.select()">
+                            <label for="editfndata_Title">* 标题（必须填写！）</label>
+                            <input type="text" id="editfndata_Title" value="一个新图标" required onfocus="this.select()">
                         </div>
                         <div id="publicUrlField" class="input-group">
-                            <label for="edit外网跳转URL">公网地址：（完整的URL地址）</label>
-                            <input type="text" id="edit外网跳转URL" placeholder="http:// or https://" value="" onfocus='if(this.value=="")this.value=window.waiwangURL;this.select()'>
+                            <label for="editfndata_Wan">公网地址：</label>
+                            <input type="text" id="editfndata_Wan" placeholder="例如：https://fnnas.com/" value="" onfocus='if(this.value=="")this.value=window.waiwangURL;this.select()'>
                         </div>
                     </div>
                     
                     
                     <div id="urlFieldsRow1" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div class="input-group">
-                            <label for="edit内网跳转URL">内网地址：（识别到内网将跳转到此地址）</label>
-                            <input type="text" id="edit内网跳转URL" placeholder="识别到内网将跳转到此地址" value="" onfocus='if(this.value=="")this.value=window.neiwangURL;this.select()'>
+                            <label for="editfndata_Lan">内网地址：（识别到内网将跳转到此地址）</label>
+                            <input type="text" id="editfndata_Lan" placeholder="若填端口号并开启飞牛图标可走FN Connect" value="" onfocus='if(this.value=="")this.value=window.neiwangURL;this.select()'>
                         </div>
                         <div class="input-group">
-                            <label for="edit备用URL1">备用URL1（桌面图标右键菜单可选）</label>
-                            <input type="text" id="edit备用URL1" placeholder="http:// or https://" onfocus="this.select()">
+                            <label for="editfndata_URL1">备用URL1（桌面图标右键菜单可选）</label>
+                            <input type="text" id="editfndata_URL1" placeholder="可填反代或组网地址备用" onfocus="this.select()">
                         </div>
                     </div>
                     
                     
                     <div id="urlFieldsRow2" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div class="input-group">
-                            <label for="edit备用URL2">备用URL2（桌面图标右键菜单可选）</label>
-                            <input type="text" id="edit备用URL2" placeholder="http:// or https://" onfocus="this.select()">
+                            <label for="editfndata_URL2">备用URL2</label>
+                            <input type="text" id="editfndata_URL2" placeholder="例如：5666" onfocus="this.select()">
                         </div>
                         <div class="input-group">
-                            <label for="edit备用URL3">备用URL3（桌面图标右键菜单可选）</label>
-                            <input type="text" id="edit备用URL3" placeholder="http:// or https://" onfocus="this.select()">
+                            <label for="editfndata_URL3">备用URL3</label>
+                            <input type="text" id="editfndata_URL3" placeholder="例如：9990/fnstyle.html" onfocus="this.select()">
                         </div>
                     </div>
                     
                     
                     <div class="grid grid-cols-1 gap-6 mb-6">
                         <div class="input-group" style="display: flex; flex-direction: column; gap: 0.5rem;">
-                            <label for="edit网络图片URL" style="display: none;">网络图片URL（若不填则尝试从URL中获取）</label>
-                            <input type="text" id="edit网络图片URL" placeholder="不填则尝试从URL中获取" class="flex-1" onfocus="this.select()" style="display: none;">
-                            <label for="edit本地图片URL">图标图片（若手动请别用中文，把图片放到deskdata/img/目录下）</label>
+                            <label for="editfndata_WanPic" style="display: none;">网络图片URL（若不填则尝试从URL中获取）</label>
+                            <input type="text" id="editfndata_WanPic" placeholder="不填则尝试从URL中获取" class="flex-1" onfocus="this.select()" style="display: none;">
+                            <label for="editfndata_LanPic">图标图片（点击获取则从5个URL中提取favicon图标）</label>
                             <div class="flex gap-2 items-center" style="width: 100%;">
                                 
                                 <div id="imagePreview" style="width: 50px; height: 50px; border: 1px solid var(--border-color); border-radius: 4px; background-color: rgba(15, 23, 42, 0.3); display: flex; align-items: center; justify-content: center; overflow: hidden;">
                                     <i class="fa fa-picture-o text-text-secondary" style="font-size: 20px;"></i>
                                 </div>
                                 
-                                <input type="text" id="edit本地图片URL" placeholder="1上传/2填入网络图片url/3点击获取/4手动" class="flex-1 flex-grow min-w-0" onfocus="this.select()" oninput="updateImagePreview(this.value)" style="flex: 1 1 auto; width: 0;">
+                                <input type="text" id="editfndata_LanPic" placeholder="可以直接填入网络图片URL,保存时会自动下载" class="flex-1 flex-grow min-w-0" onfocus="this.select()" oninput="updateImagePreview(this.value)" style="flex: 1 1 auto; width: 0;">
                                 <button id="autoFetchBtn" type="button" class="btn btn-primary whitespace-nowrap">获取</button>
                                 <button id="uploadLocalImgBtn" type="button" class="btn btn-primary whitespace-nowrap">上传</button>
                                 <input type="file" id="localImgFileInput" accept="image/*" style="display: none;">
@@ -1595,6 +1742,11 @@
                 </form>
             </div>
             <div class="modal-footer">
+                                            <div style="display: flex; gap: 10px; margin-bottom: 8px;">
+                                <select id="dockerContainerSelect" class="flex-1">
+                                    <option value="" selected="selected">一键添加Docker应用</option>
+                                </select>
+                            </div>
                 <a target="_blank" href="HDicon/HDicon.html" class="text-secondary mr-auto" style="margin-right: auto; padding-top: 10px;">
                     <small>打开图标库</small>
                 </a>
@@ -1636,7 +1788,12 @@
             <div class="modal-header">
                 <h2 class="modal-title">确认应用配置</h2>
             </div>
+    
             <div class="modal-body">
+                <a href="https://fndesk.imcq.top/images/fndesk备份指南.png" target="_blank" class="btn btn-secondary" style="margin-bottom: 0.2rem; padding: 0.2rem 0.4rem; font-size: 0.85rem; text-decoration: none !important;">
+                    <i class="fa fa-file-image-o"></i>图示1</a>
+                <a href="https://fndesk.imcq.top/images/fndesk配置文件说明.png" target="_blank" class="btn btn-secondary" style="margin-bottom: 0.2rem; padding: 0.2rem 0.4rem; font-size: 0.85rem; text-decoration: none !important;">
+                    <i class="fa fa-file-image-o"></i>图示2</a>
                 <p class="text-text-primary">确定要立即应用当前配置吗？（飞牛也是牛，请不要频繁点击此按钮）</p>
                 <p class="text-text-secondary text-sm mt-2">应用后若没效果请清空浏览器缓存/浏览器按F12在网络里禁用缓存/使用无痕模式浏览</p><br>
             </div>
@@ -1728,7 +1885,7 @@
         </div>
     </div>
 
-    <script>async function fetchAnnouncementContent(){const t=document.getElementById("announcementLoading");const c=document.getElementById("announcementError");const i=document.getElementById("announcementText");t.classList.remove("hidden");c.classList.add("hidden");i.classList.add("hidden");try{const n="";const e=`/api/announcement?url=${encodeURIComponent(n)}`;const o=await fetch(e,{method:"GET",headers:{Accept:"text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8"},cache:"no-cache"});if(!o.ok){throw new Error(`HTTP错误! 状态码: ${o.status} - ${o.statusText}`)}const a=await o.text();i.innerHTML=a;t.classList.add("hidden");i.classList.remove("hidden");c.classList.add("hidden")}catch(n){console.error("获取公告内容失败:",n.message);t.classList.add("hidden");c.classList.remove("hidden");let e=`加载失败: ${n.message}`;if(n.message.includes("CORS")){e+=" (可能是跨域访问限制)"}else if(n.message.includes("NetworkError")||n.message.includes("网络")){e+=" (可能是网络连接问题)"}c.innerHTML=`
+    <script>async function fetchAnnouncementContent(){const t=document.getElementById("announcementLoading");const c=document.getElementById("announcementError");const i=document.getElementById("announcementText");t.classList.remove("hidden");c.classList.add("hidden");i.classList.add("hidden");try{const n="";const e=`./api/announcement?url=${encodeURIComponent(n)}`;const o=await fetch(e,{method:"GET",headers:{Accept:"text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8"},cache:"no-cache"});if(!o.ok){throw new Error(`HTTP错误! 状态码: ${o.status} - ${o.statusText}`)}const a=await o.text();i.innerHTML=a;t.classList.add("hidden");i.classList.remove("hidden");c.classList.add("hidden")}catch(n){console.error("获取公告内容失败:",n.message);t.classList.add("hidden");c.classList.remove("hidden");let e=`加载失败: ${n.message}`;if(n.message.includes("CORS")){e+=" (可能是跨域访问限制)"}else if(n.message.includes("NetworkError")||n.message.includes("网络")){e+=" (可能是网络连接问题)"}c.innerHTML=`
                     <i class="fa fa-exclamation-circle fa-3x text-danger mb-3"></i>
                     <p>${e}</p>
                 `;i.innerHTML=`
@@ -1756,19 +1913,43 @@
                 <h2 class="modal-title">在线升级</h2>
             </div>
             <div class="modal-body">
-                <p class="text-text-primary">在线升级功能开发中...手动升级步骤： </p><br>
-                <p class="text-text-primary">应用中心升级：<br>下载最新安装包直接安装（<a target="_blank" href="https://fndesk.imcq.top/?url=dl&at=FnAPP" style="color: #60a5fa;font-size:16px; font-weight: bold; text-decoration: none;">fpk下载链接</a>）</p><br>
-                <p class="text-text-primary">Docker Compose升级步骤：</p>
-                <p class="text-text-secondary text-sm mt-2">1.打开Docker>Compose>fndesk项目>右边三个点>清理</p>
-                <p class="text-text-secondary text-sm mt-2">2.打开Docker>本地镜像>把imgzcq/fndesk镜像删除</p>
-                <p class="text-text-secondary text-sm mt-2">3.回到Docker>Compose>fndesk项目>右边三个点>构建</p><br>
+                <p class="text-text-primary">自我升级将会卸载应用然后下载重新安装,此过程全自动！</p>
+                <p class="text-text-secondary text-sm mt-2">注意：升级过程中请勿关闭浏览器，如果不小心关闭了，也不会有什么问题的。</p><br>
             </div>
             <div class="modal-footer">
                 <button id="cancelUpdateBtn" class="btn btn-secondary">
                     取 消
                 </button>
-                <button id="confirmUpdateBtn" class="btn btn-secondary">
-                    我知道了
+                <button id="confirmUpdateBtn" class="btn btn-primary">
+                    立即升级
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    
+    <script>document.getElementById("confirmUpdateBtn").addEventListener("click",async function(){showNotification("正常检测更新...","info");localStorage.removeItem("lastVersionCheckDate");await checkVersion();if(hasNewVersion){try{const e=document.createElement("iframe");e.id="loadingIframe";e.src="./loading.html";e.style.cssText=`
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         border: none;
+         z-index: 9999;
+     `;document.body.appendChild(e);showNotification("开始升级...请稍后...","info");await fetch("./api/download-and-install-fpk",{method:"GET"});setTimeout(function(){},1e3)}catch(e){console.error("升级请求失败:",e);showNotification("升级请求失败，请稍后重试","error");document.getElementById("updateModal").classList.add("hidden")}}else{showNotification("没找到有新版，请马上去鞭策作者...","info");document.getElementById("updateModal").classList.add("hidden")}})</script>
+    
+    
+    <div id="helpModal" class="modal-overlay hidden">
+        <div class="modal max-w-2xl">
+            <div class="modal-header">
+                <h2 id="helpModalTitle" class="modal-title">使用说明</h2>
+            </div>
+            <div id="helpModalBody" class="modal-body">
+                <p class="text-text-primary">这里是使用说明的内容，您可以根据需要自行编辑。</p>
+            </div>
+            <div class="modal-footer">
+                <button id="closeHelpBtn" class="btn btn-primary">
+                    关闭
                 </button>
             </div>
         </div>
@@ -1782,5 +1963,26 @@
     </footer>
 
     <script>document.addEventListener("DOMContentLoaded",function(){const n=document.getElementById("updateModal");const e=document.getElementById("menuUpdateDesktop");const t=document.getElementById("cancelUpdateBtn");const d=document.getElementById("confirmUpdateBtn");const c=document.getElementById("dropdownMenu");function o(){if(n){n.classList.remove("hidden")}if(c){c.style.display="none"}}function i(){if(n){n.classList.add("hidden")}}if(e){e.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();o()})}if(t){t.addEventListener("click",i)}if(d){d.addEventListener("click",i)}document.addEventListener("keydown",e=>{if(e.key==="Escape"&&n&&!n.classList.contains("hidden")){i()}})})</script>
+    <script>document.addEventListener("DOMContentLoaded",function(){const t=document.getElementById("helpModal");const i=document.getElementById("helpModalTitle");const l=document.getElementById("helpModalBody");const e=document.getElementById("helpBtn");const n=document.getElementById("closeHelpBtn");window.openHelpModal=function(e="开关使用说明",n=`
+        <ul>
+            <li><strong>绿色开关:</strong> 原创图标/文件夹</li>
+            <li><strong>蓝色开关:</strong> 飞牛原生系统图标</li>
+            <li><strong>注 意:</strong> 两个开关独立互不冲突</li><br>
+        </ul>
+        
+        <h3>特性</h3>
+        <h4>原创图标/文件夹:</h4>
+         <ul>
+        <li>  自由度高,每个图标最多能容纳5个链接</li>
+        <li>  独有的右键菜单控制,随意决定页內或新窗口打开连接,智能识别内外网</li>
+        <li>  有不同样式风格可选,支持建立多层文件夹,再多链接也不怕完美取代收藏夹</li><br>
+       </ul>
+        <h4>飞牛图标:</h4>
+         <ul>
+        <li>  和飞牛原生图标体验一模一样，能在APP上显示并使用</li>
+        <li>  直接填写端口所有本地Docker服务能通过FN Connect完美访问</li>
+        <li>  也能自定义非本地服务链接且同时具备智能跳转内外网链接</li><br>
+        </ul>
+    `){if(i){i.textContent=e}if(l){l.innerHTML=n}if(t){t.classList.remove("hidden")}};function o(){if(t){t.classList.add("hidden")}}if(e){e.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();window.openHelpModal()})}if(n){n.addEventListener("click",o)}if(t){t.addEventListener("click",function(e){if(e.target===t){o()}})}document.addEventListener("keydown",e=>{if(e.key==="Escape"&&t&&!t.classList.contains("hidden")){o()}})})</script>
 </body>
 </html>
