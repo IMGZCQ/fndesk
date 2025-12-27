@@ -1,0 +1,762 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Fndesk 音乐播放器</title>
+<link rel="icon" href="/app-center-static/serviceicon/fndesk/ui/images/icon_%7B0%7D.png?size=256" type="image/png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font: 16px "Helvetica Neue",Helvetica,Arial,"Lucida Grande",sans-serif;
+  background: linear-gradient(135deg, #0a192f 0%, #112240 50%, #233554 100%);
+  color: #e6f1ff;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 容器样式，限制横屏宽度 - 移动端基础样式 */
+.container {
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+  background: rgba(10, 25, 47, 0.8);
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  border: 1px solid rgba(0, 255, 255, 0.15);
+}
+
+/* 播放器主体样式 - 移动端基础样式 */
+#player {
+  width: 100%;
+  padding: 15px 15px 3px 15px;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, rgba(17, 34, 64, 0.95) 0%, rgba(10, 25, 47, 0.95) 100%);
+  border-bottom: 1px solid rgba(0, 255, 255, 0.15);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* 播放器内容区域 */
+#player .player-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+/* 封面样式 - 移动端基础样式 */
+#player .cover {
+  background: linear-gradient(135deg, rgba(0, 255, 255, 0.05) 0%, rgba(0, 128, 255, 0.05) 100%);
+  border: 1px solid rgba(0, 255, 255, 0.15);
+  overflow: hidden;
+  border-radius: 12px;
+  width: 120px;
+  height: 120px;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  flex-shrink: 0;
+}
+
+#player .cover img {
+  border-radius: 12px;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+}
+
+#player .cover .no-cover {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: #00ffff;
+  background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, rgba(0, 128, 255, 0.1) 100%);
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  padding: 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  border: 1px dashed rgba(0, 255, 255, 0.5);
+}
+
+/* 播放器信息区域 */
+#player .player-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  min-width: 0;
+}
+
+/* 标签信息样式 - 移动端基础样式 */
+#player .tag {
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.25);
+  line-height: 20px;
+  min-width: 0;
+}
+
+#player .tag strong, #player .tag span {
+  display: block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+#player .tag strong {
+  color: #00ffff;
+  font-size: 18px;
+}
+
+#player .tag span {
+  font-size: 14px;
+  margin-top: 5px;
+  color: #a8b2d1;
+}
+
+
+
+/* 按钮图标样式 - 移动端基础样式 */
+#player .icon {
+  display: inline-block;
+  opacity: 0.7;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  transition: all 0.3s ease;
+  user-select: none;
+  font-size: 20px;
+  color: #a8b2d1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 歌词切换按钮样式 */
+#player .lyrics-toggle {
+  display: inline-block;
+  opacity: 0.7;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  transition: all 0.3s ease;
+  user-select: none;
+  font-size: 22px;
+  color: #a8b2d1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* 退出登录按钮样式 */
+#player .logout {
+  display: inline-block;
+  opacity: 0.3;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  transition: all 0.3s ease;
+  user-select: none;
+  font-size: 22px;
+  color: #a8b2d1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+#player .icon:hover, #player .icon.enable {
+  opacity: 1;
+  color: #00ffff;
+  text-shadow: 0 0 7px rgba(0, 255, 255, 0.4);
+  transform: scale(1.1);
+}
+
+#player .logout:hover, #player .logout.enable {
+  opacity: 1;
+  color: #00ffff;
+  text-shadow: 0 0 7px rgba(0, 255, 255, 0.4);
+  transform: scale(1.1);
+}
+
+#player .icon:active {
+  opacity: 0.8;
+  transform: scale(0.95);
+}
+
+#player .logout:active {
+  opacity: 0.8;
+  transform: scale(0.95);
+}
+
+/* 播放状态样式 */
+#player .playback.playing {
+  opacity: 1;
+  color: #00ffff;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+  background: rgba(0, 255, 255, 0.1);
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.25);
+  animation: playback-pulse 1s infinite;
+}
+
+@keyframes playback-pulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(0, 255, 255, 0.25); }
+  50% { box-shadow: 0 0 15px rgba(0, 255, 255, 0.4); }
+}
+
+/* 控制按钮区域 - 移动端基础样式 */
+#player .control {
+  margin-top: 0;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+#player .control .left {
+  display: flex;
+  align-items: center;
+}
+
+#player .control .volume.right {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+#player .control .rewind i {
+  font-size: 24px;
+}
+
+#player .control .playback {
+  margin: 0 5px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#player .control .playback i {
+  font-size: 32px;
+  display: block;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+#player .control .fastforward i {
+  font-size: 24px;
+}
+
+#player .control .volume .mute i {
+  font-size: 22px;
+}
+
+/* 滑块样式 */
+.slider {
+  background: rgba(0, 0, 0, 0.5);
+  height: 6px;
+  position: relative;
+  cursor: pointer;
+  border-radius: 3px;
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.1) inset;
+  border: 1px solid rgba(0, 255, 255, 0.15);
+}
+
+/* 歌词显示区域样式 */
+.lyrics-container {
+  width: 100%;
+  text-align: center;
+  margin: 2px 0;
+  padding: 4px;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 255, 255, 0.1);
+  min-height: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.lyrics-line {
+  width: 100%;
+  text-align: center;
+  font-size: 16px;
+  color: #a8b2d1;
+  margin: 1px 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.lyrics-line.current {
+  color: #00ffff;
+  font-weight: bold;
+  font-size: 18px;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.lyrics-line.next {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+
+
+.slider:hover a, .slider.enable a {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+.slider a {
+  background: #00ffff;
+  margin-left: -6px;
+  position: absolute;
+  opacity: 0.8;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 7px rgba(0, 255, 255, 0.4);
+  top: -3px;
+}
+
+.slider .loaded, .slider .pace {
+  position: absolute;
+  height: 100%;
+  opacity: 0.8;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+.slider .loaded {
+  background: rgba(0, 255, 255, 0.2);
+}
+
+.slider .pace {
+  background: linear-gradient(90deg, #00ffff 0%, #00aaff 100%);
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+}
+
+#player .control .volume .slider {
+  width: 80px;
+  margin: 0;
+  display: block !important;
+  opacity: 1 !important;
+}
+
+/* 进度条区域 */
+#player .progress-bar {
+  width: 100%;
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+#player .progress-bar .slider {
+  width: 100%;
+}
+
+#player .progress-bar .progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 5px;
+}
+
+#player .progress-bar .timer.left {
+  font-size: 14px;
+  color: #00ffff;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+#player .progress-bar .right.controls {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  margin: 5px 10px;
+}
+
+/* 修复播放按钮位置问题 */
+#player .playback.playing {
+  transform: scale(1.1);
+  /* 移除可能导致位置上移的transform: translateY或top属性 */
+}
+
+#player .progress-bar .repeat, #player .progress-bar .shuffle {
+  width: 28px;
+  height: 28px;
+  font-size: 20px;
+}
+
+#player .progress-bar .repeat i, #player .progress-bar .shuffle i {
+  font-size: 20px;
+}
+
+#player .progress-bar .repeat.once, #player .progress-bar .repeat.all {
+  opacity: 1;
+  color: #00ffff;
+  text-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+}
+
+#player .progress-bar .repeat.once {
+  position: relative;
+}
+
+#player .progress-bar .repeat.once:before {
+  content: "1";
+  position: absolute;
+  top: 3px;
+  right: 2px;
+  font-size: 10px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: none;
+}
+
+/* 播放列表样式 - 移动端基础样式 */
+#playlist {
+  background: rgba(10, 25, 47, 0.8);
+  margin-top: 0;
+  padding: 10px;
+  list-style: none;
+  border-radius: 0;
+  box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.05);
+  flex: 1;
+  overflow-y: auto;
+  box-sizing: border-box;
+  border-top: 1px solid rgba(0, 255, 255, 0.15);
+}
+
+#playlist li {
+  color: #a8b2d1;
+  font-size: 14px;
+  line-height: 2.5;
+  padding-left: 30px;
+  cursor: pointer;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+/* 删除文件项前面的Font Awesome音乐符号，使用JavaScript中直接添加的emoji符号 */
+
+/* 目录项样式调整 */
+#playlist li.directory-item {
+  padding-left: 25px;
+  font-weight: bold;
+}
+
+/* 目录项展开/折叠图标 */
+#playlist li.directory-item:before {
+  content: none;
+}
+
+#playlist li:hover {
+  color: #00ffff;
+  text-shadow: 0 0 7px rgba(0, 255, 255, 0.4);
+  padding-left: 38px;
+}
+
+#playlist li.playing {
+  color: #00ffff;
+  font-weight: bold;
+  background: rgba(0, 255, 255, 0.1);
+  border-radius: 4px;
+  text-shadow: 0 0 7px rgba(0, 255, 255, 0.4);
+}
+
+#playlist li.playing:before {
+  content: none;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
+  50% { opacity: 0.7; transform: translateY(-50%) scale(1.2); }
+}
+
+/* 当前播放歌曲所在目录的样式 */
+#playlist .directory-item.current-dir,
+.directory-item.current-dir {
+  color: #00ffff !important;
+  font-weight: bold;
+  text-shadow: 0 0 7px rgba(0, 255, 255, 0.4);
+}
+
+/* 确保目录项前面没有任何图标 */
+#playlist li.directory-item:before {
+  display: none !important;
+}
+
+/* 确保播放中的目录项前面也没有播放图标 */
+#playlist li.directory-item.playing:before {
+  display: none !important;
+}
+
+/* 自定义滚动条样式 */
+#playlist::-webkit-scrollbar {
+  width: 8px;
+}
+
+#playlist::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  border: 1px solid rgba(0, 255, 255, 0.15);
+}
+
+#playlist::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(0, 255, 255, 0.5) 0%, rgba(0, 128, 255, 0.5) 100%);
+  border-radius: 4px;
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.25);
+  border: 1px solid rgba(0, 255, 255, 0.15);
+}
+
+#playlist::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(0, 255, 255, 0.8) 0%, rgba(0, 128, 255, 0.8) 100%);
+  box-shadow: 0 0 7px rgba(0, 255, 255, 0.4);
+}
+
+/* Firefox滚动条样式 */
+#playlist {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 255, 255, 0.5) rgba(0, 0, 0, 0.5);
+}
+
+/* 辅助类 */
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+.clear {
+  clear: both;
+}
+
+/* 响应式布局 */
+@media screen and (min-width: 601px) {
+  .container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}
+
+/* PC端放大样式 - 只在屏幕宽度大于600px时应用 */
+@media screen and (min-width: 601px) {
+  /* 容器放大 */
+  .container {
+    max-width: 800px;
+  }
+  
+  /* 播放器主体放大 */
+
+  
+  /* 封面放大 */
+  #player .cover {
+    border-radius: 16px;
+    width: 150px;
+    height: 150px;
+  }
+  
+  #player .cover img {
+    border-radius: 16px;
+    width: 150px;
+    height: 150px;
+  }
+  
+  #player .cover .no-cover {
+    font-size: 16px;
+    width: 150px;
+    height: 150px;
+    border-radius: 16px;
+    padding: 15px;
+  }
+  
+  /* 标签文字放大 */
+  #player .tag {
+    line-height: 24px;
+  }
+  
+  #player .tag strong {
+    font-size: 22px;
+  }
+  
+  #player .tag span {
+    font-size: 16px;
+    margin-top: 8px;
+  }
+  
+  /* 按钮图标放大 */
+  #player .icon {
+    width: 36px;
+    height: 24px;
+    font-size: 24px;
+  }
+  
+  /* 播放按钮放大 */
+  #player .control .playback {
+    margin: 0 20px;
+    width: 50px;
+    height: 50px;
+  }
+  
+  #player .control .playback i {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+  }
+  
+  /* 控制区域高度增加 */
+  #player .control {
+    height: 60px;
+  }
+  
+  /* 播放列表放大 */
+  #playlist {
+    padding: 15px;
+  }
+  
+  #playlist li {
+    font-size: 16px;
+    padding-left: 35px;
+  }
+}
+
+/* 移动端缩小样式 - 只在屏幕宽度小于等于600px时应用 */
+@media screen and (max-width: 600px) {
+    #player {
+    padding: 5px 10px 1px 5px;
+    gap: 0px;
+  }
+  #player .cover {
+    width: 100px;
+    height: 100px;
+  }
+  
+  #player .cover img {
+    width: 100px;
+    height: 100px;
+  }
+  
+  #player .cover .no-cover {
+    width: 100px;
+    height: 100px;
+    font-size: 12px;
+  }
+  
+  #player .tag strong {
+    font-size: 16px;
+  }
+  
+  #player .tag span {
+    font-size: 13px;
+  }
+}
+</style>
+<script src="js/jquery-1.7.2.min.js"></script>
+<script>function checkLoginStatus(){const t=localStorage.getItem("musicPlayerAuthenticated")==="true";const e=localStorage.getItem("musicPlayerAuthExpiration");if(!t||!e){window.location.href="login.html";return}const o=new Date(e);const n=new Date;if(n>=o){localStorage.removeItem("musicPlayerAuthenticated");localStorage.removeItem("musicPlayerAuthExpiration");window.location.href="login.html";return}const a=localStorage.getItem("musicPlayerNoPasswordMode")==="true";if(a){document.querySelector(".logout").style.display="none"}}window.onload=function(){checkLoginStatus()}</script>
+</head>
+<body>
+<div class="container">
+  <div id="background"></div>
+  <div id="player">
+    <div class="player-content">
+      <div class="cover"></div>
+      <div class="player-info">
+        <div class="tag">
+          <strong>Title</strong>
+          <span class="artist">Artist</span>
+          <span class="album">Album</span>
+        </div>
+        <div class="control">
+          <div class="left">
+            <div class="rewind icon" title="上一曲"><i class="fas fa-step-backward"></i></div>
+            <div class="playback icon" title="播放/暂停"><i class="fas fa-play"></i></div>
+            <div class="fastforward icon" title="下一曲"><i class="fas fa-step-forward"></i></div>
+          </div>
+          <div class="volume right">
+            <div class="mute icon" title="音量"><i class="fas fa-volume-up"></i></div>
+            <div class="slider">
+              <div class="pace"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="progress-bar">
+      <div class="slider">
+        <div class="loaded"></div>
+        <div class="pace"></div>
+      </div>
+      <div class="progress-info">
+        <div class="timer left">0:00</div>
+        <div class="right controls">
+          <div class="logout icon" title="退出登录">退</div>
+          <div class="repeat icon" title="循环播放"><i class="fas fa-repeat"></i></div>
+          <div class="shuffle icon" title="随机播放"><i class="fas fa-shuffle"></i></div>
+          <div class="lyrics-toggle icon" title="显示/隐藏歌词">词</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="lyrics-container">
+      <div class="lyrics-line current"></div>
+      <div class="lyrics-line next"></div>
+    </div>
+  </div>
+  <ul id="playlist"></ul>
+</div>
+
+<script src="js/jsmediatags.min.js"></script>
+<script src="js/jquery-ui-1.8.17.custom.min.js"></script>
+
+
+<script src="js/script_player.js"></script>
+<script>fetch("/deskdata/fnstyle.json?v="+(new Date).getTime()).then(e=>e.json()).then(e=>{if(e.fndeskMP3_name){document.title=e.fndeskMP3_name}const t=document.querySelector('link[rel="icon"]');if(t&&e.fndeskMP3_ico){t.href=e.fndeskMP3_ico}}).catch(e=>{console.error("Failed to fetch fnstyle.json:",e)});document.addEventListener("DOMContentLoaded",function(){const e=document.querySelector(".logout");if(e){e.addEventListener("click",function(){localStorage.removeItem("musicPlayerAuthenticated");localStorage.removeItem("musicPlayerAuthExpiration");window.location.href="login.html"})}})</script>
+</body>
+</html>
