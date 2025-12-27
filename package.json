@@ -1,1 +1,0 @@
-{"name":"米恋泥飞牛桌面管理","version":"1.0.0","main":"server.js","scripts":{"start":"node server.js","build":""},"dependencies":{"adm-zip":"^0.5.16","formidable":"^3.5.4","httpolyglot":"^0.1.2"},"devDependencies":{"clean-css":"^5.3.3","html-minifier":"^4.0.0","uglify-js":"^3.19.3"}}
