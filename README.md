@@ -41,6 +41,9 @@
   [fpk下载链接](https://fndesk.imcq.top/?url=dl&at=GitHUb "点击我没错了")
   
 ## <span style="color:#06d6a0">更新日志</span>
+#### 2025.12.230 v0.96.x  
+- ☑️ 船新一目了然版
+- ☑️ 优化窗口层级关系
 #### 2025.12.25 v0.95  
 - ☑️ 图标完美适配飞牛APP显示,支持FN Connect连接打开
 #### 2025.12.24 v0.94  
