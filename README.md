@@ -38,7 +38,8 @@
 <div style="background-color: #e6f7ff; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
    <h4 style="margin-top: 0;">1.新手推荐:下载飞牛应用安装包,到应用中心左下角手动安装：</h4>
   
-  [fpk下载链接](https://fndesk.imcq.top/?url=dl&at=GitHUb "点击我没错了")
+  [fpk下载链接](https://fndesk.imcq.top/?url=dl&at=GitHUb "点击我没错了")  
+  (*Docker版已停)
   
 ## <span style="color:#06d6a0">更新日志</span>
 #### 2026.01.12 v1.0.x  
