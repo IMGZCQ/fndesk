@@ -5,6 +5,7 @@
   <p style="font-size: 18px; margin-bottom: 0;">我的飞牛我做主,多处自定样式主题美化,桌面图标任君摆布,让飞牛成为你的导航页，收藏夹,Docker应用入口</p>
 </div>
 
+
 ## <span style="color:#4ecdc4">主要功能</span>
 🌈 动态视频背景，LOGO，标题，预设主题等个性化定制  
 🎵 飞牛桌面音乐播放器正式上线！从此桌面不再沉默  
@@ -40,7 +41,9 @@
   
   [fpk下载链接](https://fndesk.imcq.top/?url=dl&at=GitHUb "点击我没错了")  
      <h4 style="margin-top: 0;">2.Docker部署：</h4>
-  (*Docker版已停)
+  (*Docker版已停)  
+  
+  <img width="575" height="246" alt="62775580646825611f76c672e11c91f6" src="https://github.com/user-attachments/assets/7c58ea66-ca1a-4d65-8b26-cce89bde813c" />  
   
 ## <span style="color:#06d6a0">更新日志</span>
 #### 2026.01.26~28
