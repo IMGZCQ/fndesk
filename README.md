@@ -242,11 +242,16 @@
 <img width="1270" height="992" alt="ScreenShot_2025-10-30_111530_261" src="https://github.com/user-attachments/assets/f84ebfa8-e060-468c-9749-8feac117302b" />
 <img width="1051" height="1246" alt="image" src="https://github.com/user-attachments/assets/7ccde508-6035-44a7-8d10-fed973b8ad22" />
 <img width="1037" height="1044" alt="1111" src="https://github.com/user-attachments/assets/5cd746cd-345f-4e56-9975-e4b30ea427ed" />
-<img width="1001" height="1011" alt="11113" src="https://github.com/user-attachments/assets/7aba2b91-81c9-4651-8b7e-1c3b2d5758f2" />
-<img width="855" height="957" alt="ScreenShot_2025-11-12_000235_088" src="https://github.com/user-attachments/assets/73b4a832-aa8d-40f8-9881-0432f8fe78eb" />
 
-
-
+## 友情链接:
+<div style="text-align: center; /* 可选：让图片和文字居中对齐，更美观 */">
+  <a href="https://github.com/donknap/dpanel" target="_blank">
+    <img src="https://cdn.w7.cc/dpanel/dpanel-logo.png" alt="DPanel" width="300" style="margin: 0; padding: 0; display: block; /* 消除图片默认的行内间距 */" />
+  </a>
+  <p style="margin: 2px 0 0 0; /* 仅保留顶部极窄间距，实现紧贴，可按需调整数值 */ padding: 0;">
+    Dpanel 一套Docker可视化面板系统
+  </p>
+</div>
 
 
 
