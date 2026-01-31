@@ -222,8 +222,18 @@
 #### 2025.10.26 v0.30  
 - ✅ 增加登录验证页  
 #### 2025.10.25 之前版本  
-- ✅ 对图标/文件夹的基本操作  
-  
+- ✅ 对图标/文件夹的基本操作
+
+## 友情链接:
+<div style="text-align: center; /* 可选：让图片和文字居中对齐，更美观 */">
+  <a href="https://github.com/donknap/dpanel" target="_blank">
+    <img src="https://cdn.w7.cc/dpanel/dpanel-logo.png" alt="DPanel" width="200" style="margin: 0; padding: 0; display: block; " />
+  </a>
+  <p style="margin: 2px 0 0 0; /* 仅保留顶部极窄间距，实现紧贴，可按需调整数值 */ padding: 0;">
+    Dpanel 一套Docker可视化面板系统
+  </p>
+</div>  
+
 ## <span style="color:#7209b7">效果展示</span>
 
 **文件夹自由拖放，自由缩放，双击最大化**
@@ -243,15 +253,7 @@
 <img width="1051" height="1246" alt="image" src="https://github.com/user-attachments/assets/7ccde508-6035-44a7-8d10-fed973b8ad22" />
 <img width="1037" height="1044" alt="1111" src="https://github.com/user-attachments/assets/5cd746cd-345f-4e56-9975-e4b30ea427ed" />
 
-## 友情链接:
-<div style="text-align: center; /* 可选：让图片和文字居中对齐，更美观 */">
-  <a href="https://github.com/donknap/dpanel" target="_blank">
-    <img src="https://cdn.w7.cc/dpanel/dpanel-logo.png" alt="DPanel" width="300" style="margin: 0; padding: 0; display: block; /* 消除图片默认的行内间距 */" />
-  </a>
-  <p style="margin: 2px 0 0 0; /* 仅保留顶部极窄间距，实现紧贴，可按需调整数值 */ padding: 0;">
-    Dpanel 一套Docker可视化面板系统
-  </p>
-</div>
+
 
 
 
