@@ -46,6 +46,13 @@
   <img width="575" height="246" alt="62775580646825611f76c672e11c91f6" src="https://github.com/user-attachments/assets/7c58ea66-ca1a-4d65-8b26-cce89bde813c" />  
   
 ## <span style="color:#06d6a0">更新日志</span>
+
+#### 2026.02.01
+- x86 v1.1.18x
+- ☑️ 适配x86飞牛1.1.18
+- ☑️ 新增飞牛登录界面安全入口
+- arm_v1.0.2
+- ✅ 無
 #### 2026.01.26~28
 - x86 v1.1.15x
 - ☑️ 适配x86飞牛1.1.15
