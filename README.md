@@ -1,7 +1,8 @@
 # <span style="color:#ff6b6b">fndesk</span> 飞牛桌面管理工具
 
 <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; color: white; margin: 20px 0;">
-  <h2 style="margin-top: 0;">实在太强大！</h2>
+  <h2 style="margin-top: 0;">重要!所有用户务必升级最新版飞牛,飞牛加油<img width="48" height="48" alt="05D4A3B9" src="https://github.com/user-attachments/assets/8029de20-2a25-4e3f-b124-76a5a52b9a2d" />
+</h2>
   <p style="font-size: 18px; margin-bottom: 0;">我的飞牛我做主,多处自定样式主题美化,桌面图标任君摆布,让飞牛成为你的导航页，收藏夹,Docker应用入口</p>
 </div>
 
