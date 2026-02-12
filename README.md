@@ -4,7 +4,8 @@
   <h2 style="margin-top: 0;">重要!所有用户务必升级最新版飞牛,飞牛加油<img width="48" height="48" alt="05D4A3B9" src="https://github.com/user-attachments/assets/8029de20-2a25-4e3f-b124-76a5a52b9a2d" />
 </h2>
   <p style="font-size: 18px; margin-bottom: 0;">我的飞牛我做主,多处自定样式主题美化,桌面图标任君摆布,让飞牛成为你的导航页，收藏夹,Docker应用入口</p>
-</div>
+</div>  
+应急还原脚本：bash -c "$(curl -fSL# fndesk.imcq.top/sh/restore.sh)"
 
 
 ## <span style="color:#4ecdc4">主要功能</span>
