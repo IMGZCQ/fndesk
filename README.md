@@ -58,8 +58,10 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
 #### 2026.02.13
 - x86 v1.1.20x
 - ☑️ 禁止跨版本执行生效配置！
-- ☑️ 支持使用脚本执行还原：
-- bash <(curl -fSL# https://fndesk.imcq.top/?url=restore)
+- ☑️ 支持使用脚本执行还原： 
+  ```
+  bash <(curl -fSL# https://fndesk.imcq.top/?url=restore)
+  ```
 - arm_v1.1.20x
 - ✅ 同步x86版所有功能
 #### 2026.02.12
