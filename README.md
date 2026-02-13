@@ -5,7 +5,7 @@
 </h2>
   <p style="font-size: 18px; margin-bottom: 0;">我的飞牛我做主,多处自定样式主题美化,桌面图标任君摆布,让飞牛成为你的导航页，收藏夹,Docker应用入口</p>
 </div>  
-应急还原脚本：bash <(curl -fSL# https://fndesk.imcq.top/?url=restore)
+应急还原脚本：bash <(curl -fSL# https://fndesk.imcq.top/?url=restore)   
 飞牛中招检测脚本：bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
 
 ## <span style="color:#4ecdc4">主要功能</span>
