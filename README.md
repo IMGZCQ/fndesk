@@ -56,7 +56,9 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
 ## <span style="color:#06d6a0">更新日志</span>
 
 #### 2026.02.13
-- x86 v1.1.20x
+- x86 v1.1.22x
+- ☑️ 提前适配内测x86_1.1.22
+- ☑️ 完善立即生效版本控制
 - ☑️ 禁止跨版本执行生效配置！
 - ☑️ 支持使用脚本执行还原： 
   ```
