@@ -55,6 +55,12 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
   
 ## <span style="color:#06d6a0">更新日志</span>
 
+#### 2026.02.27
+- x86 v1.1.23x
+- ☑️ 调整桌面提示策略
+- 🎵 优化音乐速听播放页面
+- arm v1.1.22x
+- ✅ 同步x86版所有功能
 #### 2026.02.26
 - x86 v1.1.22x
 - ☑️ 允许用户跨版本强制执行立即生效
@@ -70,7 +76,7 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
   ```
   bash <(curl -fSL# https://fndesk.imcq.top/?url=restore)
   ```
-- arm_v1.1.20x
+- arm v1.1.20x
 - ✅ 同步x86版所有功能
 #### 2026.02.12
 - x86 v1.1.19x
@@ -78,7 +84,7 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
 - ☑️ 适配飞牛相册0.8.61
 - ☑️ 大幅优化性能,修复已知错误
 - ☑️ 播放器对文件名特殊符号处理
-- arm_v1.1.19x
+- arm v1.1.19x
 - ✅ 适配arm飞牛1.1.19
 - ✅ 同步x86版所有功能
 #### 2026.02.01~06
@@ -89,7 +95,7 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
 - ☑️ 优化页面性能
 - ☑️ 增加应用中心和Fndesk右键菜单
 - ☑️ 播放器增加返回顶部按钮,独立版增加一款样式
-- arm_v1.1.18x
+- arm v1.1.18x
 - ✅ 适配arm飞牛1.1.18
 - ✅ 同步x86版所有功能,友好地打开页面
 #### 2026.02.01
@@ -97,7 +103,7 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
 - ☑️ 适配x86飞牛1.1.18
 - ☑️ 新增飞牛登录界面安全入口
 - ☑️ 修复外链分享页失效
-- arm_v1.0.2.1
+- arm v1.0.2.1
 - ✅ 新增飞牛登录界面安全入口
 - ✅ 播放器优化性能 多款皮肤 
 - ✅ 播放器新增搜索栏
@@ -116,14 +122,14 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
 - -N/P:下一首/上一首
 - -S/R/L：随机/循环/歌词
 - -搜索栏：回车执行搜索，ESC清空搜索
-- arm_v1.0.2
+- arm v1.0.2
 - ✅ 無
 #### 2026.01.19
 - x86 v1.1.14x
 - ☑️ 适配x86飞牛1.1.14内测版
 - ☑️ 适配内测影视0.8.60
 - ☑️ 修正图标尺寸
-- arm_v1.0.2
+- arm v1.0.2
 - ✅ 适配arm飞牛1.0.2内测版
 - ——————————————————————
 - 近期因x86/arm,内/公测版本各不同
