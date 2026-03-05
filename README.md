@@ -57,6 +57,7 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
 
 #### 2026.02.27
 - x86 v1.1.23x
+- ☑️ 支持文件管理直接新建文件
 - ☑️ 调整桌面提示策略
 - 🎵 优化音乐速听播放页面
 - arm v1.1.22x
