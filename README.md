@@ -57,6 +57,7 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
 
 #### 2026.02.27
 - x86 v1.1.23x
+- 🎵 Fndesk Music也支持飞牛APP端后台连续播放
 - ☑️ 支持文件管理直接新建文件
 - ☑️ 适配飞牛影视0.9.3
 - ☑️ 调整桌面提示策略
