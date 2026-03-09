@@ -59,7 +59,7 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
 - x86 v1.1.23x
 - 🏷️ 更换依赖nodejs22>nodejs24
 - ☑️ 新建文件兼容多文件管理窗口
-- ☑️ 图标库支持上传图标
+- ☑️ 图标库支持上传图标&修正复制路径
 - 🎵 Fndesk Music也支持飞牛APP端后台连续播放
 - ☑️ 支持文件管理直接新建文件
 - ☑️ 适配飞牛影视0.9.3
