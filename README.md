@@ -55,8 +55,9 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
   
 ## <span style="color:#06d6a0">更新日志</span>
 
-#### 2026.02.27~03.16
+#### 2026.02.27~03.18
 - x86 v1.1.23x
+- ☑️ 桌面性能再次大幅提升！
 - ☑️ 不受nodejs版本限制，自动全兼容
 - ⭐️ 支持自定义Docker面板容器和项目的图标
 - ☑️ 改进系统图标放进文件夹不再需要额外隐藏
