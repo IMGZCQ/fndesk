@@ -56,10 +56,11 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
 ## <span style="color:#06d6a0">更新日志</span>
 
 #### 2026.03.20~03.27
-- - x86 v1.1.26x
+- X86 v1.1.26x
 - ⭐️ Docker界面图标V3,二级界面也能显示,纯原生实现超流畅！
 - 🎵 音乐文件默认打开页面可选
-- - arm v1.1.24x
+- ☑️ 不区分arm和x86安装包,实现all适配
+- ARM v1.1.24x
 - ✅ 同步x86版所有功能
 #### 2026.02.27~03.18
 - x86 v1.1.23x
