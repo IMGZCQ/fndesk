@@ -57,6 +57,7 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
 
 #### 2026.03.20~03.30
 - X86 v1.1.26x
+- ☑️ Fndesk Music支持无损格式
 - ☑️ 分享页适配相册0.9
 - ☑️ 修复大文件桌面背景不显示问题
 - ⭐️ Docker界面图标V3,二级界面也能显示,纯原生实现超流畅！
