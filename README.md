@@ -57,6 +57,10 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
 
 #### 2026.03.20~03.30
 - X86 v1.1.26x
+- 🧊 可指定用户生效个性化配置！
+- ⭐️ Docker界面图标V4,支持日志和终端界面显示图标！
+- ☑️ 修复EISDIR错误导致Fndesk异常退出
+- ☑️ 修复图标管理页的分页显示功能
 - ☑️ Fndesk Music支持无损格式
 - ☑️ 分享页适配相册0.9
 - ☑️ 修复大文件桌面背景不显示问题
