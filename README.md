@@ -57,6 +57,7 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
 
 #### 2026.03.20~03.30
 - X86 v1.1.26x
+- ☑️ 又双叒叕调整内外网检测逻辑&其他小调整
 - 🧊 可指定用户生效个性化配置！
 - ⭐️ Docker界面图标V4,支持日志和终端界面显示图标！
 - ☑️ 修复EISDIR错误导致Fndesk异常退出
