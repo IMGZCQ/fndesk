@@ -57,6 +57,7 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
 
 #### 2026.04.13
 - **X86 v1.1.28x**
+- 👑 炸裂支持桌面图标自由拖拽排序！
 - ☑️ 适配工作持续进行中！
 - **ARM v1.1.27x**
 - ✅ 同步x86版所有功能
