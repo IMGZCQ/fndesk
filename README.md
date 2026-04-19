@@ -57,6 +57,8 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
 
 #### 2026.04.17~
 - **X86 v1.1.29x**
+- ⭐️ Docker界面图标V5,新增支持本地镜像界面
+- ☑️ 原创窗口和文件夹适配移动web端
 - ☑️ 大幅降低node进程的内存占用！
 - **ARM v1.1.27x**
 - ✅ 同步x86版所有功能
