@@ -55,6 +55,11 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
   
 ## <span style="color:#06d6a0">更新日志</span>
 
+#### 2026.04.24~
+- **X86 v1.1.30x**
+- ☑️ 适配飞牛v1.1.30
+- **ARM v1.1.27x**
+- ✅ 同步x86版所有功能
 #### 2026.04.17~
 - **X86 v1.1.29x**
 - 👑 重磅：飞牛窗口毛玻璃效果，观感原地起飞！
