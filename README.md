@@ -1,7 +1,8 @@
 # <span style="color:#ff6b6b">fndesk</span> 飞牛桌面管理工具
 
 <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; color: white; margin: 20px 0;">
-  <img width="1198" height="1313" alt="446b9bf0f93fb83e7c87df6e1459b97e" src="https://github.com/user-attachments/assets/d34411a9-0028-4a30-b07a-940cbf1a59c4" />
+  <img width="1149" height="1369" alt="1a8d7cb0a7f1e43fe6f91f04bc270d69" src="https://github.com/user-attachments/assets/e194e754-e6c8-4322-b05e-54b1908d67d8" />
+
   <h2 style="margin-top: 0;">我的飞牛我做主,多处自定样式主题美化,桌面图标任君摆布,让飞牛成为你的导航页，收藏夹,Docker应用入口</h2>
 </div>  
 
@@ -337,7 +338,7 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
 - ✅ 增加登录验证页  
 #### 2025.10.25 之前版本  
 - ✅ 对图标/文件夹的基本操作
-
+<img width="1198" height="1313" alt="446b9bf0f93fb83e7c87df6e1459b97e" src="https://github.com/user-attachments/assets/d34411a9-0028-4a30-b07a-940cbf1a59c4" />
 ## 友情链接:
 <div style="text-align: center; /* 可选：让图片和文字居中对齐，更美观 */">
   <a href="https://github.com/donknap/dpanel" target="_blank">
