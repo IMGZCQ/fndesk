@@ -1,7 +1,7 @@
 # <span style="color:#ff6b6b">fndesk</span> 飞牛桌面管理工具
 
 <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; color: white; margin: 20px 0;">
-  <img width="1149" height="1369" alt="1a8d7cb0a7f1e43fe6f91f04bc270d69" src="https://github.com/user-attachments/assets/e194e754-e6c8-4322-b05e-54b1908d67d8" />
+  <img width="1170" height="1280" alt="ChatGPT Image 2026年4月26日 09_13_57_1" src="https://github.com/user-attachments/assets/b248b5a7-ca13-4402-b959-4b8c90adddd9" />
 
   <h2 style="margin-top: 0;">我的飞牛我做主,多处自定样式主题美化,桌面图标任君摆布,让飞牛成为你的导航页，收藏夹,Docker应用入口</h2>
 </div>  
