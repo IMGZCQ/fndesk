@@ -55,7 +55,7 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
   
 ## <span style="color:#06d6a0">更新日志</span>
 
-#### 2026.05.04~
+#### 2026.05.10~
 - **X86 v1.1.31xx
 - ☑️ 移除绿色开关，禁用拖拽排序（原创图标/文件夹正式下线）
 - ☑️ 生成原生图标不再受限于png，不再受限1MB以下
