@@ -57,6 +57,7 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
 
 #### 2026.06.01~
 - **X86 v1.2.0005
+- ☑️ 为win98,xp,7,10主题增加右下角时间显示
 - 👑 新增Win7主题样式,及各样式细节调整
 - 👑 新增WinXP样式！（Mac、Win98、XP、10、11）
 - ⭐️ 生成图标支持公网地址填充至自定义URL
