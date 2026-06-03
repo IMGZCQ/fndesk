@@ -1,1176 +1,36 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width,initial-scale=1">
-        <title>飞牛桌面管理工具</title>
-        <link rel="icon" href="favicon.ico" type="image/x-icon">
-        <link href="fonts/font-awesome.min.css" rel="stylesheet">
-        <style>
-            /* From Uiverse.io by gharsh11032000 */ 
-            /* The switch - the box around the slider */ 
-            .switch {
-              font-size: 12px;
-              position: relative;
-              display: inline-block;
-              width: 3.8em;
-              height: 1.9em;
-            }
-            
-            /* Hide default HTML checkbox */ 
-            .switch input {
-              opacity: 0;
-              width: 0;
-              height: 0;
-            }
-            
-            /* The slider */ 
-            .slider {
-              position: absolute;
-              cursor: pointer;
-              inset: 0;
-              background: #9fccfa;
-              border-radius: 50px;
-              transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            }
-            
-            .slider:before {
-              position: absolute;
-              content: "";
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              height: 2em;
-              width: 2em;
-              inset: 0;
-              background-color: white;
-              border-radius: 50px;
-              box-shadow: 0 5px 10px rgba(0,0,0,0.2);
-              transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            }
-            
-            /* 确保开关容器垂直居中 */
-            .switch-container {
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              justify-content: center;
-              height: 100%;
-            }
-            
-            /* 第一个开关 - 科技绿 */
-            .switch-green .slider {
-              background: #6b8d86; /* 科技绿未选中状态 */
-            }
-            
-            .switch-green input:checked + .slider {
-              background: #06d474; /* 科技绿选中状态 */
-            }
-            
-            .switch-green input:focus + .slider {
-              box-shadow: 0 0 1px #06d474;
-            }
-            
-            /* 第二个开关 - 科技蓝 */
-            .switch-blue .slider {
-              background: #69798a; /* 科技蓝未选中状态 */
-            }
-            
-            .switch-blue input:checked + .slider {
-              background: #0974f1; /* 科技蓝选中状态 */
-            }
-            
-            .switch-blue input:focus + .slider {
-              box-shadow: 0 0 1px #0974f1;
-            }
-            
-            /* 通用选中状态动画 */
-            .switch input:checked + .slider:before {
-              transform: translateX(1.6em);
-            }
-        </style>
-        <style>
-            /* 最高优先级的按钮样式 */
-            .edit-btn {
-                background: linear-gradient(to right, rgb(37, 99, 235), rgb(30, 64, 175)) !important;
-                color: white !important;
-                border: 1px solid rgb(96, 165, 250) !important;
-                padding: 0.25rem 0.75rem !important;
-                border-radius: 0.375rem !important;
-                font-weight: 600 !important;
-                font-size: 0.875rem !important;
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
-                transition: all 300ms !important;
-            }
-            
-            .delete-btn {
-                background: linear-gradient(to right, rgb(220, 38, 38), rgb(153, 27, 27)) !important;
-                color: white !important;
-                border: 1px solid rgb(248, 113, 113) !important;
-                padding: 0.25rem 0.75rem !important;
-                border-radius: 0.375rem !important;
-                font-weight: 600 !important;
-                font-size: 0.875rem !important;
-                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
-                transition: all 300ms !important;
-                margin-left: 0.5rem !important;
-            }
-            
-            #closeModal, #closeAnnouncementBtn {
-                background: linear-gradient(to right, rgb(59, 130, 246), rgb(239, 68, 68)) !important;
-                color: white !important;
-                width: 2.5rem !important;
-                height: 2.5rem !important;
-                border-radius: 50% !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                font-size: 1.125rem !important;
-                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
-                transition: all 300ms !important;
-                border: none !important;
-            }
-        </style>
-    <style>
-        /* 深色科技风格颜色变量 */
-        :root {
-            --primary: #00a8ff;
-            --secondary: #00d2d3;
-            --accent: #5f27cd;
-            --success: #10ac84;
-            --danger: #ee5a24;
-            --warning: #feca57;
-            --info: #3498db;
-            --dark-bg: #152446d3;
-            --card-bg: #263a55b7;
-            --card-hover: #273449;
-            --border-color: #334155;
-            --text-primary: #e2e8f0;
-            --text-secondary: #94a3b8;
-            --shadow-color: rgba(0, 0, 0, 0.3);
-            --glow-primary: 0 0 10px rgba(0, 168, 255, 0.5);
-            --glow-secondary: 0 0 15px rgba(0, 210, 211, 0.3);
-        }
-        
-        /* 基础样式重置 */
-        * {
-            margin: 0px;
-            box-sizing: border-box;
-        }
-        
-        html {
-            height: 100%;
-            scroll-behavior: smooth;
-        }
-        
-        body {
-            font-family: 'Rajdhani', 'Segoe UI', 'Roboto', sans-serif;
-            background-color: var(--dark-bg);
-            color: var(--text-primary);
-            line-height: 1.6;
-            min-height: 100vh;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 1) 90%),
-                linear-gradient(to right, rgba(0, 168, 255, 0.03), transparent, rgba(0, 210, 211, 0.03));
-            position: relative;
-            overflow-x: hidden;
-        }
-        
-        /* 通知提示样式 */
-        .notification {
-            max-width: 350px;
-            min-width: 280px;
-            backdrop-filter: blur(8px);
-            cursor: pointer;
-        }
-        
-        .notification.success {
-            background-color: rgba(16, 172, 132, 0.9);
-            border-left: 4px solid var(--success);
-        }
-        
-        .notification.success #notificationIcon {
-            color: var(--text-primary);
-        }
-        
-        .notification.error {
-            background-color: rgba(238, 90, 36, 0.9);
-            border-left: 4px solid var(--danger);
-        }
-        
-        .notification.error #notificationIcon {
-            color: var(--text-primary);
-        }
-        
-        .notification.show {
-            opacity: 1;
-            transform: translate(0);
-        }
-        
-        /* 优化背景效果 */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 50% 50%, rgba(100, 255, 218, 0.05) 0%, rgba(30, 41, 59, 0) 70%);
-            z-index: -1;
-            pointer-events: none;
-        }
-        
-        /* 主容器 */
-        .container {
-            width: 100%;
-            max-width: 1250px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
-        
-        /* 全局优化样式 */
-        :root {
-            --shadow-color: rgba(0, 0, 0, 0.2);
-            --shadow-light: rgba(0, 0, 0, 0.1);
-            --shadow-hover: rgba(0, 0, 0, 0.3);
-        }
-        
-        /* 导航栏样式 */
-        .navbar {
-            background: linear-gradient(90deg, var(--card-bg), var(--dark-bg));
-            border-bottom: 1px solid var(--border-color);
-            box-shadow: 0 4px 15px var(--shadow-light);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-        
-        .navbar:hover {
-            box-shadow: 0 6px 20px var(--shadow-color);
-        }
-        
-        .navbar-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .navbar-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--primary);
-            text-shadow: var(--glow-primary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .navbar-actions {
-            display: flex;
-            gap: 0rem;
-            align-items: center;
-        }
-        
-        /* 按钮样式 */
-        .btn {
-            padding: 0.75rem 1.5rem;
-            margin: 3px;
-            border: none;
-            border-radius: 0.5rem;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(4px);
-        }
-        
-        /* 编辑和删除按钮特定样式 */
-        .edit-btn, .delete-btn {
-            /* 确保按钮行为正常 */
-            cursor: pointer;
-            position: relative;
-            border: none;
-            background: transparent;
-        }
-        
-        /* 关闭按钮特定样式 */
-        #closeModal, #closeAnnouncementBtn {
-            /* 确保按钮行为正常 */
-            cursor: pointer;
-            position: relative;
-            border: none;
-            background: transparent;
-        }
-        
-        /* 只对具有btn类的按钮应用伪元素 */
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transition: all 0.5s ease;
-        }
 
-        .btn:hover::before {
-            left: 100%;
-        }
-        
-        /* 确保我们的特定按钮不被其他规则影响 */
-        button:not(.btn) {
-            position: relative !important;
-            z-index: 2 !important;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            box-shadow: 0 4px 15px rgba(0, 168, 255, 0.3);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 168, 255, 0.4);
-        }
-        
-        .btn-secondary {
-            background: rgba(30, 41, 59, 0.8);
-            color: var(--text-primary);
-            border: 1px solid var(--border-color);
-        }
-        
-        .btn-secondary:hover {
-            background: var(--card-hover);
-            border-color: var(--primary);
-            color: var(--primary);
-            box-shadow: var(--glow-primary);
-        }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, var(--danger), #ff6b35);
-            color: white;
-            box-shadow: 0 4px 15px rgba(238, 90, 36, 0.3);
-        }
-        
-        .btn-danger:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(238, 90, 36, 0.4);
-        }
-        
-        .btn-help {
-            background: transparent;
-            color: var(--primary);
-            border: 1px solid var(--primary);
-            padding: 2px 8px;
-            font-size: 14px;
-            line-height: 1;
-            height: auto;
-            min-height: auto;
-        }
-        
-        .btn-help:hover {
-            background: var(--primary);
-            color: white;
-            box-shadow: var(--glow-primary);
-            transform: none;
-        }
-        
-        /* 科技黄按钮 - 用于公告说明 */
-        .btn-warning {
-            background: linear-gradient(135deg, var(--warning), #ffd166);
-            color: #1e293b;
-            box-shadow: 0 4px 15px rgba(254, 202, 87, 0.3);
-        }
-        
-        .btn-warning:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(254, 202, 87, 0.4);
-        }
-        
-        /* 科技蓝按钮 - 用于立即生效 */
-        .btn-info {
-            background: linear-gradient(135deg, var(--info), #2980b9);
-            color: white;
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
-        }
-        
-        .btn-info:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
-        }
-        
-        /* 科技绿按钮 - 用于添加图标 */
-        .btn-success {
-            background: linear-gradient(135deg, var(--success), #0e8966);
-            color: white;
-            box-shadow: 0 4px 15px rgba(16, 172, 132, 0.3);
-        }
-        
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(16, 172, 132, 0.4);
-        }
-        
-        .btn-sm {
-            padding: 0.5rem 1rem;
-            font-size: 0.8rem;
-        }
-        
-        .btn-lg {
-            padding: 0.875rem 2rem;
-            font-size: 1rem;
-        }
-        
-        /* 卡片样式 */
-        .card {
-            background: var(--card-bg);
-            border-radius: 0.75rem;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 6px 20px var(--shadow-light);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px var(--shadow-hover), var(--glow-primary);
-            border-color: var(--primary);
-        }
-        
-        .card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), var(--glow-primary);
-            border-color: var(--primary);
-        }
-        
-        .card:hover::after {
-            opacity: 1;
-        }
-        
-        .card-content {
-            padding: 1.5rem;
-        }
-        
-        /* 筛选区域 */
-        .filter-section {
-            background: var(--card-bg);
-            border-radius: 0 0 0.75rem 0.75rem;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 6px 20px var(--shadow-light);
-            transition: box-shadow 0.3s ease;
-        }
-        
-        .filter-section:hover {
-            box-shadow: 0 8px 25px var(--shadow-color);
-        }
-        
-        .filter-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .filter-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-        }
-        
-        /* 输入框样式 */
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        
-        /* 网格布局 */
-        .grid {
-            display: grid;
-        }
-        
-        .grid-cols-1 {
-            grid-template-columns: repeat(1, minmax(0, 1fr));
-        }
-        
-        .grid-cols-2 {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-        
-        .grid-cols-3 {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
-        
-        .gap-6 {
-            gap: 1.5rem;
-        }
-        
-        .mb-6 {
-            margin-bottom: 1.5rem;
-        }
-        
-        /* 响应式布局 */
-        @media (min-width: 768px) {
-            .md\:grid-cols-2 {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-            
-            .md\:grid-cols-3 {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-            }
-            
-            .md\:grid-cols-4 {
-                grid-template-columns: repeat(4, minmax(0, 1fr));
-            }
-        }
-        
-        .input-group label {
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-        
-        input, select {
-            min-height: 20px;
-            background: rgba(15, 23, 42, 0.5);
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            padding: 0.75rem 0.5rem;
-            color: var(--text-primary);
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(4px);
-        }
-        
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: var(--glow-primary);
-            background: rgba(15, 23, 42, 0.7);
-        }
-        
-        input::placeholder {
-            color: var(--text-secondary);
-        }
-        
-        /* 表格样式 */
-        .table-container {
-            background: var(--card-bg);
-            border-radius: 0.75rem;
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-            box-shadow: 0 6px 20px var(--shadow-light);
-            margin-bottom: 2rem;
-            transition: box-shadow 0.3s ease;
-        }
-        
-        /* 公告提示行样式 */
-        .announcement-row {
-            background: linear-gradient(135deg, var(--danger), #ff6b35);
-            color: white;
-            font-weight: 500;
-            text-align: center;
-            padding: 0.75rem;
-            animation: pulse 2s infinite;
-            transform: translateZ(0); /* 添加硬件加速 */
-        }
-        
-        @keyframes pulse {
-            0%, 100% {
-                box-shadow: 0 0 0 0 rgba(238, 90, 36, 0.4);
-            }
-            50% {
-                box-shadow: 0 0 0 10px rgba(238, 90, 36, 0);
-            }
-        }
-        
-        .table-container:hover {
-            box-shadow: 0 8px 25px var(--shadow-color);
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            border-spacing: 0;
-        }
-        
-        th {
-            background: linear-gradient(90deg, rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.5));
-            color: var(--text-secondary);
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        td {
-            padding: 0.5rem;
-            border-bottom: 1px solid var(--border-color);
-            transition: background-color 0.2s ease;
-        }
-        
-        tr:hover td {
-            background: rgba(30, 41, 59, 0.5);
-        }
-        
-        tr:last-child td {
-            border-bottom: none;
-        }
-        
-        /* 分页样式 */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1.5rem;
-            background: var(--card-bg);
-            border-top: 1px solid var(--border-color);
-        }
-        
-        .pagination-btn {
-            min-width: 68px;
-            height: 42px;
-            border-radius: 0.5rem;
-            border: 1px solid var(--border-color);
-            background: rgba(15, 23, 42, 0.5);
-            color: var(--text-primary);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-        
-        .pagination-btn:hover:not(:disabled) {
-            border-color: var(--primary);
-            background: var(--card-hover);
-            color: var(--primary);
-            box-shadow: var(--glow-primary);
-        }
-        
-        .pagination-btn.active {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-color: var(--primary);
-            color: white;
-            box-shadow: var(--glow-primary);
-        }
-        
-        .pagination-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        /* 模态框样式 */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-        }
-        
-        .modal {
-            background: var(--card-bg);
-            border-radius: 0.75rem;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), var(--glow-secondary);
-            max-width: 680px;
-            min-width: 360px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: modalSlideIn 0.3s ease-out;
-            position: relative;
-            transform: translateZ(0); /* 添加硬件加速 */
-        }
-        
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-30px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-        
-        .modal-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-            background: linear-gradient(90deg, var(--card-bg), var(--dark-bg));
-            border-radius: 0.75rem 0.75rem 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .modal-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--primary);
-            text-shadow: var(--glow-primary);
-        }
-        
-        .modal-body {
-            padding: 1rem 1rem 0rem;
-        }
-        
-        .modal-footer {
-            padding: 1.5rem;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-        }
-        
-        /* 通知样式 */
-        .notification {
-            position: fixed;
-            top: 2rem;
-            right: 2rem;
-            padding: 1rem 1.5rem;
-            border-radius: 0.5rem;
-            color: white;
-            z-index: 2000;
-            animation: slideInRight 0.5s ease-out;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            transform: translateZ(0); /* 添加硬件加速 */
-        }
-        
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(100%);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        
-        .notification-success {
-            background: linear-gradient(90deg, var(--success), #10ac84);
-            box-shadow: 0 10px 30px rgba(16, 172, 132, 0.3);
-        }
-        
-        .notification-error {
-            background: linear-gradient(90deg, var(--danger), #ff6b35);
-            box-shadow: 0 10px 30px rgba(238, 90, 36, 0.3);
-        }
-        
-        /* 标签样式 */
-        .tag {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            background: rgba(0, 168, 255, 0.1);
-            color: var(--primary);
-            border: 1px solid rgba(0, 168, 255, 0.3);
-        }
-        
-        /* 加载动画 */
-        .loader {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(0, 168, 255, 0.2);
-            border-radius: 50%;
-            border-top-color: var(--primary);
-            animation: spin 1s ease-in-out infinite;
-            margin: 2rem auto;
-            transform: translateZ(0); /* 添加硬件加速 */
-        }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        /* 移动端优化 - 禁用高频动画 */
-        @media (max-width: 768px) {
-            /* 禁用无限循环动画 */
-            .announcement-row {
-                animation: none;
-            }
-            
-            .loader {
-                animation: none;
-            }
-            
-            /* 简化发光效果 */
-            .navbar-title,
-            .modal-title {
-                text-shadow: none;
-            }
-            
-            .card:hover,
-            .btn-secondary:hover,
-            .btn-help:hover,
-            .pagination-btn:hover:not(:disabled),
-            .pagination-btn.active {
-                box-shadow: none;
-            }
-            
-            /* 禁用所有backdrop-filter: blur效果 */
-            .notification,
-            .navbar,
-            .btn,
-            input,
-            select,
-            .modal-overlay {
-                backdrop-filter: none;
-            }
-            
-            /* 简化复杂背景叠加为纯色 */
-            body {
-                background-image: none;
-                background-color: var(--dark-bg);
-            }
-            
-            body::before {
-                display: none;
-            }
-            
-            .navbar,
-            .modal-header {
-                background: var(--card-bg);
-            }
-        }
-        
-        /* 响应式设计 - 920px以下修改导航栏按钮文字 */
-        @media (max-width: 920px) {
-            /* 隐藏按钮内的图标 */
-            #announcementBtn .fa,
-            #applyBtn .fa,
-            #themeBtn .fa,
-            #moreActionsBtn .fa {
-                display: none;
-            }
-            
-            /* 完全重写按钮内容，只显示文字不显示图标 */
-            #announcementBtn {
-                font-size: 0;
-            }
-            
-            #announcementBtn::after {
-                content: '公告';
-                font-size: 0.9rem;
-                display: inline-block;
-            }
-            
-            #applyBtn {
-                font-size: 0;
-            }
-            
-            #applyBtn::after {
-                content: '生效';
-                font-size: 0.9rem;
-                display: inline-block;
-            }
-            
-            #themeBtn {
-                font-size: 0;
-            }
-            
-            #themeBtn::after {
-                content: '主题';
-                font-size: 0.9rem;
-                display: inline-block;
-            }
-            
-            #moreActionsBtn {
-                font-size: 0;
-            }
-            
-            #moreActionsBtn::after {
-                content: '更多';
-                font-size: 0.9rem;
-                display: inline-block;
-            }
-        }
-        
-        /* 响应式设计 - 420px以下只显示图标不显示文字 */
-        @media (max-width: 420px) {
-            /* 显示按钮内的图标 */
-            #announcementBtn .fa,
-            #applyBtn .fa,
-            #themeBtn .fa,
-            #moreActionsBtn .fa {
-                display: inline-block;
-                font-size: 1.1rem;
-            }
-            
-            /* 隐藏文字内容 */
-            #announcementBtn::after,
-            #applyBtn::after,
-            #themeBtn::after,
-            #moreActionsBtn::after {
-                display: none;
-            }
-            
-            /* 调整按钮尺寸以适应小屏幕 */
-            .btn {
-                padding: 0.75rem;
-                min-width: 44px;
-                width: 44px;
-                height: 44px;
-            }
-            
-            /* 确保图标居中显示 */
-            .btn i {
-                margin: 0;
-            }
-        }
-        
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 1rem;
-            }
-            
-            .navbar-content {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .navbar-actions {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .filter-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .filter-footer {
-                flex-direction: column-reverse;
-            }
-            
-            .modal {
-                width: 95%;
-                margin: 1rem;
-            }
-            
-            .modal-footer {
-                flex-direction: column;
-            }
-            
-            .table-container {
-                overflow-x: auto;
-            }
-            
-            table {
-                min-width: 300px;
-            }
-        }
-        
-        /* 版本更新指示动画 */
-        .version-update-indicator {
-            animation: versionFlash 1.5s infinite;
-            transform: translateZ(0); /* 添加硬件加速 */
-        }
-        
-        @keyframes versionFlash {
-            0%, 50% {
-                opacity: 1;
-                color: var(--primary);
-            }
-            51%, 100% {
-                opacity: 0.7;
-                color: var(--warning);
-            }
-        }
-        
-        /* 工具类 */
-        .flex {
-            display: flex;
-        }
-        
-        .items-center {
-            align-items: center;
-        }
-        
-        .justify-between {
-            justify-content: space-between;
-        }
-        
-        .justify-center {
-            justify-content: center;
-        }
-        
-        .gap-2 {
-            gap: 0.5rem;
-        }
-        
-        .gap-4 {
-            gap: 1rem;
-        }
-        
-        .gap-6 {
-            gap: 1.5rem;
-        }
-                
-        .mb-6 {
-            margin-bottom: 1.5rem;
-        }
-        
-        .mt-4 {
-            margin-top: 1rem;
-        }
-        
-        .mt-6 {
-            margin-top: 1.5rem;
-        }
-        
-        .p-4 {
-            padding: 1rem;
-        }
-        
-        .p-6 {
-            padding: 1.5rem;
-        }
-        
-        .text-center {
-            text-align: center;
-        }
-        
-        .text-right {
-            text-align: right;
-        }
-        
-        .w-full {
-            width: 100%;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .cursor-pointer {
-            cursor: pointer;
-        }
-        
-        .text-sm {
-            font-size: 0.875rem;
-        }
-        
-        .text-lg {
-            font-size: 1.125rem;
-        }
-        
-        .font-medium {
-            font-weight: 500;
-        }
-        
-        .font-semibold {
-            font-weight: 600;
-        }
-        
-        .text-primary {
-            color: var(--primary);
-        }
-        
-        .text-secondary {
-            color: var(--text-secondary);
-        }
-        
-        /* 特效 */
-        .glow-text {
-            text-shadow: var(--glow-primary);
-        }
-        
-        .glow-border {
-            box-shadow: var(--glow-primary);
-        }
-        
-        /* 滚动条样式 */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: var(--dark-bg);
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: var(--border-color);
-            border-radius: 4px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary);
-        }
-        
-        /* 加载指示器 */
-        .loading-indicator {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--primary);
-        }
-        
-        .loading-indicator::after {
-            content: '';
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(0, 168, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: var(--primary);
-            animation: spin 0.8s linear infinite;
-        }
-    </style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>飞牛桌面管理工具</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link href="fonts/font-awesome.min.css" rel="stylesheet">
+    <script src="common.js"></script>
+
+    <style>:root{--primary:#4a9eff;--secondary:#66d9e8;--accent:#7c3aed;--success:#34d399;--danger:#f87171;--warning:#fbbf24;--info:#60a5fa;--dark-bg:rgba(21, 36, 70, 0.35);--card-bg:rgba(38, 58, 85, 0.3);--card-hover:rgba(39, 52, 73, 0.45);--border-color:rgba(51, 65, 85, 0.5);--text-primary:#f1f5f9;--text-secondary:#cbd5e1;--shadow-color:rgba(0, 0, 0, 0.25);--shadow-light:rgba(0, 0, 0, 0.1);--shadow-hover:rgba(0, 0, 0, 0.3);--glow-primary:0 0 10px rgba(74, 158, 255, 0.4);--glow-secondary:0 0 15px rgba(102, 217, 232, 0.25);--glow-gradient:linear-gradient(90deg, #00a8ff, #0ff, #ff00ff);--bg-dark:rgba(14, 17, 27, 0.3);--text-main:#e6edf3;--text-sub:#d1d6df}*{margin:0;box-sizing:border-box}html{height:100%;scroll-behavior:smooth}body{font-family:Rajdhani,'Segoe UI',Roboto,sans-serif;background-color:#081022;color:var(--text-primary);line-height:1.6;min-height:100vh;background-size:cover;background-position:center;background-repeat:no-repeat;background-attachment:fixed;position:relative;overflow-x:hidden}.notification{max-width:350px;min-width:280px;backdrop-filter:blur(8px);cursor:pointer}.notification.success{background-color:rgba(16,172,132,.9);border-left:4px solid var(--success)}.notification.success #notificationIcon{color:var(--text-primary)}.notification.error{background-color:rgba(238,90,36,.9);border-left:4px solid var(--danger)}.notification.error #notificationIcon{color:var(--text-primary)}.notification.show{opacity:1;transform:translate(0)}body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(15,23,42,.1);backdrop-filter:blur(2px) saturate(1.1);-webkit-backdrop-filter:blur(2px) saturate(1.1);background-image:radial-gradient(circle at 50% 50%,rgba(100,255,218,.02) 0,rgba(30,41,59,0) 70%);z-index:-1;pointer-events:none}.container{width:100%;max-width:1250px;margin:0 auto;padding:0 1.5rem}.navbar{background:rgba(38,58,85,.6);border-bottom:1px solid rgba(51,65,85,.4);box-shadow:0 4px 30px rgba(0,0,0,.1);padding:.6rem 0;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px) saturate(1.3);-webkit-backdrop-filter:blur(20px) saturate(1.3);transition:all .4s cubic-bezier(.25,.46,.45,.94)}.navbar:hover{background:rgba(38,58,85,.8);box-shadow:0 6px 40px rgba(0,0,0,.15)}.navbar-content{display:flex;justify-content:space-between;align-items:center}.navbar-title{font-size:1.5rem;font-weight:600;color:var(--primary);text-shadow:var(--glow-primary);display:flex;align-items:center;gap:.5rem}.navbar-actions{display:flex;gap:0;align-items:center}.btn{padding:.75rem 1.5rem;margin:3px;border:1px solid rgba(51,65,85,.4);border-radius:.5rem;font-size:.9rem;font-weight:500;cursor:pointer;transition:all .4s cubic-bezier(.25,.46,.45,.94);display:inline-flex;align-items:center;justify-content:center;gap:.5rem;position:relative;overflow:hidden;backdrop-filter:blur(12px) saturate(1.3);-webkit-backdrop-filter:blur(12px) saturate(1.3)}.delete-btn,.edit-btn{cursor:pointer;position:relative;border:none;background:0 0}#closeAnnouncementBtn,#closeModal{cursor:pointer;position:relative;border:none;background:0 0}.btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.1),transparent);transition:all .5s ease}.btn:hover::before{left:100%}button:not(.btn){position:relative!important;z-index:2!important}.btn-primary{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;box-shadow:0 4px 15px rgba(0,168,255,.3)}.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,168,255,.4)}.btn-secondary{background:rgba(38,58,85,.35);color:var(--text-primary);border:1px solid rgba(51,65,85,.4)}.btn-secondary:hover{background:rgba(38,58,85,.5);border-color:var(--primary);color:var(--primary);box-shadow:var(--glow-primary)}.btn-danger{background:linear-gradient(135deg,var(--danger),#ff6b6b);color:#fff;box-shadow:0 4px 15px rgba(248,113,113,.3)}.btn-danger:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(248,113,113,.4)}.btn-help{background:rgba(38,58,85,.3);color:var(--primary);border:1px solid rgba(51,65,85,.4);padding:2px 8px;font-size:14px;line-height:1;height:auto;min-height:auto;backdrop-filter:blur(12px) saturate(1.3);-webkit-backdrop-filter:blur(12px) saturate(1.3)}.btn-help:hover{background:var(--primary);color:#fff;box-shadow:var(--glow-primary);transform:none}.btn-warning{background:linear-gradient(135deg,var(--warning),#fcd34d);color:#1e293b;box-shadow:0 4px 15px rgba(251,191,36,.3)}.btn-warning:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(251,191,36,.4)}.btn-info{background:linear-gradient(135deg,var(--info),#3b82f6);color:#fff;box-shadow:0 4px 15px rgba(96,165,250,.3)}.btn-info:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(96,165,250,.4)}.btn-success{background:linear-gradient(135deg,var(--success),#22c55e);color:#fff;box-shadow:0 4px 15px rgba(74,222,128,.3)}.btn-success:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(74,222,128,.4)}.btn-sm{padding:.5rem 1rem;font-size:.8rem}.btn-lg{padding:.875rem 2rem;font-size:1rem}a.card{text-decoration:none;color:inherit}#cardContainer{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem;padding:2rem;justify-items:center}.plugin-card.futuristic{--text-main:#ffffff;--text-sub:#e2e8f0;position:relative;isolation:isolate;padding:0;border-radius:8px;background:rgba(38,58,85,.35);backdrop-filter:blur(6px) saturate(1.3);-webkit-backdrop-filter:blur(6px) saturate(1.3);color:var(--text-main);overflow:hidden;max-width:26rem;width:100%;display:flex;flex-direction:column;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .2s ease,background .3s ease;transform-origin:center;backface-visibility:hidden;contain:paint}.plugin-card.futuristic::before{content:'';position:absolute;bottom:-55%;right:-55%;width:120%;height:120%;background:linear-gradient(130deg,transparent 45%,rgba(255,255,255,.04) 50%,rgba(255,255,255,.02) 55%,transparent 60%);transform:rotate(0);pointer-events:none;z-index:1;transition:opacity .3s ease}.plugin-card.futuristic::after{content:'';position:absolute;bottom:-40%;right:-40%;width:100%;height:100%;background:linear-gradient(140deg,transparent 42%,rgba(255,255,255,.03) 48%,rgba(255,255,255,.01) 52%,transparent 58%);transform:rotate(0);pointer-events:none;z-index:1;transition:opacity .3s ease}.plugin-card.futuristic:hover::before{opacity:1.3}.plugin-card.futuristic:hover::after{opacity:1.5}.card-header{background:linear-gradient(90deg,#2699d5,#0072ff7a);padding:.8rem 1rem;display:flex;align-items:center;text-align:left}.card-icon{font-size:1.3rem;color:#eee;margin-left:.3rem;margin-right:.8rem;flex-shrink:0;display:flex;align-items:center;justify-content:center}.card-icon i{display:block;line-height:1}.title{font-size:1.1rem;font-weight:700;color:#eee;margin:0;flex:1;display:flex;align-items:center;line-height:1}.card-content{padding:0 1.2rem;flex:1}.card-content-text{color:var(--text-sub);font-size:.8rem;line-height:1.3}.card-content-text .description{margin:0;line-height:1.4}.card-footer{padding:0 1.2rem .8rem;display:flex;align-items:center;justify-content:space-between}.plugin-card.futuristic:hover{transform:translate3d(0,-.12rem,0) scale(1.008);box-shadow:0 6px 16px rgba(0,0,0,.15);background:rgba(38,58,85,.4);will-change:transform;backdrop-filter:blur(12px) saturate(1.5);-webkit-backdrop-filter:blur(12px) saturate(1.5)}.plugin-card.futuristic:focus-visible{transform:translate3d(0,-.12rem,0) scale(1.008);box-shadow:0 6px 16px rgba(0,0,0,.15);outline:0;will-change:transform}@media (prefers-reduced-motion:reduce){.plugin-card.futuristic{transition:none}.plugin-card.futuristic:focus-visible,.plugin-card.futuristic:hover{transform:none;box-shadow:none}.plugin-card.futuristic::before{animation:none}}@supports not ((mask-composite:exclude) or (-webkit-mask-composite:xor)){.plugin-card.futuristic::before{content:none}.plugin-card.futuristic{border:1px solid rgba(0,220,130,.25)}}.card-header{position:relative;z-index:1;display:flex;align-items:flex-start;padding:.5rem 1}.card-content-text{margin-top:.8rem;display:flex;flex-direction:column;flex:1;min-height:60px}.description{font-size:1rem;line-height:1.5;color:var(--text-sub);margin:.5rem 0 0 0;word-wrap:break-word;white-space:normal;flex-shrink:0}.logo-svg{width:2.5rem;height:auto}.stats{display:flex;gap:1rem;font-size:.875rem}.stat-item{display:flex;align-items:center;gap:.4em;color:var(--text-sub)}.stat-icon{width:1rem;height:1rem}.actions{display:flex;gap:.5rem}.action-btn{width:2rem;height:2rem;background:rgba(30,32,48,.35);display:flex;align-items:center;justify-content:center;border-radius:.5rem;border:1px solid rgba(255,255,255,.06);cursor:pointer;color:var(--text-sub);transition:background .3s ease,transform .15s ease,box-shadow .3s ease;backdrop-filter:blur(12px) saturate(1.3);-webkit-backdrop-filter:blur(12px) saturate(1.3)}.action-btn:hover{background:rgba(16,185,129,.15);transform:scale(1.05);color:var(--text-main);box-shadow:0 0 10px rgba(16,185,129,.2)}.action-btn svg{width:1.5rem;height:1.5rem}.grid{display:grid}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}@media (min-width:768px){.md\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.md\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}}.loader{width:40px;height:40px;border:3px solid rgba(0,168,255,.2);border-radius:50%;border-top-color:var(--primary);animation:spin 1s ease-in-out infinite;margin:2rem auto;transform:translateZ(0)}@keyframes spin{to{transform:rotate(360deg)}}@media (max-width:768px){#cardContainer{padding:1rem;gap:1.5rem}.loader{animation:none}.navbar-title{text-shadow:var(--glow-primary)}.plugin-card.futuristic:hover{transform:translate3d(0,-.12rem,0) scale(1.008);box-shadow:0 6px 16px rgba(0,0,0,.15)}.container{padding:0 1rem}.navbar-content{flex-direction:column;gap:1rem}.navbar-actions{flex-wrap:wrap;justify-content:center}}.version-update-indicator{animation:versionFlash 1.5s infinite;transform:translateZ(0)}@keyframes versionFlash{0%,50%{opacity:1;color:var(--primary)}100%,51%{opacity:1;color:var(--warning)}}.flex{display:flex}.items-center{align-items:center}.justify-between{justify-content:space-between}.justify-center{justify-content:center}.gap-2{gap:.5rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.mb-6{margin-bottom:1.5rem}.mt-4{margin-top:1rem}.mt-6{margin-top:0}.p-4{padding:1rem}.p-6{padding:1.5rem}.text-center{text-align:center}.text-right{text-align:right}.w-full{width:100%}.hidden{display:none}.cursor-pointer{cursor:pointer}.text-sm{font-size:.875rem}.text-lg{font-size:1.125rem}.font-medium{font-weight:500}.font-semibold{font-weight:600}.text-primary{color:var(--primary)}.text-secondary{color:var(--text-secondary)}.glow-text{text-shadow:var(--glow-primary)}.glow-border{box-shadow:var(--glow-primary)}::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-track{background:var(--dark-bg)}::-webkit-scrollbar-thumb{background:var(--border-color);border-radius:4px}::-webkit-scrollbar-thumb:hover{background:var(--primary)}.loading-indicator{display:inline-flex;align-items:center;gap:.5rem;color:var(--primary)}.loading-indicator::after{content:'';width:16px;height:16px;border:2px solid rgba(0,168,255,.3);border-radius:50%;border-top-color:var(--primary);animation:spin .8s linear infinite}.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4)}.modal-overlay.hidden{display:none!important}.modal{background:rgba(38,58,85,.35);border-radius:.75rem;border:1px solid rgba(51,65,85,.4);box-shadow:0 20px 40px rgba(0,0,0,.12),0 0 20px rgba(0,168,255,.06);max-width:680px;min-width:360px;width:90%;max-height:90vh;overflow-y:auto;animation:modalSlideIn .3s ease-out;position:relative;transform:translateZ(0);backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4)}@keyframes modalSlideIn{from{opacity:0;transform:translateY(-30px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}.modal-header{padding:1.5rem;border-bottom:1px solid rgba(51,65,85,.4);background:rgba(38,58,85,.5);border-radius:.75rem .75rem 0 0;display:flex;justify-content:space-between;align-items:center}.modal-title{font-size:1.25rem;font-weight:600;color:var(--primary);text-shadow:var(--glow-primary)}.modal-body{padding:1rem 1rem 0}.modal-footer{padding:1.5rem;border-top:1px solid rgba(51,65,85,.4);display:flex;justify-content:flex-end;gap:1rem}.slide-in-fwd-bottom-1{-webkit-animation:slide-in-fwd-bottom 1s both;animation:slide-in-fwd-bottom 1s both}.slide-in-fwd-bottom-2{-webkit-animation:slide-in-fwd-bottom 1.5s both;animation:slide-in-fwd-bottom 1.5s both}.slide-in-fwd-bottom-3{-webkit-animation:slide-in-fwd-bottom 2s both;animation:slide-in-fwd-bottom 2s both}.slide-in-fwd-bottom-4{-webkit-animation:slide-in-fwd-bottom 2.5s both;animation:slide-in-fwd-bottom 2.5s both}@-webkit-keyframes slide-in-fwd-bottom{0%{-webkit-transform:translateZ(-1400px) translateY(800px);transform:translateZ(-1400px) translateY(800px);opacity:0}100%{-webkit-transform:translateZ(0) translateY(0);transform:translateZ(0) translateY(0);opacity:1}}@keyframes slide-in-fwd-bottom{0%{-webkit-transform:translateZ(-1400px) translateY(800px);transform:translateZ(-1400px) translateY(800px);opacity:0}100%{-webkit-transform:translateZ(0) translateY(0);transform:translateZ(0) translateY(0);opacity:1}}.scale-in-center{-webkit-animation:scale-in-center .5s cubic-bezier(.25,.46,.45,.94) both;animation:scale-in-center .5s cubic-bezier(.25,.46,.45,.94) both}@-webkit-keyframes scale-in-center{0%{-webkit-transform:scale(0);transform:scale(0);opacity:1}100%{-webkit-transform:scale(1);transform:scale(1);opacity:1}}@keyframes scale-in-center{0%{-webkit-transform:scale(0);transform:scale(0);opacity:1}100%{-webkit-transform:scale(1);transform:scale(1);opacity:1}}@media (max-width:920px){#announcementBtn .fa,#applyBtn .fa,#moreActionsBtn .fa,#themeBtn .fa{display:none}#announcementBtn{font-size:0}#announcementBtn::after{content:'公告';font-size:.9rem;display:inline-block}#applyBtn{font-size:0}#applyBtn::after{content:'生效';font-size:.9rem;display:inline-block}#themeBtn{font-size:0}#themeBtn::after{content:'主题';font-size:.9rem;display:inline-block}#moreActionsBtn{font-size:0}#moreActionsBtn::after{content:'更多';font-size:.9rem;display:inline-block}}@media (max-width:420px){#announcementBtn .fa,#applyBtn .fa,#moreActionsBtn .fa,#themeBtn .fa{display:inline-block;font-size:1.1rem}#announcementBtn::after,#applyBtn::after,#moreActionsBtn::after,#themeBtn::after{display:none}.btn{padding:.75rem;min-width:44px;width:44px;height:44px}.btn i{margin:0}}@media (max-width:768px){.navbar-content{flex-direction:column;gap:1rem}.navbar-actions{flex-wrap:wrap;justify-content:center}}</style>
 </head>
+
 <body class="min-h-screen font-sans text-text-primary">
 
+
+
     
-    <script>let hasNewVersion=false;async function checkVersion(){try{let e="0";let t=null;try{const c=await fetch("./api/config");t=await c.json();if(t&&t.version){e=t.version;document.getElementById("versionNumber").textContent="v"+t.version}else{console.error("获取当前版本号失败：未返回有效的版本数据");return}}catch(e){console.error("获取当前版本号失败:",e);return}const r=(new Date).toDateString();const s=localStorage.getItem("lastVersionCheckDate");const a=localStorage.getItem("cachedLatestVersion");let o;if(s!==r||!a){try{const i=await fetch("./api/latest-version",{method:"GET",cache:"no-cache",headers:{Accept:"text/plain"}});if(i.ok){o=await i.text();localStorage.setItem("lastVersionCheckDate",r);localStorage.setItem("cachedLatestVersion",o)}else{o=a||"0";console.error("获取最新版本号失败，状态码:",i.status)}}catch(e){o=a||"0";console.error("获取最新版本号网络错误:",e)}}else{o=a}function n(e,t){const o=e.toString().split(".").map(Number);const n=t.toString().split(".").map(Number);const r=Math.max(o.length,n.length);for(let e=0;e<r;e++){const s=o[e]||0;const a=n[e]||0;if(s>a)return 1;if(s<a)return-1}return 0}if(n(o,e)>0){hasNewVersion=true;const l=document.getElementById("versionNumber");l.classList.add("version-update-indicator")}else{hasNewVersion=false}}catch(e){console.error("版本检查失败:",e)}}document.addEventListener("DOMContentLoaded",checkVersion)</script>
-    
+    <script>const backgroundApiUrl_img="https://t.alcy.cc/fj";function createBgLayer(e){const t=document.createElement("div");t.style.position="fixed";t.style.top="0";t.style.left="0";t.style.width="100%";t.style.height="100%";t.style.backgroundSize="cover";t.style.backgroundPosition="center";t.style.backgroundRepeat="no-repeat";t.style.zIndex=e;t.style.transition="opacity 5s ease";return t}const bgLayer1=createBgLayer("-3");const bgLayer2=createBgLayer("-2");bgLayer1.style.backgroundImage=``;bgLayer2.style.opacity="0";document.body.appendChild(bgLayer1);document.body.appendChild(bgLayer2);document.body.style.backgroundImage="none";let activeLayer=1;function updateBackground(){const e=(new Date).getTime();const t=`${backgroundApiUrl_img}?t=${e}`;const n=new Image;n.onload=function(){bgLayer2.style.backgroundImage=`url('${t}')`;bgLayer2.style.opacity="1";setTimeout(()=>{bgLayer1.style.backgroundImage=`url('${t}')`;bgLayer2.style.transition="none";bgLayer2.style.opacity="0";void bgLayer2.offsetWidth;bgLayer2.style.transition="opacity 5s ease"},5e3)};n.src=t}setTimeout(updateBackground,1e4);let cachedUpdateLog=null;let globalConfig=null;let globalLatestVersion=null;async function preloadUpdateLog(){try{const e=await fetch("https://fndesk.imcq.top/?get=update_log");if(e.ok){cachedUpdateLog=await e.text()}}catch(e){console.log("预加载更新日志失败:",e)}}window.VersionManager={config:null,lastFetchTime:0,fetchInterval:5*60*1e3,compareVersions(e,t){const n=e.toString().split(".").map(Number);const o=t.toString().split(".").map(Number);const a=Math.max(n.length,o.length);for(let e=0;e<a;e++){const s=n[e]||0;const r=o[e]||0;if(s>r)return 1;if(s<r)return-1}return 0},async getConfig(){if(this.config&&Date.now()-this.lastFetchTime<this.fetchInterval){return this.config}const e=await fetch("./api/config");this.config=await e.json();this.lastFetchTime=Date.now();return this.config},async getLatestVersion(){const e=localStorage.getItem("cachedLatestVersion");try{const t=await fetch("./api/latest-version",{method:"GET",cache:"no-cache",headers:{Accept:"text/plain"}});if(t.ok){const n=await t.text();localStorage.setItem("cachedLatestVersion",n);return n}}catch(e){console.error("获取最新版本失败:",e)}return e||"0"}};let hasNewVersion=false;async function checkVersion(){try{const e=await window.VersionManager.getConfig();const t=await window.VersionManager.getLatestVersion();globalConfig=e;globalLatestVersion=t;document.getElementById("versionNumber").textContent="v"+e.version;if(window.VersionManager.compareVersions(t,e.version)>0){hasNewVersion=true;const n=document.getElementById("versionNumber");n.textContent="v"+e.version+"🚀"+t;n.classList.add("version-update-indicator")}else{hasNewVersion=false}}catch(e){console.error("版本检查失败:",e)}}document.addEventListener("DOMContentLoaded",async function(){try{const e=await window.VersionManager.getConfig();globalConfig=e;document.getElementById("versionNumber").textContent="v"+e.version}catch(e){console.error("获取当前版本失败:",e)}checkVersion();preloadUpdateLog()});async function updateStatusMessage(){const e=document.getElementById("statusMessage");if(!e)return;try{const t=typeof process!=="undefined"&&process.arch&&process.arch.startsWith("arm")?"https://fndesk.imcq.top/?get=status_arm":"https://fndesk.imcq.top/?get=status_x86";const n=await fetch(t);if(n.ok){const o=await n.text();if(o&&o.trim()){e.textContent=o.trim()}}}catch(e){console.error("获取状态信息失败:",e)}}document.addEventListener("DOMContentLoaded",updateStatusMessage)</script>
+
     
     <header class="navbar">
         <div class="container navbar-content">
-            <h1 class="navbar-title">
-                <i class="fa fa-desktop"></i>
-                飞牛桌面管理工具 <span style="margin-top: 0.3em;font-size: 0.8em;color: #4accff;" id="versionNumber">加载中...</span>
-            </h1>
+            <div>
+                <h1 class="navbar-title">
+                    <i class="fa fa-desktop"></i>
+                    飞牛桌面管理工具 <span style="margin-top:1em;font-size:.5em;color:#4accff" id="versionNumber">加载中...</span>
+                </h1>
+                <span id="statusMessage" style="text-shadow:none;color:#1ceebb;font-size:14px;font-weight:700;display:block">
+                    🌈 使用三部曲：修改保存→立即生效→清缓刷新 🍕
+                </span>
+            </div>
             <div class="navbar-actions">
                 <button id="announcementBtn" class="btn btn-warning mr-2">
                     <i class="fa fa-bullhorn"></i>
@@ -1185,40 +45,40 @@
                     个性主题
                 </a>
 
-                <div class="dropdown" style="position: relative; display: inline-block;">
+                <div class="dropdown" style="position:relative;display:inline-block">
                     <button id="moreActionsBtn" class="btn btn-danger mr-2 dropdown-toggle">
                         <i class="fa fa-bars"></i>
                         更多选项
                     </button>
-                    
-                    <div id="dropdownMenu" class="dropdown-menu" style="display: none; position: absolute; right: 0; top: 100%; margin-top: 0.125rem; background-color: #121921; border: 1px solid #4a9eff; border-radius: 8px; box-shadow: 0 0 15px rgba(74, 158, 255, 0.4); min-width: 9rem; padding: 0.4rem 0.3rem; z-index: 9999; overflow: hidden;">
+
+                    <div id="dropdownMenu" class="dropdown-menu" style="display:none;position:absolute;right:0;top:100%;margin-top:.125rem;background:rgba(38,58,85,.5);border:1px solid rgba(51,65,85,.4);border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.1);min-width:9rem;padding:.4rem .3rem;z-index:9999;overflow:hidden;backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4)">
                         
-                        <a class="dropdown-item" href="index.html" target="_blank" id="menuNewWindow" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
-                            <i class="fa fa-window-maximize mr-2" style="color: #4a9eff;"></i>
+                        <a class="dropdown-item" href="index.html" target="_blank" id="menuNewWindow" style="display:block;width:100%;padding:.5rem 1rem;clear:both;font-weight:400;color:#e0f0ff;text-align:inherit;text-decoration:none;white-space:nowrap;background:linear-gradient(90deg,transparent 0,rgba(74,158,255,0) 100%);border:0;transition:all .3s ease;position:relative;overflow:hidden">
+                            <i class="fa fa-window-maximize mr-2" style="color:#4a9eff"></i>
                             在新窗打开
                         </a>
-                        <a class="dropdown-item" target="_blank" href="HDicon/HDicon.html" id="menuHDicon" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
-                            <i class="fa fa-cubes mr-2" style="color: #4a9eff;"></i>
-                            打开图标库
-                        </a>           
-                        <a class="dropdown-item" href="sysico.html" id="menuSysico" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
-                            <i class="fa fa-cogs mr-2" style="color: #4a9eff;"></i>
+                        <a class="dropdown-item" target="_blank" href="HDicon/HDicon.html" id="menuHDicon" style="display:block;width:100%;padding:.5rem 1rem;clear:both;font-weight:400;color:#e0f0ff;text-align:inherit;text-decoration:none;white-space:nowrap;background:linear-gradient(90deg,transparent 0,rgba(74,158,255,0) 100%);border:0;transition:all .3s ease;position:relative;overflow:hidden">
+                            <i class="fa fa-cubes mr-2" style="color:#4a9eff"></i>
+                            图标库 V3
+                        </a>
+                        <a class="dropdown-item" href="sysico.html" id="menuSysico" style="display:block;width:100%;padding:.5rem 1rem;clear:both;font-weight:400;color:#e0f0ff;text-align:inherit;text-decoration:none;white-space:nowrap;background:linear-gradient(90deg,transparent 0,rgba(74,158,255,0) 100%);border:0;transition:all .3s ease;position:relative;overflow:hidden">
+                            <i class="fa fa-cogs mr-2" style="color:#4a9eff"></i>
                             尊享功能
                         </a>
-                        <a class="dropdown-item" href="#" id="menuResetDesktop" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
-                            <i class="fa fa-refresh mr-2" style="color: #4a9eff;"></i>
+                        <a class="dropdown-item" href="#" id="menuResetDesktop" style="display:block;width:100%;padding:.5rem 1rem;clear:both;font-weight:400;color:#e0f0ff;text-align:inherit;text-decoration:none;white-space:nowrap;background:linear-gradient(90deg,transparent 0,rgba(74,158,255,0) 100%);border:0;transition:all .3s ease;position:relative;overflow:hidden">
+                            <i class="fa fa-refresh mr-2" style="color:#4a9eff"></i>
                             还原桌面
                         </a>
-                        <a class="dropdown-item" href="#" id="menuUpdateDesktop" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
-                            <i class="fa fa-download mr-2" style="color: #4a9eff;"></i>
+                        <a class="dropdown-item" href="#" id="menuUpdateDesktop" style="display:block;width:100%;padding:.5rem 1rem;clear:both;font-weight:400;color:#e0f0ff;text-align:inherit;text-decoration:none;white-space:nowrap;background:linear-gradient(90deg,transparent 0,rgba(74,158,255,0) 100%);border:0;transition:all .3s ease;position:relative;overflow:hidden">
+                            <i class="fa fa-download mr-2" style="color:#4a9eff"></i>
                             在线升级
                         </a>
-                        <a class="dropdown-item" href="#" id="menuLogout" style="display: block; width: 100%; padding: 0.5rem 1rem; clear: both; font-weight: 400; color: #e0f0ff; text-align: inherit; text-decoration: none; white-space: nowrap; background: linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%); border: 0; transition: all 0.3s ease; position: relative; overflow: hidden;">
-                            <i class="fa fa-sign-out mr-2" style="color: #4a9eff;"></i>
+                        <a class="dropdown-item" href="#" id="menuLogout" style="display:block;width:100%;padding:.5rem 1rem;clear:both;font-weight:400;color:#e0f0ff;text-align:inherit;text-decoration:none;white-space:nowrap;background:linear-gradient(90deg,transparent 0,rgba(74,158,255,0) 100%);border:0;transition:all .3s ease;position:relative;overflow:hidden">
+                            <i class="fa fa-sign-out mr-2" style="color:#4a9eff"></i>
                             退出登录
                         </a>
                     </div>
-                    <script>document.addEventListener("DOMContentLoaded",function(){window.__testDropdownMenu=function(){const t=document.getElementById("dropdownMenu");if(t){t.style.display=t.style.display==="block"?"none":"block";t.style.opacity="1";t.style.transform="translateY(0)";t.style.position="absolute";t.style.zIndex="9999"}};const a=document.getElementById("dropdownMenu");const l=document.getElementById("moreActionsBtn");let i=null;function t(){if(!a){return}const t=window.getComputedStyle(a);const e=t.display!=="none";if(e){a.style.opacity="0";a.style.transform="translateY(-10px)";setTimeout(()=>{a.style.display="none"},300)}else{a.style.display="block";a.style.opacity="0";a.style.transform="translateY(-10px)";a.style.position="absolute";a.style.zIndex="9999";void a.offsetWidth;setTimeout(()=>{a.style.opacity="1";a.style.transform="translateY(0)"},10)}}if(l){l.onclick=null;try{const c=l.cloneNode(true);l.parentNode.replaceChild(c,l);i=c}catch(t){console.error("Error resetting dropdown toggle:",t);i=l}function e(t){t.preventDefault();t.stopPropagation();t.cancelBubble=true;if(t.stopImmediatePropagation){t.stopImmediatePropagation()}if(a){const e=window.getComputedStyle(a);const n=e.display!=="none";if(!n){a.style.display="block";a.style.opacity="0";a.style.transform="translateY(-10px)";a.style.position="absolute";a.style.zIndex="9999";void a.offsetWidth;setTimeout(()=>{a.style.opacity="1";a.style.transform="translateY(0)"},10)}else{a.style.opacity="0";a.style.transform="translateY(-10px)";setTimeout(()=>{a.style.display="none"},300)}}}const d=i||l;d.onclick=e;d.addEventListener("click",e);d.addEventListener("touchstart",function(t){t.preventDefault();e(t)});d.style.pointerEvents="auto";d.style.cursor="pointer"}let r=false;document.addEventListener("click",function(t){if(!a||!l)return;const e=i||l;if(r){setTimeout(()=>{r=false},100);return}const n=window.getComputedStyle(a).display!=="none";const o=a.contains(t.target);const s=e.contains(t.target);if(n&&!o&&!s){a.style.opacity="0";a.style.transform="translateY(-10px)";setTimeout(()=>{a.style.display="none"},300)}});const n=e;e=function(t){r=true;n(t)};const o=a.querySelectorAll(".dropdown-item");o.forEach(t=>{t.addEventListener("mouseenter",function(){this.style.background="linear-gradient(90deg, rgba(74, 158, 255, 0.2) 0%, rgba(74, 158, 255, 0.1) 100%)";this.style.boxShadow="inset 0 0 10px rgba(74, 158, 255, 0.3)";this.style.transform="translateX(5px)";this.querySelector("i").style.textShadow="0 0 8px #4a9eff"});t.addEventListener("mouseleave",function(){this.style.background="linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%)";this.style.boxShadow="none";this.style.transform="translateX(0)";this.querySelector("i").style.textShadow="none"});t.addEventListener("click",function(t){if(this.getAttribute("href")==="#"){t.preventDefault()}const e=document.createElement("span");const n=this.getBoundingClientRect();const o=Math.max(n.width,n.height);const s=t.clientX-n.left-o/2;const l=t.clientY-n.top-o/2;e.style.width=e.style.height=o+"px";e.style.left=s+"px";e.style.top=l+"px";e.style.position="absolute";e.style.borderRadius="50%";e.style.background="rgba(74, 158, 255, 0.4)";e.style.transform="scale(0)";e.style.animation="ripple 0.6s ease-out";e.style.pointerEvents="none";this.appendChild(e);setTimeout(()=>{e.remove();if(a){a.style.opacity="0";a.style.transform="translateY(-10px)";setTimeout(()=>{a.style.display="none"},300)}},600)})});const s=document.createElement("style");s.textContent=`
+                    <script>document.addEventListener("DOMContentLoaded",function(){window.__testDropdownMenu=function(){const t=document.getElementById("dropdownMenu");if(t){t.style.display=t.style.display==="block"?"none":"block";t.style.opacity="1";t.style.transform="translateY(0)";t.style.position="absolute";t.style.zIndex="9999"}};const a=document.getElementById("dropdownMenu");const l=document.getElementById("moreActionsBtn");let i=null;function t(){if(!a){return}const t=window.getComputedStyle(a);const e=t.display!=="none";if(e){a.style.opacity="0";a.style.transform="translateY(-10px)";setTimeout(()=>{a.style.display="none"},300)}else{a.style.display="block";a.style.opacity="0";a.style.transform="translateY(-10px)";a.style.position="absolute";a.style.zIndex="9999";void a.offsetWidth;setTimeout(()=>{a.style.opacity="1";a.style.transform="translateY(0)"},10)}}if(l){l.onclick=null;l.removeAttribute("onclick");try{const d=l.cloneNode(true);l.parentNode.replaceChild(d,l);i=d}catch(t){console.error("Error resetting dropdown toggle:",t);i=l}function e(t){t.preventDefault();t.stopPropagation();t.cancelBubble=true;if(t.stopImmediatePropagation){t.stopImmediatePropagation()}if(a){const e=window.getComputedStyle(a);const n=e.display!=="none";if(!n){a.style.display="block";a.style.opacity="0";a.style.transform="translateY(-10px)";a.style.position="absolute";a.style.zIndex="9999";void a.offsetWidth;setTimeout(()=>{a.style.opacity="1";a.style.transform="translateY(0)"},10)}else{a.style.opacity="0";a.style.transform="translateY(-10px)";setTimeout(()=>{a.style.display="none"},300)}}}const c=i||l;c.onclick=e;c.addEventListener("click",e);c.addEventListener("touchstart",function(t){t.preventDefault();e(t)},{passive:false});c.style.pointerEvents="auto";c.style.cursor="pointer"}let r=false;document.addEventListener("click",function(t){if(!a||!l)return;const e=i||l;if(r){setTimeout(()=>{r=false},100);return}const n=window.getComputedStyle(a).display!=="none";const o=a.contains(t.target);const s=e.contains(t.target);if(n&&!o&&!s){a.style.opacity="0";a.style.transform="translateY(-10px)";setTimeout(()=>{a.style.display="none"},300)}});const n=e;e=function(t){r=true;n(t)};const o=a.querySelectorAll(".dropdown-item");o.forEach(t=>{t.addEventListener("mouseenter",function(){this.style.background="linear-gradient(90deg, rgba(74, 158, 255, 0.2) 0%, rgba(74, 158, 255, 0.1) 100%)";this.style.boxShadow="inset 0 0 10px rgba(74, 158, 255, 0.3)";this.style.transform="translateX(5px)";this.querySelector("i").style.textShadow="0 0 8px #4a9eff"});t.addEventListener("mouseleave",function(){this.style.background="linear-gradient(90deg, transparent 0%, rgba(74, 158, 255, 0) 100%)";this.style.boxShadow="none";this.style.transform="translateX(0)";this.querySelector("i").style.textShadow="none"});t.addEventListener("click",function(t){if(this.getAttribute("href")==="#"){t.preventDefault()}const e=document.createElement("span");const n=this.getBoundingClientRect();const o=Math.max(n.width,n.height);const s=t.clientX-n.left-o/2;const l=t.clientY-n.top-o/2;e.style.width=e.style.height=o+"px";e.style.left=s+"px";e.style.top=l+"px";e.style.position="absolute";e.style.borderRadius="50%";e.style.background="rgba(74, 158, 255, 0.4)";e.style.transform="scale(0)";e.style.animation="ripple 0.6s ease-out";e.style.pointerEvents="none";this.appendChild(e);setTimeout(()=>{e.remove();if(a){a.style.opacity="0";a.style.transform="translateY(-10px)";setTimeout(()=>{a.style.display="none"},300)}},600)})});const s=document.createElement("style");s.textContent=`
                                 @keyframes ripple {
                                     to {
                                         transform: scale(4);
@@ -1245,557 +105,60 @@
     
     <main class="container py-6">
         
-        <div class="filter-section bg-card p-3 rounded-lg shadow-sm">
+        <div id="cardContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 justify-items-center">
             
-            <div class="filter-primary flex flex-wrap items-center gap-4" style="margin: 8px;">
-                
-                
-                
-                <button title="-- 添加新图标/文件夹 --" id="addBtn" class="btn btn-primary py-1.5 px-3 rounded transition-all hover:shadow-lg flex items-center justify-center">
-                    <i class="fa fa-plus fa-lg mr-1"></i>
-                    <span class="sm:inline hidden">添加</span>
-                </button>
-                
-                
-                <div class="filter-item flex items-center min-w-[120px]">
-                    <select id="uiStyleSelect" title="-- 选择飞牛桌面页內窗口或文件夹ui风格 --" class="py-1.5 px-3 border border-border rounded bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
-                        <option value="cqfndesk_L.js">明亮模式</option>
-                        <option value="cqfndesk_D.js">暗黑模式</option>
-                        <option value="cqfndesk_CQ.js">原创经典</option>
-                    </select>
-                            <a href="https://fndesk.imcq.top/images/3种ui风格.jpg" target="_blank" class="btn btn-secondary" style="margin-bottom: 0.2rem; padding: 0.2rem 0.4rem; font-size: 0.85rem; text-decoration: none !important;">
-        <i class="fa fa-file-image-o"></i>图示</a>
-                </div>
-                
-                
-                <div class="filter-row-1">
-                    
-                    <div class="flex items-center min-w-[80px] sm:min-w-0 sm:flex-shrink-0">
-                        <span class="mr-2 text-text-secondary whitespace-nowrap hidden sm:inline"></span>
-                        <select id="iconSortSelect" title="-- 这里是指飞牛桌面里的图标加载顺序! --" class="py-1.5 px-3 border border-border rounded bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
-                            <option value="1">默认顺序</option>
-                            <option value="2">反向顺序</option>
-                        </select>
-                    </div>
-                    
-                    
-                    <div class="filter-item flex items-center min-w-[80px]">
-                        <label for="filterType" class="mr-2 text-text-secondary whitespace-nowrap font-medium"></label>
-                        <select id="filterType" title="-- 筛选图标类型 --" class="py-1.5 px-3 border border-border rounded bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
-                            <option value="">全类型</option>
-                            
-                        </select>
-                    </div>
-                    
-                    
-                    <div class="filter-item flex items-center min-w-[80px]">
-                        <label for="filterOwner" class="mr-2 text-text-secondary whitespace-nowrap font-medium"></label>
-                        <select id="filterOwner" title="-- 筛选图标归属 --" class="py-1.5 px-3 border border-border rounded bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
-                            <option value="">全归属</option>
-                            
-                        </select>
-                    </div>
-                </div>
-                
-                
-                <div class="filter-item flex-grow flex items-center min-w-[250px] w-full sm:w-auto">
-                    <label for="filterKeyword" class="mr-2 text-text-secondary whitespace-nowrap font-medium">搜：</label>
-                    <div class="relative w-full">
-                        <input type="text" id="filterKeyword" placeholder="搜索 任意关键字..." class="w-full py-1.5 px-3 border border-border rounded bg-background text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all">
-                    </div>
-                </div>
-                
-                
-                <div class="filter-row-2">
-                    
-                    <button id="filterBtn" title="-- 筛选按钮 --" class="btn btn-primary py-1.5 px-3 rounded transition-all hover:shadow-lg flex items-center justify-center">
-                        <i class="fa fa-filter mr-1"></i>
-                        <span class="sm:inline hidden">筛选</span>
-                    </button>
-                    
-                    
-                    <button id="resetFilterBtn" title="-- 重置筛选条件 --" class="btn btn-secondary py-1.5 px-3 rounded transition-all hover:shadow-lg flex items-center justify-center">
-                        <i class="fa fa-refresh mr-1"></i>
-                        <span class="sm:inline hidden">重置</span>
-                    </button>
-                </div>
-            </div>
-            </div>
+            <style>#cardContainer{grid-template-columns:repeat(minmax(280px,1fr))}@media (min-width:768px){#cardContainer{grid-template-columns:repeat(2,minmax(280px,1fr))}}@media (min-width:1024px){#cardContainer{grid-template-columns:repeat(3,minmax(280px,1fr))}}</style>
             
-            
-            <style>
-                /* 响应式布局优化 - 470px宽度布局 */
-                @media (max-width: 470px) {
-                    .filter-primary {
-                        display: flex;
-                        flex-direction: column;
-                        gap: 0.5rem;
-                    }
-                    
-                    /* 添加按钮单行 */
-                    #addBtn {
-                        width: 100%;
-                        margin-bottom: 0.25rem;
-                    }
-                    
-                    /* 搜索框单行 */
-                    .filter-item.min-w\[250px\] {
-                        width: 100%;
-                        margin-bottom: 0.25rem;
-                    }
-                    
-                    /* 第一行：图标排序、类型、归属在同一行 */
-                    .filter-row-1 {
-                        display: flex;
-                        gap: 0.5rem;
-                        width: 100%;
-                    }
-                    
-                    /* 图标排序、类型、归属在同一行，平均分配宽度 */
-                    .filter-row-1 > div {
-                        flex: 1;
-                        min-width: 0;
-                        margin-bottom: 0;
-                    }
-                    
-                    /* 调整下拉框宽度和内边距以适应空间 */
-                    .filter-row-1 > div select {
-                        width: 100%;
-                        padding: 0.3rem 0.5rem;
-                        font-size: 0.85rem;
-                    }
-                    
-                    /* 移除文字标签以节省空间 */
-                    .filter-row-1 > div:first-child span {
-                        display: none;
-                    }
-                    
-                    /* 第二行：筛选、重置按钮在同一行 */
-                    .filter-row-2 {
-                        display: flex;
-                        gap: 0.5rem;
-                        width: 100%;
-                    }
-                    
-                    /* 筛选、重置按钮在同一行，平均分配宽度 */
-                    .filter-row-2 > button {
-                        flex: 1;
-                        margin-bottom: 0;
-                    }
-                    
-                    /* 移除最小宽度限制 */
-                    .filter-row-1 > div {
-                        min-width: auto;
-                    }
-                }
-                
-                /* 确保在470px以上宽度时保持原有布局 */
-                @media (min-width: 471px) {
-                    .filter-row-1,
-                    .filter-row-2 {
-                        display: contents;
-                    }
-                    
-                    .filter-primary > div:nth-child(2),
-                    .filter-item.min-w\[140px\] {
-                        min-width: auto;
-                        flex-shrink: 0;
-                    }
-                    
-                    #filterBtn,
-                    #resetFilterBtn {
-                        margin-bottom: 0;
-                    }
-                }
-                
-                /* 小于470px的移动设备布局 */
-                @media (max-width: 469px) {
-                    .filter-primary {
-                        flex-direction: column;
-                        align-items: stretch;
-                    }
-                    
-                    /* 移动端按钮布局 */
-                    #addBtn,
-                    #filterBtn,
-                    #resetFilterBtn {
-                        width: 100%;
-                        margin-bottom: 0.5rem;
-                    }
-                    
-                    /* 移动端图标排序调整 */
-                    .filter-primary > div:nth-child(2) {
-                        width: 100%;
-                        margin-bottom: 0.5rem;
-                    }
-                    
-                    /* 所有筛选项在移动端占满宽度 */
-                    .filter-item,
-                    .filter-primary > div {
-                        width: 100%;
-                    }
-                    
-                    /* 移除最小宽度限制 */
-                    .filter-item.min-w\[140px\],
-                    .filter-primary > div.min-w\[180px\],
-                    .filter-item.min-w\[250px\] {
-                        min-width: auto;
-                    }
-                }
-                
-                /* 平板设备优化 */
-                @media (min-width: 470px) and (max-width: 800px) {
-                    .filter-primary {
-                        flex-wrap: wrap;
-                    }
-                    
-                    /* 搜索框在平板上占满宽度 */
-                    .filter-item.min-w\[250px\] {
-                        width: 100%;
-                    }
-                    
-                    /* 按钮组在平板上适当排列 */
-                    #addBtn,
-                    #filterBtn,
-                    #resetFilterBtn {
-                        flex-shrink: 0;
-                    }
-                }
-                
-                /* 表格列响应式隐藏规则 */
-                /* 宽度小于800px隐藏URL列 */
-                @media (max-width: 1060px) {
-                    table th:nth-child(5),
-                    table td:nth-child(5) {
-                        display: none;
-                    }
-                }
-                 @media (max-width: 979px) {
-                    table th:nth-child(8),
-                    table td:nth-child(8) {
-                        display: none;
-                    }
-                } 
-                
-                /* 宽度小于680px隐藏归属列 */
-                @media (max-width: 879px) {
-                    table th:nth-child(9),
-                    table td:nth-child(9) {
-                        display: none;
-                    }
-                }
-                
-                /* 宽度小于600px隐藏类型列 */
-                @media (max-width: 789px) {
-                    table th:nth-child(6),
-                    table td:nth-child(6) {
-                        display: none;
-                    }
-                }
-                 /* 宽度小于600px隐藏图标列 */
-                @media (max-width: 689px) {
-                    table th:nth-child(7),
-                    table td:nth-child(7) {
-                        display: none;
-                    }
-                }
-                
-                /* 科技蓝色调下拉框样式 */
-                select#iconSortSelect,
-                select#filterType,
-                select#filterOwner {
-                    /* 科技蓝色背景渐变 */
-                    background: linear-gradient(135deg, rgba(0, 168, 255, 0.1), rgba(0, 210, 211, 0.1));
-                    /* 科技蓝边框 */
-                    border: 1px solid var(--primary);
-                    /* 文字颜色 */
-                    color: var(--text-primary);
-                    /* 科技感发光效果 */
-                    box-shadow: var(--glow-primary);
-                    /* 过渡效果 */
-                    transition: all 0.3s ease;
-                    /* 保持原有尺寸和形状 */
-                    padding: 0.375rem 0.75rem;
-                    border-radius: 0.375rem;
-                }
-                
-                /* 鼠标悬停效果 */
-                select#iconSortSelect:hover,
-                select#filterType:hover,
-                select#filterOwner:hover {
-                    box-shadow: var(--glow-secondary);
-                    border-color: var(--secondary);
-                }
-                
-                /* 聚焦效果 */
-                select#iconSortSelect:focus,
-                select#filterType:focus,
-                select#filterOwner:focus {
-                    outline: none;
-                    box-shadow: 0 0 0 3px rgba(0, 168, 255, 0.3);
-                    border-color: var(--primary);
-                }
-                
-                /* 只针对筛选区域的三个下拉框设置样式 */
-                select#iconSortSelect,
-                select#filterType,
-                select#filterOwner {
-                    background-color: #1a1a2e !important;
-                    color: #ffffff !important;
-                    border: 1px solid #00a8ff !important;
-                    padding: 0.375rem 0.75rem !important;
-                    border-radius: 0.375rem !important;
-                    box-shadow: 0 0 10px rgba(0, 168, 255, 0.3) !important;
-                    display: inline-block !important;
-                    cursor: pointer !important;
-                    box-sizing: border-box !important;
-                }
-                
-                /* 只针对筛选区域的下拉选项设置深色背景 */
-                select#iconSortSelect option,
-                select#filterType option,
-                select#filterOwner option {
-                    background-color: #1a1a2e !important;
-                    color: #ffffff !important;
-                    padding: 4px 8px !important;
-                    margin: 0 !important;
-                    border: none !important;
-                }
-                
-                /* 只针对筛选区域的下拉选项设置选中和悬停状态 */
-                select#iconSortSelect option:checked,
-                select#filterType option:checked,
-                select#filterOwner option:checked,
-                select#iconSortSelect option:hover,
-                select#filterType option:hover,
-                select#filterOwner option:hover {
-                    background-color: #00a8ff !important;
-                    color: #ffffff !important;
-                }
-            </style>
-        
-
-        
-        <div class="mt-4">
-            <div class="flex items-center gap-2">
-
-
-            </div>
-        </div>
-
-        
-        <script>document.addEventListener("DOMContentLoaded",function(){fetch("deskdata/fnstyle.json?v="+(new Date).getTime()).then(t=>t.json()).then(t=>{const o=document.getElementById("iconSortSelect");if(t.iconSort&&(t.iconSort===1||t.iconSort===2)){o.value=t.iconSort.toString()}const e=document.getElementById("uiStyleSelect");if(t.ui_style){e.value=t.ui_style}}).catch(t=>console.error("读取fnstyle.json失败:",t));const t=document.getElementById("iconSortSelect");t.addEventListener("change",function(){const t=parseInt(this.value);fetch("api/fnstyle.json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({iconSort:t})}).then(t=>{if(!t.ok){throw new Error("网络响应错误")}return t.json()}).then(()=>{if(typeof showNotification==="function"){showNotification("图标排序设置已保存","success")}}).catch(t=>{console.error("保存图标排序设置失败:",t);if(typeof showNotification==="function"){showNotification("保存失败，请重试","error")}})});const o=document.getElementById("uiStyleSelect");o.addEventListener("change",function(){const t=this.value;fetch("api/fnstyle.json",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({ui_style:t})}).then(t=>{if(!t.ok){throw new Error("网络响应错误")}return t.json()}).then(()=>{if(typeof showNotification==="function"){showNotification("UI样式设置已保存，请执行 立即生效 应用新样式...","success")}}).catch(t=>{console.error("保存UI样式设置失败:",t);if(typeof showNotification==="function"){showNotification("保存失败，请重试","error")}})})})</script>
-        
-        
-        <div class="table-container">
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead>
-                        <tr>
-                            <th id="sortable-order" class="cursor-pointer hover:bg-card-hover">拖动排序 <i class="fa fa-sort ml-1"></i></th>
-                            <th class="text-center">开关 <button id="helpBtn" class="btn btn-help ml-1" title="使用说明"><i class="fa fa-question-circle"></i></button></th>
-                            <th class="hidden">ID</th>
-                            <th>标 题</th>
-                            <th>URL</th>
-                            <th>打开方式</th>
-                            <th>图标预览</th>
-                            <th>类 型</th>
-                            <th>归 属</th>
-                            <th class="text-center">操 作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td colspan="10" class="announcement-row">
-                                
-                                提示：飞牛原生图标已完美适配APP完美显示，新建原生图标请到>更多选项>尊享功能！<br>此页将废除蓝色开关，主要新建原创图标和文件夹，若要删除之前创建的原生图标，可以到应用中心把fndesk服务卸载
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tbody id="dataTableBody">
-                        
-                    </tbody>
-                </table>
-            </div>
-            
-            <div class="pagination flex items-center justify-between py-4 px-2">
-                <div class="text-sm text-text-secondary">
-                    本页 <span id="startItem">0</span> 到 <span id="endItem">0</span> 条，共 <span id="totalItems">0</span> 条
-                </div>
-                <div class="flex gap-4">
-                    <button id="prevPage" class="pagination-btn px-4 py-2 border rounded transition-all hover:bg-card-hover disabled:opacity-50" disabled="disabled">
-                        上一页
-                    </button>
-                    <button id="nextPage" class="pagination-btn px-4 py-2 border rounded transition-all hover:bg-card-hover disabled:opacity-50" disabled="disabled">
-                        下一页
-                    </button>
-                </div>
-            </div>
         </div>
     </main>
 
     
-    <div id="editModal" class="modal-overlay hidden">
-        <div class="modal">
-            <div class="modal-header">
-                                           <span> <a href="https://fndesk.imcq.top/images/3种ui风格.jpg" target="_blank" class="btn btn-secondary" style="margin-bottom: 0.2rem; padding: 0.2rem 0.4rem; font-size: 0.85rem; text-decoration: none !important;">
-        <i class="fa fa-file-image-o"></i>图示1</a>
-        <a href="https://fndesk.imcq.top/images/窗口文件夹说明.jpg" target="_blank" class="btn btn-secondary" style="margin-bottom: 0.2rem; padding: 0.2rem 0.4rem; font-size: 0.85rem; text-decoration: none !important;">
-        <i class="fa fa-file-image-o"></i>图示2</a></span>
-                <h2 id="modalTitle" class="modal-title">添加图标</h2>
-
-                <button id="closeModal">
-                    <i class="fa fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="editForm">
-                    <input type="hidden" id="recordId">
-                    
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-                        <div class="input-group">
-                            <label for="editfndata_Sort">序号（越大靠前）</label>
-                            <input type="number" id="editfndata_Sort" required>
-                        </div>
-                        <div class="input-group">
-                            <label for="editfndata_Type">图标类型</label>
-                            <select id="editfndata_Type" required>
-                                <option value="0">图标</option>
-                                <option value="1">文件夹</option>
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label for="editfndata_For">归属文件夹</label>
-                            <select id="editfndata_For" required>
-                                
-                            </select>
-                        </div>
-                        <div class="input-group">
-                            <label for="editOpenInPage">打开方式</label>
-                            <select id="editOpenInPage" required>
-                                <option value="0">新窗打开</option>
-                                <option value="1">页内打开</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <script>window.toggleUrlFieldsByType=function(){const e=document.getElementById("editfndata_Type");if(!e)return;const t=e.value==="1";const n=document.getElementById("publicUrlField");const o=document.getElementById("urlFieldsRow1");const i=document.getElementById("urlFieldsRow2");const d=document.getElementById("editfndata_Title");const l=document.querySelector(".input-group:has(#editOpenInPage)");if(n){n.style.display="";const c=n.querySelector("label");const r=n.querySelector("input");if(c&&r){if(t){c.textContent="装载系统图标：(系统图标需要另外隐藏)";r.placeholder="例如:文件管理,应用中心,Docker (用逗号分隔)";r.onfocus=function(){if(this.value==""){this.value=""}this.select()}}else{c.textContent="公网地址：";r.placeholder="URL均可直接填端口号/xxx";r.onfocus=function(){if(this.value==""){this.value=window.waiwangURL}this.select()}}}}if(o)o.style.display=t?"none":"grid";if(i)i.style.display=t?"none":"grid";if(l){l.style.display=t?"none":"flex"}const a=document.getElementById("recordId").value;if(d&&!a){d.value=t?"新建文件夹":"一个新图标"}};window.addEventListener("DOMContentLoaded",function(){window.waiwangURL="";window.neiwangURL="";fetch("./api/config").then(e=>{if(!e.ok){throw new Error("获取配置失败")}return e.json()}).then(e=>{window.waiwangURL=e.wizard_wan_url||"";window.neiwangURL=e.wizard_lan_url||"";console.log("从API获取的外网URL:",window.waiwangURL);console.log("从API获取的内网URL:",window.neiwangURL)}).catch(e=>{window.waiwangURL="";window.neiwangURL="";console.error("获取配置信息失败:",e)});const e=document.getElementById("edit类型");if(e){e.addEventListener("change",toggleUrlFieldsByType)}const n=window.openEditModal;if(n){window.openEditModal=function(e){n(e);const t=document.getElementById("edit类型");if(e&&t&&e.type!==undefined){t.value=e.type}setTimeout(()=>{toggleUrlFieldsByType();o();setTimeout(()=>{const e=document.getElementById("dockerContainerSelect");if(e){e.value=""}},200)},100)}}function o(){const n=document.getElementById("dockerContainerSelect");if(!n)return;n.innerHTML='<option value="" selected>一键添加Docker应用</option>';fetch("./api/docker/containers").then(e=>{if(!e.ok){throw new Error("获取Docker容器失败")}return e.json()}).then(e=>{e.forEach(e=>{const t=document.createElement("option");t.value=JSON.stringify({name:e.name,port:e.port});t.textContent=e.name;n.appendChild(t)});n.value=""}).catch(e=>{console.error("获取Docker容器失败:",e);n.value=""})}const t=document.getElementById("dockerContainerSelect");if(t){t.addEventListener("change",function(){if(this.value){const e=JSON.parse(this.value);document.getElementById("editfndata_Title").value=e.name;document.getElementById("editfndata_Lan").value=e.port;setTimeout(()=>{if(window.autoFetchImage){window.autoFetchImage()}},100)}})}o()})</script>
-                    
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div class="input-group">
-                            <label for="editfndata_Title">* 标题（必须填写！）</label>
-                            <input type="text" id="editfndata_Title" value="一个新图标" required onfocus="this.select()">
-                        </div>
-                        <div id="publicUrlField" class="input-group">
-                            <label for="editfndata_Wan">公网地址：</label>
-                            <input type="text" id="editfndata_Wan" placeholder="例如：https://fnnas.com/" value="" onfocus='if(this.value=="")this.value=window.waiwangURL;this.select()'>
-                        </div>
-                    </div>
-                    
-                    
-                    <div id="urlFieldsRow1" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div class="input-group">
-                            <label for="editfndata_Lan">内网地址：（识别到内网将跳转到此地址）</label>
-                            <input type="text" id="editfndata_Lan" placeholder="若填端口号并开启飞牛图标可走FN Connect" value="" onfocus='if(this.value=="")this.value=window.neiwangURL;this.select()'>
-                        </div>
-                        <div class="input-group">
-                            <label for="editfndata_URL1">备用URL1（桌面图标右键菜单可选）</label>
-                            <input type="text" id="editfndata_URL1" placeholder="可填反代或组网地址备用" onfocus="this.select()">
-                        </div>
-                    </div>
-                    
-                    
-                    <div id="urlFieldsRow2" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div class="input-group">
-                            <label for="editfndata_URL2">备用URL2</label>
-                            <input type="text" id="editfndata_URL2" placeholder="例如：5666" onfocus="this.select()">
-                        </div>
-                        <div class="input-group">
-                            <label for="editfndata_URL3">备用URL3</label>
-                            <input type="text" id="editfndata_URL3" placeholder="例如：9990/fnstyle.html" onfocus="this.select()">
-                        </div>
-                    </div>
-                    
-                    
-                    <div class="grid grid-cols-1 gap-6 mb-6">
-                        <div class="input-group" style="display: flex; flex-direction: column; gap: 0.5rem;">
-                            <label for="editfndata_WanPic" style="display: none;">网络图片URL（若不填则尝试从URL中获取）</label>
-                            <input type="text" id="editfndata_WanPic" placeholder="不填则尝试从URL中获取" class="flex-1" onfocus="this.select()" style="display: none;">
-                            <label for="editfndata_LanPic">图标图片（点击获取则从5个URL中提取favicon图标）</label>
-                            <div class="flex gap-2 items-center" style="width: 100%;">
-                                
-                                <div id="imagePreview" style="width: 50px; height: 50px; border: 1px solid var(--border-color); border-radius: 4px; background-color: rgba(15, 23, 42, 0.3); display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                                    <i class="fa fa-picture-o text-text-secondary" style="font-size: 20px;"></i>
+    <script>document.addEventListener("DOMContentLoaded",function(){const n=document.getElementById("cardContainer");function d(){const t=localStorage.getItem("cardStats");return t?JSON.parse(t):{}}function r(t){localStorage.setItem("cardStats",JSON.stringify(t))}fetch("card_data.json").then(t=>t.json()).then(o=>{const e=d();o.forEach(t=>{const a=t.card_title.toLowerCase().replace(/\s+/g,"-");t.id=a;if(e[a]){t.card_view=e[a].card_view||0;t.card_fav=e[a].card_fav||0}});o.sort((t,a)=>a.card_fav-t.card_fav);o.forEach((s,t)=>{setTimeout(()=>{const t=document.createElement("div");t.className="plugin-card futuristic cursor-pointer scale-in-center";t.innerHTML=`
+                            <div class="card-header">
+                                <div class="card-icon slide-in-fwd-bottom-1">
+                                    <i class="fa ${s.card_icon}"></i>
                                 </div>
-                                
-                                <input type="text" id="editfndata_LanPic" placeholder="可以直接填入网络图片URL,保存时会自动下载" class="flex-1 flex-grow min-w-0" onfocus="this.select()" oninput="updateImagePreview(this.value)" style="flex: 1 1 auto; width: 0;">
-                                <button id="autoFetchBtn" type="button" class="btn btn-primary whitespace-nowrap">获取</button>
-                                <button id="uploadLocalImgBtn" type="button" class="btn btn-primary whitespace-nowrap">上传</button>
-                                <input type="file" id="localImgFileInput" accept="image/*" style="display: none;">
+                                <div class="title slide-in-fwd-bottom-2">${s.card_title}</div>
                             </div>
-                            
-                            <script>window.updateImagePreview=function(e){const t=document.getElementById("imagePreview");t.innerHTML="";if(!e){const n=document.createElement("i");n.className="fa fa-picture-o text-text-secondary";n.style.fontSize="20px";t.appendChild(n);return}try{const a=document.createElement("img");a.style.width="100%";a.style.height="100%";a.style.objectFit="cover";a.style.transition="opacity 0.3s ease";a.style.opacity="0";a.onload=function(){a.style.opacity="1"};a.onerror=function(){const e=document.createElement("i");e.className="fa fa-exclamation-circle text-warning";e.style.fontSize="20px";t.innerHTML="";t.appendChild(e)};a.src=e+`?v=${Date.now()}`;t.appendChild(a)}catch(e){const n=document.createElement("i");n.className="fa fa-exclamation-circle text-warning";n.style.fontSize="20px";t.innerHTML="";t.appendChild(n)}}</script>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                                            <div style="display: flex; gap: 10px; margin-bottom: 8px;">
-                                <select id="dockerContainerSelect" class="flex-1">
-                                    <option value="" selected="selected">一键添加Docker应用</option>
-                                </select>
+                            <div class="card-content">
+                                <div class="card-content-text slide-in-fwd-bottom-3">
+                                    <p class="description">${s.card_desc}</p>
+                                </div>
                             </div>
-                <a target="_blank" href="HDicon/HDicon.html" class="text-secondary mr-auto" style="margin-right: auto; padding-top: 10px;">
-                    <small>打开图标库</small>
-                </a>
-                <button id="cancelEditBtn" class="btn btn-secondary">
-                    取 消
-                </button>
-                <button id="saveBtn" class="btn btn-primary">
-                    保 存
-                </button>
-            </div>
-        </div>
-    </div>
+                            <div class="card-footer slide-in-fwd-bottom-4">
+                                <div class="stats">
+                                    <span class="stat-item">
+                                        <i class="fa fa-eye stat-icon"></i>
+                                        <span class="view-count">${s.card_view}</span>
+                                    </span>
+                                    <span class="stat-item">
+                                        <i class="fa fa-heart stat-icon"></i>
+                                        <span class="fav-count">${s.card_fav}</span>
+                                    </span>
+                                </div>
+                                <div class="actions">
+                                    <button class="action-btn fav-btn" title="收藏置顶">
+                                        <i class="fa fa-heart-o fav-icon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;const c=t.querySelector(".view-count");const e=t.querySelector(".fav-count");const a=t.querySelector(".fav-btn");const i=t.querySelector(".fav-icon");t.addEventListener("click",function(t){if(!t.target.closest(".fav-btn")){s.card_view++;c.textContent=s.card_view;const t=d();t[s.id]=t[s.id]||{};t[s.id].card_view=s.card_view;t[s.id].card_fav=s.card_fav;r(t);if(s.card_title==="在线升级"||s.card_title==="在线更新"){window.openUpdateModal()}else if(s.card_title==="还原桌面"){const a=document.getElementById("resetDesktopModal");if(a){a.classList.remove("hidden")}}else if(s.card_title==="退出登录"){if(typeof logout==="function"){logout()}}else if(s.card_title==="立即生效"){const e=document.getElementById("applyConfigModal");if(e){e.classList.remove("hidden")}}else if(s.card_title==="Fndesk运行日志"){if(typeof window.showLogViewer==="function"){window.showLogViewer()}}else if(s.card_info){if(typeof window.showCardInfo==="function"){window.showCardInfo(s.card_title,s.card_info)}}else if(s.card_link){if(s.open_in_new_tab||s.card_link.startsWith("http")){window.open(s.card_link,"_blank")}else{window.location.href=s.card_link}}}});a.addEventListener("click",function(t){t.stopPropagation();const a=d();if(i.classList.contains("fa-heart-o")){let a=0;o.forEach(t=>{if(t.card_fav>a){a=t.card_fav}});s.card_fav=a+1;i.classList.remove("fa-heart-o");i.classList.add("fa-heart");i.style.color="#ff4757"}else{s.card_fav=0;i.classList.remove("fa-heart");i.classList.add("fa-heart-o");i.style.color=""}e.textContent=s.card_fav;a[s.id]=a[s.id]||{};a[s.id].card_view=s.card_view;a[s.id].card_fav=s.card_fav;r(a);location.reload()});if(s.card_fav>0){i.classList.remove("fa-heart-o");i.classList.add("fa-heart");i.style.color="#ff4757"}n.appendChild(t)},t*0)})}).catch(t=>{console.error("加载卡片数据失败:",t);n.innerHTML='<p class="text-center text-danger">加载卡片数据失败</p>'})})</script>
 
-    
-    <div id="deleteModal" class="modal-overlay hidden">
-        <div class="modal max-w-md">
-            <div class="modal-header">
-                <h2 class="modal-title">确认删除</h2>
-            </div>
-            <div class="modal-body">
-                <p class="text-text-primary">确定要删除这条记录吗？此操作不可撤销。</p>
-                <p id="deleteTitle" class="mt-2 font-medium text-danger"></p>
-                <input type="hidden" id="deleteId">
-            </div>
-            <div class="modal-footer">
-                <button id="cancelDeleteBtn" class="btn btn-secondary">
-                    取消
-                </button>
-                <button id="confirmDeleteBtn" class="btn btn-danger">
-                    删除
-                </button>
-            </div>
-        </div>
-    </div>
-    
     
     <div id="applyConfigModal" class="modal-overlay hidden">
         <div class="modal max-w-md">
             <div class="modal-header">
                 <h2 class="modal-title">确认应用配置</h2>
             </div>
-    
+
             <div class="modal-body">
-                <a href="https://fndesk.imcq.top/images/fndesk备份指南.png" target="_blank" class="btn btn-secondary" style="margin-bottom: 0.2rem; padding: 0.2rem 0.4rem; font-size: 0.85rem; text-decoration: none !important;">
+                <a href="javascript:void(0)" onclick='showImg("https://fndesk.imcq.top/images/fndesk备份指南.png")' class="btn btn-secondary" style="color:#00f999;margin-bottom:.2rem;padding:.2rem .4rem;font-size:.85rem;text-decoration:none!important">
                     <i class="fa fa-file-image-o"></i>图示1</a>
-                <a href="https://fndesk.imcq.top/images/fndesk配置文件说明.png" target="_blank" class="btn btn-secondary" style="margin-bottom: 0.2rem; padding: 0.2rem 0.4rem; font-size: 0.85rem; text-decoration: none !important;">
+                <a href="javascript:void(0)" onclick='showImg("https://fndesk.imcq.top/images/fndesk配置文件说明.png")' class="btn btn-secondary" style="color:#00f999;margin-bottom:.2rem;padding:.2rem .4rem;font-size:.85rem;text-decoration:none!important">
                     <i class="fa fa-file-image-o"></i>图示2</a>
                 <p class="text-text-primary">确定要立即应用当前配置吗？（飞牛也是牛，请不要频繁点击此按钮）</p>
-                <p class="text-text-secondary text-sm mt-2">应用后若没效果请清空浏览器缓存/浏览器按F12在网络里禁用缓存/使用无痕模式浏览</p><br>
+                <p class="text-text-secondary text-sm mt-2">应用后若没效果请按下图操作方法对抗缓存</p>
+               <img src="./static/jjhc.webp" style="max-width:413px;width:100%;height:auto;display:block;margin:0 auto">
             </div>
             <div class="modal-footer">
                 <button id="cancelApplyBtn" class="btn btn-secondary">
@@ -1807,7 +170,7 @@
             </div>
         </div>
     </div>
-    
+
     
     <div id="resetDesktopModal" class="modal-overlay hidden">
         <div class="modal max-w-md">
@@ -1816,7 +179,18 @@
             </div>
             <div class="modal-body">
                 <p class="text-text-primary">这将彻底还原成使用本工具之前状态。</p>
-                <p class="text-text-secondary text-sm mt-2">⚠ 还原后请稍等片刻刷新桌面！</p><br>
+                <p class="text-text-secondary text-sm mt-2">⚠ 还原后请稍等片刻刷新桌面！</p>
+                <div class="directory-lists-container" style="margin-top:16px;border:1px solid var(--border-color);border-radius:8px;padding:12px;background:var(--card-bg);max-height:350px;overflow-y:auto">
+                    <div style="display:flex;gap:20px">
+                        <div id="restoreDirList" style="flex:1;font-size:12px;line-height:1.8">
+                            <h4 style="margin-bottom:10px;color:var(--secondary);font-size:14px">现状预览</h4>
+                            <p style="color:var(--text-secondary)">加载中...</p>
+                        </div>
+                        <div id="wwwDirList" style="flex:1;font-size:12px;line-height:1.8">
+                            <p style="color:var(--text-secondary)">加载中...</p>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button id="cancelResetBtn" class="btn btn-secondary">
@@ -1828,7 +202,7 @@
             </div>
         </div>
     </div>
-    
+
     
     <div id="logoutModal" class="modal-overlay hidden">
         <div class="modal max-w-md">
@@ -1849,7 +223,7 @@
             </div>
         </div>
     </div>
-    
+
     
     <div id="announcementModal" class="modal-overlay hidden">
         <div class="modal max-w-2xl">
@@ -1885,27 +259,6 @@
         </div>
     </div>
 
-    <script>async function fetchAnnouncementContent(){const t=document.getElementById("announcementLoading");const c=document.getElementById("announcementError");const i=document.getElementById("announcementText");t.classList.remove("hidden");c.classList.add("hidden");i.classList.add("hidden");try{const n="";const e=`./api/announcement?url=${encodeURIComponent(n)}`;const o=await fetch(e,{method:"GET",headers:{Accept:"text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8"},cache:"no-cache"});if(!o.ok){throw new Error(`HTTP错误! 状态码: ${o.status} - ${o.statusText}`)}const a=await o.text();i.innerHTML=a;t.classList.add("hidden");i.classList.remove("hidden");c.classList.add("hidden")}catch(n){console.error("获取公告内容失败:",n.message);t.classList.add("hidden");c.classList.remove("hidden");let e=`加载失败: ${n.message}`;if(n.message.includes("CORS")){e+=" (可能是跨域访问限制)"}else if(n.message.includes("NetworkError")||n.message.includes("网络")){e+=" (可能是网络连接问题)"}c.innerHTML=`
-                    <i class="fa fa-exclamation-circle fa-3x text-danger mb-3"></i>
-                    <p>${e}</p>
-                `;i.innerHTML=`
-                <br/>
-                    <h3>无法加载最新公告</h3>
-                    <h3>  默认公告：</h3>
-                    <ul>
-                        <li>大家好👋，我是米恋泥，</li>
-                        <li>欢迎使用，有问题请找我，Q群1039270739</li>
-                        <li>飞牛论坛（搜：飞牛桌面管理工具）</li>
-                        <li>GitHub：IMGZCQ/fndesk</li>
-                        <li>酷安：米恋泥</li>
-                    </ul>
-                `;i.classList.remove("hidden")}}document.addEventListener("DOMContentLoaded",function(){const announcementBtn=document.getElementById("announcementBtn");if(announcementBtn){const originalClickHandler=announcementBtn.onclick||announcementBtn.getAttribute("onclick");announcementBtn.onclick=null;announcementBtn.removeAttribute("onclick");announcementBtn.addEventListener("click",function(){if(typeof originalClickHandler==="function"){originalClickHandler.call(this)}else{if(typeof originalClickHandler==="string"){eval(originalClickHandler)}else{const announcementModal=document.getElementById("announcementModal");if(announcementModal){announcementModal.classList.remove("hidden")}}}fetchAnnouncementContent()})}})</script>
-
-
-
-    <script src="index.js"></script>
-    
-    
     
     <div id="updateModal" class="modal-overlay hidden">
         <div class="modal max-w-md">
@@ -1913,8 +266,35 @@
                 <h2 class="modal-title">在线升级</h2>
             </div>
             <div class="modal-body">
-                <p class="text-text-primary">自我升级将会卸载应用然后下载重新安装,此过程全自动！</p>
-                <p class="text-text-secondary text-sm mt-2">注意：升级过程中请勿关闭浏览器，如果不小心关闭了，也不会有什么问题的。</p><br>
+                <style>.version-info{background:0 0;border-radius:12px;padding:16px 20px;margin-bottom:20px;border:1px solid rgba(255,255,255,.1)}.version-item{font-size:15px;padding:8px 0;display:block}.version-label{color:rgba(255,255,255,.7);font-weight:500}.version-value{font-size:16px;font-weight:700;margin-left:4px}.tech-blue{color:#00a1ff!important}.tech-green{color:#00d48d!important}.tech-yellow{color:#ffb800!important}.arch-badge{font-size:12px;font-weight:600;padding:2px 8px;border-radius:10px;background:rgba(0,161,255,.15);color:#00a1ff;margin-left:8px}.update-log-container{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1)}.update-log-header{margin-bottom:8px}.update-log-title{font-size:14px;font-weight:600;color:rgba(255,255,255,.85)}.update-log-content{font-size:13px;color:rgba(255,255,255,.7);line-height:1.6;white-space:pre-wrap;word-break:break-all}.upgrade-tips{color:rgba(255,255,255,.85);line-height:1.6;margin:8px 0}.upgrade-note{color:rgba(255,255,255,.6);font-size:13px;margin-top:12px;line-height:1.5}</style>
+
+                <div class="version-info mb-4">
+                    <div class="version-item">
+                        <style>.x-strike{position:relative;display:inline-block}.x-strike::after,.x-strike::before{content:'';position:absolute;top:50%;left:-15%;width:130%;height:1px;background:rgba(255,0,0,.6);transform:translateY(-50%) rotate(45deg)}.x-strike::after{transform:translateY(-50%) rotate(-45deg)}</style>
+
+<span class="version-label">当前<span class="x-strike">肥</span>飞牛版本：</span>
+                        <span id="systemVersion" class="version-value tech-blue">--</span>
+                        <span id="archInfo" class="arch-badge">--</span>
+                    </div>
+                    <div class="version-item">
+                        <span class="version-label">当前Fndesk版本：</span>
+                        <span id="currentAppVersion" class="version-value tech-green">--</span>
+                    </div>
+                    <div class="version-item">
+                        <span class="version-label">更新Fndesk版本：</span>
+                        <span id="targetAppVersion" class="version-value tech-yellow">--</span>
+                    </div>
+                    <div id="updateLogContainer" class="update-log-container">
+                        <div class="update-log-header">
+                            <span id="updateLogTitle" class="update-log-title">📝 更新内容</span>
+                        </div>
+                        <div id="updateLogContent" class="update-log-content">--</div>
+                    </div>
+                </div>
+
+                <p class="upgrade-tips">请核对版本信息，然后做一个决定！</p>
+                <p class="upgrade-tips">升级过程全自动，只需耐心等待即可！</p>
+                <p class="upgrade-note">注意：升级过程中请勿关闭浏览器，如果不小心关闭了，也没有任何影响。</p>
             </div>
             <div class="modal-footer">
                 <button id="cancelUpdateBtn" class="btn btn-secondary">
@@ -1926,63 +306,114 @@
             </div>
         </div>
     </div>
+
     
-    
-    <script>document.getElementById("confirmUpdateBtn").addEventListener("click",async function(){showNotification("正常检测更新...","info");localStorage.removeItem("lastVersionCheckDate");await checkVersion();if(hasNewVersion){try{const e=document.createElement("iframe");e.id="loadingIframe";e.src="./loading.html";e.style.cssText=`
-         position: fixed;
-         top: 0;
-         left: 0;
-         width: 100%;
-         height: 100%;
-         border: none;
-         z-index: 9999;
-     `;document.body.appendChild(e);showNotification("开始升级...请稍后...","info");await fetch("./api/download-and-install-fpk",{method:"GET"});setTimeout(function(){},1e3)}catch(e){console.error("升级请求失败:",e);showNotification("升级请求失败，请稍后重试","error");document.getElementById("updateModal").classList.add("hidden")}}else{showNotification("没找到有新版，请马上去鞭策作者...","info");document.getElementById("updateModal").classList.add("hidden")}})</script>
-    
-    
-    <div id="helpModal" class="modal-overlay hidden">
+    <div id="cardInfoModal" class="modal-overlay hidden">
         <div class="modal max-w-2xl">
             <div class="modal-header">
-                <h2 id="helpModalTitle" class="modal-title">使用说明</h2>
+                <h2 class="modal-title" id="cardInfoTitle">提示信息</h2>
             </div>
-            <div id="helpModalBody" class="modal-body">
-                <p class="text-text-primary">这里是使用说明的内容，您可以根据需要自行编辑。</p>
+            <div class="modal-body">
+                <div id="cardInfoContent" class="text-text-primary" style="white-space:pre-wrap;word-break:break-word;line-height:1.6;margin-bottom:1.5rem"></div>
             </div>
             <div class="modal-footer">
-                <button id="closeHelpBtn" class="btn btn-primary">
-                    关闭
+                <button id="closeCardInfoFooterBtn" class="btn btn-primary">
+                    我知道了
                 </button>
             </div>
         </div>
     </div>
+
+    <script>document.addEventListener("DOMContentLoaded",function(){const t=document.getElementById("cardInfoModal");const e=document.getElementById("closeCardInfoFooterBtn");function n(){if(t){t.classList.add("hidden")}}if(e){e.addEventListener("click",n)}if(t){t.addEventListener("click",function(e){if(e.target===t){n()}})}document.addEventListener("keydown",e=>{if(e.key==="Escape"&&t&&!t.classList.contains("hidden")){n()}})});const logViewerModalHTML=`
+<!-- 日志查看器模态框（复用页面已有样式） -->
+<div id="logViewerModal" class="modal-overlay hidden">
+    <div class="modal max-w-5xl max-h-[90vh]">
+        <!-- 直接复用页面已有的 modal-header 样式 -->
+        <div class="modal-header">
+            <div>
+                <h2 class="modal-title">Fndesk 服务日志</h2>
+                <!-- 调整位置：放在h2下方，保持在同一个div容器内 -->
+                <small style="display: block; color: var(--text-secondary); font-size: 0.9rem;">
+                    <span style="color: rgb(202, 154, 51);font-weight:bold;">路径：</span>飞牛 文件管理>应用文件>fndesk
+                </small>
+            </div>
+            <div class="flex gap-2">
+                <!-- 新增复制按钮 -->
+                <button id="copyLogBtn" class="btn btn-primary btn-sm">
+                    <i class="fa fa-copy"></i> 复制日志
+                </button>
+                <!-- 关闭按钮 -->
+                <button id="closeLogViewerBtn" class="btn btn-danger btn-sm">
+                    <i class="fa fa-times"></i> 关闭
+                </button>                        
+            </div>
+        </div>
+                  
+        <!-- 复用页面已有的 modal-body 样式 -->
+        <div class="modal-body p-0 h-[calc(90vh-80px)]">
+            <div id="logLoading" class="flex items-center justify-center h-full">
+                <div class="text-center">
+                    <i class="fa fa-spinner fa-spin fa-3x text-primary mb-3"></i>
+                    <p>正在加载日志...</p>
+                </div>
+            </div>
+            <div id="logError" class="flex items-center justify-center h-full hidden">
+                <div class="text-center">
+                    <i class="fa fa-exclamation-circle fa-3x mb-3"></i>
+                    <p>加载失败</p>
+                </div>
+            </div>
+            <div id="logContent" class="w-full h-full bg-[#1a1a2e] text-[#00ff00] font-mono text-sm overflow-auto" 
+                 style="white-space: pre-wrap; word-break: break-all; line-height: 1.5;"></div>
+        </div>
+    </div>
+</div>
+`;const logViewerContainer=document.createElement("div");logViewerContainer.innerHTML=logViewerModalHTML.trim();if(logViewerContainer.firstElementChild){document.body.appendChild(logViewerContainer.firstElementChild)}window.showCardInfo=function(e,t){const n=document.getElementById("cardInfoModal");const o=document.getElementById("cardInfoTitle");const i=document.getElementById("cardInfoContent");if(n&&i){if(o){o.textContent=e||"提示信息"}i.innerHTML=t.replace(/\n/g,"<br>");n.classList.remove("hidden")}};window.showLogViewer=async function(){const e=document.getElementById("logViewerModal");const t=document.getElementById("logContent");const n=document.getElementById("logLoading");const o=document.getElementById("logError");if(!e)return;n.classList.remove("hidden");o.classList.add("hidden");t.classList.add("hidden");try{const i=await fetch("./api/read-log?token=authenticated",{method:"GET",headers:{"Cache-Control":"no-cache"},cache:"no-cache"});if(!i.ok)throw new Error(`HTTP错误! 状态码: ${i.status}`);const d=await i.json();if(d.success){t.textContent=d.content||"日志内容为空";t.classList.remove("hidden");n.classList.add("hidden")}else{o.textContent=d.message||"无法读取日志文件";o.classList.remove("hidden");n.classList.add("hidden")}}catch(e){console.error("读取日志失败:",e);o.textContent="读取日志失败: "+e.message;o.classList.remove("hidden");n.classList.add("hidden")}e.classList.remove("hidden")};document.addEventListener("DOMContentLoaded",function(){document.getElementById("closeLogViewerBtn")?.addEventListener("click",()=>{document.getElementById("logViewerModal").classList.add("hidden")});document.getElementById("logViewerModal")?.addEventListener("click",function(e){if(e.target===this)this.classList.add("hidden")});document.addEventListener("keydown",e=>{const t=document.getElementById("logViewerModal");if(e.key==="Escape"&&t&&!t.classList.contains("hidden")){t.classList.add("hidden")}})});window.closeLogViewer=function(){const e=document.getElementById("logViewerModal");if(e){e.classList.add("hidden")}};document.getElementById("copyLogBtn")?.addEventListener("click",async function(){const e=document.getElementById("logContent");const t=this;if(!e||e.classList.contains("hidden")){showNotification("暂无日志内容可复制","error");return}const n=e.textContent.trim();if(!n){showNotification("日志内容为空","error");return}try{await navigator.clipboard.writeText(n);const o=t.innerHTML;t.innerHTML='<i class="fa fa-check"></i> 复制成功';t.classList.add("btn-success");setTimeout(()=>{t.innerHTML=o;t.classList.remove("btn-success")},2e3);showNotification("日志内容已复制到剪贴板","success")}catch(e){try{const i=document.createElement("textarea");i.value=n;document.body.appendChild(i);i.select();document.execCommand("copy");document.body.removeChild(i);showNotification("日志内容已复制到剪贴板","success")}catch(e){showNotification("复制失败，请手动复制","error");console.error("复制降级方案失败:",e)}}});const initLogViewerListeners=function(){const e=document.getElementById("closeLogViewerBtn");if(e){e.addEventListener("click",window.closeLogViewer)}const t=document.getElementById("logViewerModal");if(t){t.addEventListener("click",function(e){if(e.target===t){window.closeLogViewer()}})}document.addEventListener("keydown",e=>{if(e.key==="Escape"&&t&&!t.classList.contains("hidden")){window.closeLogViewer()}})};if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",initLogViewerListeners)}else{initLogViewerListeners()}</script>
+
+    <script>async function fetchAnnouncementContent(){const t=document.getElementById("announcementLoading");const i=document.getElementById("announcementError");const c=document.getElementById("announcementText");t.classList.remove("hidden");i.classList.add("hidden");c.classList.add("hidden");try{const n=await fetch("./api/announcement",{method:"GET",headers:{Accept:"text/html, application/xhtml+xml, application/xml;q=0.9, */*;q=0.8"},cache:"no-cache"});if(!n.ok){throw new Error(`HTTP错误! 状态码: ${n.status} - ${n.statusText}`)}const e=await n.text();c.innerHTML=e;t.classList.add("hidden");c.classList.remove("hidden");i.classList.add("hidden")}catch(n){console.error("获取公告内容失败:",n.message);t.classList.add("hidden");i.classList.remove("hidden");let e=`加载失败: ${n.message}`;if(n.message.includes("CORS")){e+=" (可能是跨域访问限制)"}else if(n.message.includes("NetworkError")||n.message.includes("网络")){e+=" (可能是网络连接问题)"}i.innerHTML=`
+                    <i class="fa fa-exclamation-circle fa-3x text-danger mb-3"></i>
+                    <p>${e}</p>
+                `;c.innerHTML=`
+                <br/>
+                    <h3>无法加载最新公告</h3>
+                    <h3>  默认公告：</h3>
+                    <ul>
+                        <li>大家好👋，我是米恋泥，</li>
+                        <li>欢迎使用，有问题请找我，Q群1039270739</li>
+                        <li>飞牛论坛（搜：飞牛桌面管理工具）</li>
+                        <li>GitHub：IMGZCQ/fndesk</li>
+                        <li>酷安：米恋泥</li>
+                    </ul>
+                `;c.classList.remove("hidden")}}document.addEventListener("DOMContentLoaded",function(){const announcementBtn=document.getElementById("announcementBtn");if(announcementBtn){const originalClickHandler=announcementBtn.onclick||announcementBtn.getAttribute("onclick");announcementBtn.onclick=null;announcementBtn.removeAttribute("onclick");announcementBtn.addEventListener("click",function(){if(typeof originalClickHandler==="function"){originalClickHandler.call(this)}else{if(typeof originalClickHandler==="string"){eval(originalClickHandler)}else{const announcementModal=document.getElementById("announcementModal");if(announcementModal){announcementModal.classList.remove("hidden")}}}fetchAnnouncementContent()})}})</script>
+
+    <script>document.getElementById("confirmUpdateBtn").addEventListener("click",async function(){const t=document.createElement("iframe");t.id="loadingIframe";t.src="./loading.html";t.style.cssText=`
+     position: fixed;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100%;
+     border: none;
+     z-index: 9999;
+ `;document.body.appendChild(t);showNotification("正常检测更新...","info");localStorage.removeItem("lastVersionCheckDate");await checkVersion();if(hasNewVersion){try{showNotification("开始升级...请稍后...","info");await fetch("./api/download-and-install-fpk",{method:"GET"})}catch(e){console.error("升级请求失败:",e);showNotification("升级请求失败，请稍后重试","error");if(t.parentNode)t.parentNode.removeChild(t);document.getElementById("updateModal").classList.add("hidden")}}else{showNotification("没找到有新版，请马上去鞭策作者...","info");if(t.parentNode)t.parentNode.removeChild(t);document.getElementById("updateModal").classList.add("hidden")}})</script>
+
+    <script>document.addEventListener("DOMContentLoaded",function(){const e=document.getElementById("updateModal");const t=document.getElementById("menuUpdateDesktop");const n=document.getElementById("cancelUpdateBtn");const o=document.getElementById("confirmUpdateBtn");const s=document.getElementById("dropdownMenu");let a=false;async function c(){try{const e=globalConfig||await window.VersionManager.getConfig();const n=globalLatestVersion||await window.VersionManager.getLatestVersion();if(!globalConfig)globalConfig=e;if(!globalLatestVersion)globalLatestVersion=n;const o=document.getElementById("systemVersion");const s=document.getElementById("archInfo");const a=document.getElementById("currentAppVersion");const c=document.getElementById("targetAppVersion");const d=document.getElementById("updateLogContainer");const i=document.getElementById("updateLogTitle");const l=document.getElementById("updateLogContent");if(o){o.textContent=e.sysVersion||"未知"}if(s){s.textContent=e.arch||"未知"}const r=e.version||"0";if(a){a.textContent=r}let t=false;if(c){if(window.VersionManager.compareVersions(n,r)>0){t=true;c.textContent=n;c.classList.add("text-success","font-semibold");c.classList.remove("text-text-secondary")}else{c.textContent="没有新版本";c.classList.remove("text-success","font-semibold");c.classList.add("text-text-secondary")}}if(i){i.textContent=t?"📝 即将更新内容":"📝 当前版本内容"}await f(d,l)}catch(t){console.error("获取版本信息失败:",t)}}async function f(t,e){if(!e)return;if(cachedUpdateLog!==null){e.textContent=cachedUpdateLog||"暂无更新内容";return}try{const n=process.arch==="arm"?"https://fndesk.imcq.top/?get=update_log_arm":"https://fndesk.imcq.top/?get=update_log";const o=await fetch(n);if(o.ok){const s=await o.text();cachedUpdateLog=s;e.textContent=s||"暂无更新内容"}else{e.textContent="获取更新日志失败"}}catch(t){console.error("获取更新日志失败:",t);e.textContent="获取更新日志失败"}}window.openUpdateModal=async function(){if(a)return;a=true;try{await c();if(e){e.classList.remove("hidden")}if(s){s.style.display="none"}}finally{a=false}};function d(){if(e){e.classList.add("hidden")}}if(t){t.addEventListener("click",function(t){t.preventDefault();t.stopPropagation();openUpdateModal()})}if(n){n.addEventListener("click",d)}if(o){o.addEventListener("click",d)}document.addEventListener("keydown",t=>{if(t.key==="Escape"&&e&&!e.classList.contains("hidden")){d()}})})</script>
+
+    <script>document.addEventListener("DOMContentLoaded",async function(){try{const o=await fetch("./api/gateway-user");const n=await o.json();console.log("🔥 网关用户信息:",n);console.log("👤 用户ID:",n.uid);console.log("📛 用户名:",n.username);console.log("🔐 管理员:",n.isAdmin)}catch(o){console.error("获取用户信息失败:",o)}})</script>
+
+    <script>function formatFileSize(e){if(e===0)return"-";const t=["B","KB","MB","GB"];let r=0;let n=e;while(n>=1024&&r<t.length-1){n/=1024;r++}return n.toFixed(r>0?1:0)+" "+t[r]}async function loadDirectoryList(t,e,r=[],n=false){const i=document.getElementById(e);if(!i)return;let o="";if(n){const s=i.querySelector("h4");if(s){o=s.outerHTML}}try{const a=await fetch(`./api/list-directory?path=${encodeURIComponent(t)}`);const c=await a.json();if(!c.success){i.innerHTML=o+`<p style="color: var(--danger);">加载失败: ${c.message}</p>`;return}let e=c.files;if(r.length>0){e=c.files.filter(e=>!r.includes(e.name))}if(e.length===0){i.innerHTML=o+'<p style="color: var(--text-secondary);">（空目录）</p>';return}let n="";e.forEach(e=>{const t=e.isDirectory?"📁":"📄";const r=e.isDirectory?"color: var(--warning);":"color: var(--text-primary);";n+=`<div style="padding: 2px 0;">${t} <span style="${r}">${e.name}</span></div>`});i.innerHTML=o+n}catch(e){console.error(`加载目录列表失败 (${t}):`,e);i.innerHTML=o+'<p style="color: var(--danger);">加载失败</p>'}}document.addEventListener("DOMContentLoaded",function(){const t=document.getElementById("resetDesktopModal");if(t){const e=new MutationObserver(function(e){e.forEach(function(e){if(e.type==="attributes"&&e.attributeName==="class"){if(!t.classList.contains("hidden")){loadDirectoryList("/usr/trim/share/.restore","restoreDirList",["ng.conf.zip","ng.zip"],true);loadDirectoryList("/usr/trim/www","wwwDirList",["FileManagerEnhancer.js","MP3go","deskdata","cqfndesk.js","favicon.ico","robots.txt"])}}})});e.observe(t,{attributes:true})}})</script>
+    <script src="index.js"></script>
+
     
     <footer class="bg-card py-6 border-t">
-        <div class="container text-center text-text-secondary">
-            <p class="mb-1" style="font-size: 12px;">飞牛桌面管理工具 by 米恋泥</p>
-            <p style="font-size: 11px;">组织机构 @小宠瞭望塔</p><br>
+        <div class="container">
+            
+            <div class="w-full h-px bg-primary my-4 opacity-70"></div>
+            <div class="text-center text-text-secondary">
+                <p class="mb-1" style="font-size:12px">飞牛桌面管理工具 by 米恋泥</p>
+                <p style="font-size:11px">组织机构 @小宠瞭望塔</p><br>
+            </div>
         </div>
     </footer>
-
-    <script>document.addEventListener("DOMContentLoaded",function(){const n=document.getElementById("updateModal");const e=document.getElementById("menuUpdateDesktop");const t=document.getElementById("cancelUpdateBtn");const d=document.getElementById("confirmUpdateBtn");const c=document.getElementById("dropdownMenu");function o(){if(n){n.classList.remove("hidden")}if(c){c.style.display="none"}}function i(){if(n){n.classList.add("hidden")}}if(e){e.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();o()})}if(t){t.addEventListener("click",i)}if(d){d.addEventListener("click",i)}document.addEventListener("keydown",e=>{if(e.key==="Escape"&&n&&!n.classList.contains("hidden")){i()}})})</script>
-    <script>document.addEventListener("DOMContentLoaded",function(){const t=document.getElementById("helpModal");const i=document.getElementById("helpModalTitle");const l=document.getElementById("helpModalBody");const e=document.getElementById("helpBtn");const n=document.getElementById("closeHelpBtn");window.openHelpModal=function(e="开关使用说明",n=`
-        <ul>
-            <li><strong>绿色开关:</strong> 原创图标/文件夹</li>
-            <li><strong>蓝色开关:</strong> 飞牛原生系统图标</li>
-            <li><strong>注 意:</strong> 两个开关独立互不冲突</li><br>
-        </ul>
-        
-        <h3>特性</h3>
-        <h4>原创图标/文件夹:</h4>
-         <ul>
-        <li>  自由度高,每个图标最多能容纳5个链接</li>
-        <li>  独有的右键菜单控制,随意决定页內或新窗口打开连接,智能识别内外网</li>
-        <li>  有不同样式风格可选,支持建立多层文件夹,再多链接也不怕完美取代收藏夹</li><br>
-       </ul>
-        <h4>飞牛图标:</h4>
-         <ul>
-        <li>  和飞牛原生图标体验一模一样，能在APP上显示并使用</li>
-        <li>  直接填写端口所有本地Docker服务能通过FN Connect完美访问</li>
-        <li>  也能自定义非本地服务链接且同时具备智能跳转内外网链接</li><br>
-        </ul>
-    `){if(i){i.textContent=e}if(l){l.innerHTML=n}if(t){t.classList.remove("hidden")}};function o(){if(t){t.classList.add("hidden")}}if(e){e.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();window.openHelpModal()})}if(n){n.addEventListener("click",o)}if(t){t.addEventListener("click",function(e){if(e.target===t){o()}})}document.addEventListener("keydown",e=>{if(e.key==="Escape"&&t&&!t.classList.contains("hidden")){o()}})})</script>
 </body>
+
 </html>

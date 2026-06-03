@@ -1,5 +1,8 @@
 #!/bin/bash
 
-### This script is called after the user uninstalls the application.
+rm -rf "${TRIM_APPDEST_VOL}/@appdata/${TRIM_APPNAME}"
+rm -rf "${TRIM_APPDEST_VOL}/@appmeta/${TRIM_APPNAME}"
+rm -rf "${TRIM_APPDEST_VOL}/@apphome/${TRIM_APPNAME}"
+rm -rf "${TRIM_APPDEST_VOL}/@appconf/${TRIM_APPNAME}"
 
 exit 0

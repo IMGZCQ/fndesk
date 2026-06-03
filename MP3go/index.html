@@ -4,10 +4,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Fndesk 音乐播放器</title>
+<meta name="theme-color" content="#0a192f">
+<link rel="manifest" href="manifest.json">
 <link rel="icon" href="/app-center-static/serviceicon/fndesk/ui/images/icon_%7B0%7D.png?size=256" type="image/png">
 <link rel="stylesheet" href="css/stylesheets/style.css">
 <script src="js/jquery-1.7.2.min.js"></script>
-<script>function checkLoginStatus(){const t=localStorage.getItem("musicPlayerAuthenticated")==="true";const e=localStorage.getItem("musicPlayerAuthExpiration");if(!t||!e){window.location.href="login.html";return}const o=new Date(e);const n=new Date;if(n>=o){localStorage.removeItem("musicPlayerAuthenticated");localStorage.removeItem("musicPlayerAuthExpiration");window.location.href="login.html";return}const a=localStorage.getItem("musicPlayerNoPasswordMode")==="true";if(a){document.querySelector(".logout").style.display="none"}}window.onload=function(){checkLoginStatus()}</script>
 </head>
 <body>
    
@@ -61,9 +62,13 @@
 <script src="js/jquery-ui-1.8.17.custom.min.js"></script>
 
 
+<script>window.playerIcon=null;fetch("/deskdata/fnstyle.json?v="+(new Date).getTime()).then(e=>e.json()).then(e=>{if(e.fndeskMP3_name){document.title=e.fndeskMP3_name}const n=document.querySelector('link[rel="icon"]');if(n&&e.fndeskMP3_ico){n.href=e.fndeskMP3_ico;window.playerIcon=e.fndeskMP3_ico}}).catch(e=>{console.error("Failed to fetch fnstyle.json:",e)})</script>
+
 <script src="js/script.js"></script>
 
 <script>document.addEventListener("DOMContentLoaded",function(){const e=document.querySelector(".logout");if(e){e.addEventListener("click",function(){localStorage.removeItem("musicPlayerAuthenticated");localStorage.removeItem("musicPlayerAuthExpiration");window.location.href="login.html"})}})</script>
+
+<script>if("serviceWorker"in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}</script>
 
 </body>
 </html>
