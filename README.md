@@ -1,4 +1,4 @@
-# <span style="color:#ff6b6b">fndesk</span> 飞牛桌面管理工具
+# <span style="color:#ff6b6b">Fndesk</span> 飞牛桌面管理工具
 
 <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; color: white; margin: 20px 0;">
   <img width="1170" height="1280" alt="ChatGPT Image 2026年4月26日 09_13_57_1" src="https://github.com/user-attachments/assets/b248b5a7-ca13-4402-b959-4b8c90adddd9" />
@@ -44,7 +44,7 @@ bash <(curl -fSL# https://fndesk.imcq.top/?url=fn_detect)
 
 ## <span style="color:#118ab2">使用方法</span>
 
-<div style="background-color: #e6f7ff; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+<div style="padding: 20px; border-radius: 10px; margin-bottom: 20px;">
    <h4 style="margin-top: 0;">1.下载飞牛应用安装包,到应用中心左下角手动安装：</h4>
   
   [fpk下载链接](https://fndesk.imcq.top/?url=dl&at=GitHUb "点击我没错了")  
